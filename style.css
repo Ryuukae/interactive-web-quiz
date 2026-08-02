@@ -1,0 +1,229 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    /* Forces padding and borders to be included in the element's total width and height, 
+       preventing unexpected layout breaking when padding is added. */
+    box-sizing: border-box;
+}
+
+/* ROOT STYLES */
+
+body {
+    /* Soft gray-blue background to reduce eye strain compared to pure white */
+    background: #f3f4f6; 
+    /* Flexbox is used here on the body to perfectly center the .container 
+       both horizontally and vertically on the screen. */
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center;     /* Centers vertically */
+        /* 100vh ensures the body takes up at least 100% of the viewport height, 
+       giving the flexbox vertical space to center the container within. */
+    min-height: 100vh;
+    padding: 1rem;
+    font-family: sans-serif;
+}
+
+.container {
+    background: white;
+    /* Rounded corners for a soft, modern card look */
+    border-radius: 1.2rem; 
+    /* Subtle shadow to lift the container off the background, creating depth. */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); 
+    /* Constrains the width on large screens so text doesn't become too wide to read comfortably */
+    max-width: 640px; 
+    /* Ensures it shrinks on smaller screens */
+    width: 100%; 
+    /* overflow: hidden ensures that any child elements (like headers or progress bars) 
+       don't spill outside the rounded corners of this container. */
+    overflow: hidden;
+    position: relative;
+}
+
+/* SCREENS */
+
+/* This acts as a Single Page Application (SPA) setup. 
+   All screens are hidden by default... */
+.screen {
+    display: none;
+    /* Generous padding gives the content breathing room away from the edges */
+    padding: 2.5rem; 
+    text-align: center;
+}
+
+/* ...until JavaScript adds the "active" class to the current screen. */
+.screen.active {
+    display: block;
+}
+
+/* START SCREEN */
+
+#start-screen h1 {
+    /* Primary indigo accent color used to draw attention to key elements */
+    color: #4f46e5; 
+    margin-bottom: 24px;
+    /* Large font size to establish visual hierarchy for the main title */
+    font-size: 2.25rem; 
+}
+
+#start-btn {
+    margin-top: 25px;
+}
+
+/* QUIZ SCREEN */
+.quiz-header {
+    margin-bottom: 2.5rem;
+}
+
+#question-text {
+    /* Dark gray instead of pure black for better contrast that is gentler on the eyes */
+    color: #1e293b; 
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+    /* line-height of 1.5 creates breathing room between lines for longer questions, 
+       improving readability. */
+    line-height: 1.5; 
+}
+
+.quiz-info {
+    display: flex;
+    /* Pushes the question counter (e.g., 1/10) and score to opposite ends of the header */
+    justify-content: space-between;
+    /* Muted slate tone to indicate this is secondary information */
+    color: #64748b; 
+    margin-bottom: 12px;
+}
+
+.answers-container {
+    display: flex;
+    /* Stacks the answer buttons vertically instead of side-by-side */
+    flex-direction: column; 
+    /* gap applies clean, even spacing between the flex items (buttons) 
+       without needing to add margins to individual buttons. */
+    gap: 12px; 
+    margin-bottom: 28px;
+}
+
+.answer-btn {
+    /* Light slate gray background with a subtle border provides a clickable appearance */
+    background-color: #f8fafc; 
+    color: #334155;
+    border: 2px solid #cbd5e1;
+    /* Matches the container's soft look with rounded edges */
+    border-radius: 12px; 
+    /* Comfortable padding creates a large enough tap target */
+    padding: 1.1rem; 
+    cursor: pointer;
+    text-align: left;
+    /* smooths out the hover effect and correct/incorrect state changes 
+       so they fade in over 0.3 seconds instead of snapping instantly. */
+    transition: all 0.3s ease;
+}
+
+.answer-btn:hover {
+    background-color: #e2e8f0;
+    border-color: #94a3b8;
+}
+
+/* Dynamic classes added via JS when an answer is selected */
+.answer-btn.correct {
+    /* Green background and border clearly indicate a correct selection */
+    background-color: #ecfdf5;
+    border-color: #6ee7b7;
+    color: #10b981;
+}
+
+.answer-btn.incorrect {
+    /* Red background and border clearly indicate an incorrect selection */
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+    color: #ef4444;
+}
+
+/* Progress bar track (the empty background) */
+.progress-bar {
+    /* Thick enough to be easily visible, but not so thick it distracts from the content */
+    height: 12px; 
+    background-color: #e2e8f0;
+    border-radius: 6px; 
+    overflow: hidden; /* Keeps the colored fill strictly inside the rounded pill shape */
+    margin-top: 24px;
+}
+
+/* The actual colored progress indicator */
+.progress {
+    height: 100%;
+    /* Indigo color matches the primary accent color to tie the design together */
+    background-color: #4f46e5; 
+    width: 0%; /* This width gets updated by JS as the quiz progresses */
+    /* Animates the bar growing longer smoothly rather than jumping instantly */
+    transition: width 0.3s ease;
+}
+
+/* RESULT SCREEN */
+#result-screen h1 {
+    color: #4f46e5;
+    margin-bottom: 32px;
+}
+
+.result-info {
+    /* Light slate background visually separates the score summary from the rest of the page */
+    background-color: #f1f5f9; 
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+}
+
+.result-info p {
+    font-size: 1.2rem;
+    color: #334155;
+    margin-bottom: 1.2rem;
+}
+
+#result-message {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #4f46e5;
+}
+
+button {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px; 
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+button:hover {
+    /* Darkens slightly on hover to provide visual feedback that the element is interactive */
+    background-color: #4338ca; 
+}
+
+/* RESPONSIVE DESIGN */
+/* These rules only apply when the screen width is 540px or smaller (mobile devices). 
+   They slightly shrink paddings and fonts so the app doesn't feel cramped on small screens. */
+@media (max-width: 540px) {
+
+    .screen {
+        padding: 1.2rem;
+    }
+
+    #start-screen h1 {
+        font-size: 2rem;
+    }
+
+    #question-text {
+        font-size: 1.25rem;
+    }
+
+    .answer-btn {
+        padding: 14px;
+    }
+
+    button {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
