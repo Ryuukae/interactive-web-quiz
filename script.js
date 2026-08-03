@@ -62,11 +62,6 @@ initializeApp()
 
 // ------------------------------------------------------------------------------
 
-
-
-totalQuestionsSpan.textContent = quizQuestions.length;
-maxScoreSpan.textContent= quizQuestions.length;
-
 // event listeners
 // Attach functions to buttons so they run when clicked
 startButton.addEventListener("click", startQuiz)
