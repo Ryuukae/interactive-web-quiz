@@ -42,18 +42,19 @@ async function initializeApp() {
   try {
       // Await the asynchronous network request before proceeding
       const questionData = await fetchQuizContent();
-      
+             
       // Hydrate the state manager with the retrieved dataset
       quizState = new QuizState(questionData);
       
+      // Update the DOM with the newly loaded total question count
+      totalQuestionsSpan.textContent = quizState.questionData.length;
+      maxScoreSpan.textContent = quizState.questionData.length;
+             
       // The data layer is now ready; the UI can safely interact with quizState
-      console.log("Quiz initialized successfully with dataset:", quizState.questionData)
-    
-      // Note: Event listeners for the 'Start' button could be enabled here 
-      // to prevent users from starting the quiz before the data payload is fully loaded.
+      console.log("Quiz initialized successfully with dataset:", quizState.questionData);
   } catch (error) {
       // Failsafe in case the JSON file is missing or contains syntax errors
-      console.error("Failed to initialize the quiz application data layer:", error)
+      console.error("Failed to initialize the quiz application data layer:", error);
   }
 }
 
@@ -127,71 +128,65 @@ function showQuestion() {
   });
 }
 
+/**
+ * Handles answer selection, delegates scoring to state, and triggers UI feedback.
+ * @param {Event} event - The click event triggered by the answer button.
+ */
 function selectAnswer(event) {
-    // state check: If an answer was already clicked, ignore subsequent clicks
-    if (answersDisabled) return;
+  // Prevent duplicate submissions during the transition delay
+  if (quizState.disabled) return;
+  
+  const selectedButton = event.target;
+  const isCorrect = selectedButton.dataset.correct === "true";
 
-    // Lock in the choice
-    answersDisabled = true;
-    
-    // 'event.target' refers to the exact button the user clicked
-    const selectedButton = event.target;
-    // Check our hidden data attribute to see if they got it right
-    const isCorrect = selectedButton.dataset.correct === "true";
+  // Expose correct/incorrect visual states across all available options
+  Array.from(answersContainer.children).forEach((button) => {
+      button.classList.add(button.dataset.correct === "true" ? "correct" : "incorrect");
+  });
 
-    // Loop through ALL buttons to reveal which ones were right/wrong visually
-    Array.from(answersContainer.children).forEach((button) => {
-        if(button.dataset.correct === "true") {
-            button.classList.add("correct");
-        } else {
-            button.classList.add("incorrect");
-        }
-    });
+  quizState.evaluateAnswer(isCorrect);
+  scoreSpan.textContent = quizState.score;
 
-    if(isCorrect) {
-        score++;
-        scoreSpan.textContent = score;
-    }
+  // Defer progression to allow the user to process the visual outcome
+  setTimeout(() => {
+      quizState.advanceQuestion();
 
-    // Pause for 1 second (1000ms) so the user can see if they were right before moving on
-    setTimeout(() => {
-        currentQuestionIndex++;
-
-        // If we haven't reached the end of the array, show the next question
-        if(currentQuestionIndex < quizQuestions.length) {
-         showQuestion();
-        } else {
-            // Otherwise, wrap it up
-            showResults();
-        }
-    }, 1000);
+      // Correct routing: show results if done, else next question
+      if (quizState.isQuizOver()) {
+          showResults();
+      } else {
+          showQuestion();
+      }
+  }, 1000);
 }
 
+/**
+ * Transitions the UI to the final results view and evaluates the user's performance.
+ * Decouples grading logic from hardcoded values to support dynamic dataset lengths.
+ */
 function showResults() {
-    // Hide quiz, show results screen
-    quizScreen.classList.remove("active");
-    resultScreen.classList.add("active");
+  // Swap visibility states to reveal the final results container
+  quizScreen.classList.remove("active");
+  resultScreen.classList.add("active");
 
-    finalScoreSpan.textContent = score;
+  // Inject the raw score from the state manager
+  finalScoreSpan.textContent = quizState.score;
 
-    // Calculate final percentage
-    const percentage = (score / quizQuestions.length) * 100;
+  // Fetch the calculated grade percentage directly from the state manager
+  const percentage = quizState.getGradePercentage();
 
-    // Provide a custom message based on performance
-    // Note: If you add/remove questions later so the total isn't exactly 5, 
-    // these strict === checks might break. You may want to change these to >= 
-    // (e.g., if percentage >= 80) in the future!
-    if(percentage === 100) {
-        resultMessage.textContent = "Perfect Score!";
-    } else if (percentage === 80){
-        resultMessage.textContent = "Great Job!";
-    } else if (percentage === 60){
-        resultMessage.textContent = "Good Effort!";
-    } else if (percentage === 40) {
-        resultMessage.textContent = "Not bad!";
-    } else {
-        resultMessage.textContent = "Needs Improvement!";
-    }
+  // Top-down threshold evaluation allows the question pool size to change without breaking the grading tiers
+  if (percentage >= 100) {
+      resultMessage.textContent = "Perfect Score!";
+  } else if (percentage >= 80) {
+      resultMessage.textContent = "Great Job!";
+  } else if (percentage >= 60) {
+      resultMessage.textContent = "Good Effort!";
+  } else if (percentage >= 40) {
+      resultMessage.textContent = "Not bad!";
+  } else {
+      resultMessage.textContent = "Needs Improvement!";
+  }
 }
 
 function restartQuiz() {
