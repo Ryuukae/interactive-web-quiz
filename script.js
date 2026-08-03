@@ -16,64 +16,54 @@ const resultMessage = document.getElementById("result-message");
 const restartButton = document.getElementById("restart-btn");
 const progressBar = document.getElementById("progress");
 
-// Quiz questions
-// An array of objects. Each object represents one question and contains an 
-// array of possible answers with a boolean indicating the correct one.
-const quizQuestions = [
-  {
-    question: "What is the capital of France?",
-    answers: [
-      { text: "London", correct: false },
-      { text: "Berlin", correct: false },
-      { text: "Paris", correct: true },
-      { text: "Madrid", correct: false },
-    ],
-  },
-  {
-    question: "Which planet is known as the Red Planet?",
-    answers: [
-      { text: "Venus", correct: false },
-      { text: "Mars", correct: true },
-      { text: "Jupiter", correct: false },
-      { text: "Saturn", correct: false },
-    ],
-  },
-  {
-    question: "What is the largest ocean on Earth?",
-    answers: [
-      { text: "Atlantic Ocean", correct: false },
-      { text: "Indian Ocean", correct: false },
-      { text: "Arctic Ocean", correct: false },
-      { text: "Pacific Ocean", correct: true },
-    ],
-  },
-  {
-    question: "Which of these is NOT a programming language?",
-    answers: [
-      { text: "Java", correct: false },
-      { text: "Python", correct: false },
-      { text: "Banana", correct: true },
-      { text: "JavaScript", correct: false },
-    ],
-  },
-  {
-    question: "What is the chemical symbol for gold?",
-    answers: [
-      { text: "Go", correct: false },
-      { text: "Gd", correct: false },
-      { text: "Au", correct: true },
-      { text: "Ag", correct: false },
-    ],
-  },
-];
+/**
+ * Global reference to the application's state manager.
+ * Declared at the root scope to allow UI controller functions 
+ * to interface with the business logic.
+ * @type {QuizState}
+ */
+let quizState;
 
-// QUIZ STATE VARS
-// These variables track the user's progress and update as the quiz moves forward.
-let currentQuestionIndex = 0;
-let score = 0;
-// Prevents the user from clicking multiple answers rapidly before the next question loads
-let answersDisabled = false; 
-// Initialize the total question count in the UI right away
+/**
+ * Asynchronously retrieves and parses the quiz dataset from the local environment.
+ * @returns {Promise<Array<Object>>} A promise resolving to an array of question data.
+ */
+async function fetchQuizContent() {
+  // Fetches the raw file and immediately parses the JSON stream into native JS structures
+  return await fetch('questions.json').then(res => res.json());
+}
+
+/**
+* Bootstraps the application on initial script load.
+* Responsible for fetching data, hydrating the state manager, 
+* and preparing the UI for user interaction.
+*/
+async function initializeApp() {
+  try {
+      // Await the asynchronous network request before proceeding
+      const questionData = await fetchQuizContent();
+      
+      // Hydrate the state manager with the retrieved dataset
+      quizState = new QuizState(questionData);
+      
+      // The data layer is now ready; the UI can safely interact with quizState
+      console.log("Quiz initialized successfully with dataset:", quizState.questionData);
+      
+      // Note: Event listeners for the 'Start' button could be enabled here 
+      // to prevent users from starting the quiz before the data payload is fully loaded.
+  } catch (error) {
+      // Failsafe in case the JSON file is missing or contains syntax errors
+      console.error("Failed to initialize the quiz application data layer:", error);
+  }
+}
+
+// Execute the bootstrap sequence immediately
+initializeApp();
+
+// ------------------------------------------------------------------------------
+
+
+
 totalQuestionsSpan.textContent = quizQuestions.length;
 maxScoreSpan.textContent= quizQuestions.length;
 
