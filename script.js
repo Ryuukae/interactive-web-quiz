@@ -72,13 +72,17 @@ maxScoreSpan.textContent= quizQuestions.length;
 startButton.addEventListener("click", startQuiz);
 restartButton.addEventListener("click", restartQuiz);
 
-function startQuiz(){
-    console.log("quiz started");
+/**
+ * Initiates a new quiz session by resetting the application state, 
+ * synchronizing the DOM elements, managing screen visibility transitions, 
+ * and triggering the rendering of the first question.
+ */
+function startQuiz() {
+    // reset quiz state
+    quizState.resetQuiz()
     
-    // Reset state to default values in case the user is restarting the quiz
-    currentQuestionIndex = 0;
-    score = 0;
-    scoreSpan.textContent = score;
+    // update score value
+    scoreSpan.textContent = quizState.score
 
     // Swap the visible screens by toggling the "active" CSS class
     startScreen.classList.remove("active");
@@ -86,6 +90,7 @@ function startQuiz(){
 
     showQuestion();
 }
+
 
 function showQuestion() {
     // Re-enable clicks for the new question
