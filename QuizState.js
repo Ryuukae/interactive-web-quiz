@@ -9,7 +9,7 @@ class QuizState {
      * @param {Array<Object>} questions - The parsed array of question objects.
      */
     constructor(questions) {
-        this.questionData = questions;
+        this.questionData = this.randomizeDeck(questions);
         this.score = 0;
         this.index = 0;
         this.disabled = false;
@@ -65,6 +65,7 @@ class QuizState {
         this.score = 0;
         this.index = 0;
         this.disabled = false;
+        this.questionData = this.randomizeDeck(this.questionData);
     }
 
     /**
@@ -86,5 +87,26 @@ class QuizState {
             [array[i], array[j]] = [array[j], array[i]];
         }
         return array;
+    }
+
+    /**
+     * Randomizes the quiz dataset by shuffling both the primary question order 
+     * and the nested answer choices.
+     * 
+     * Note: This operates in-place and mutates the incoming deck structure.
+     * 
+     * @param {Array<Object>} deck - The collection of question objects to randomize.
+     * @returns {Array<Object>} The fully randomized deck.
+     */
+    randomizeDeck(deck) {
+        // Shuffle the top-level question pool
+        const shuffledDeck = this.shuffleQuizData(deck);
+        
+        // Traverse and shuffle the nested answer sets for each question
+        shuffledDeck.forEach(question => {
+            question.answers = this.shuffleQuizData(question.answers);
+        });
+
+        return shuffledDeck;
     }
 }
