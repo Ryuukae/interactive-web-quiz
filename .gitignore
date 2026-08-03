@@ -1,0 +1,9 @@
+# Ignore all
+*
+
+# Only allow certain files
+!index.html
+!style.css
+!script.js
+!questions.json
+!.gitignore
