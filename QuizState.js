@@ -39,6 +39,14 @@ class QuizState {
     }
 
     /**
+     * Calculates the user's final grade percentage based on correct answers.
+     * @returns {number} The grade percentage (0-100).
+     */
+    getGradePercentage() {
+        return (this.score / this.questionData.length) * 100;
+    }
+
+    /**
      * Evaluates a submitted answer, updates the score, and strictly locks the state
      * to prevent race conditions or multiple rapid submissions.
      * @param {boolean} isCorrect - Indicates whether the selected answer was correct.

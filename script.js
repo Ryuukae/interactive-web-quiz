@@ -64,8 +64,8 @@ initializeApp()
 
 
 
-totalQuestionsSpan.textContent = quizQuestions.length;
-maxScoreSpan.textContent= quizQuestions.length;
+totalQuestionsSpan.textContent = quizState.questionData.length;
+maxScoreSpan.textContent= quizState.questionData.length;
 
 // event listeners
 // Attach functions to buttons so they run when clicked
@@ -164,31 +164,33 @@ function selectAnswer(event) {
   }, 1000);
 }
 
+/**
+ * Transitions the UI to the final results view and evaluates the user's performance.
+ * Decouples grading logic from hardcoded values to support dynamic dataset lengths.
+ */
 function showResults() {
-    // Hide quiz, show results screen
-    quizScreen.classList.remove("active");
-    resultScreen.classList.add("active");
+  // Swap visibility states to reveal the final results container
+  quizScreen.classList.remove("active");
+  resultScreen.classList.add("active");
 
-    finalScoreSpan.textContent = score;
+  // Inject the raw score from the state manager
+  finalScoreSpan.textContent = quizState.score;
 
-    // Calculate final percentage
-    const percentage = (score / quizQuestions.length) * 100;
+  // Fetch the calculated grade percentage directly from the state manager
+  const percentage = quizState.getGradePercentage();
 
-    // Provide a custom message based on performance
-    // Note: If you add/remove questions later so the total isn't exactly 5, 
-    // these strict === checks might break. You may want to change these to >= 
-    // (e.g., if percentage >= 80) in the future!
-    if(percentage === 100) {
-        resultMessage.textContent = "Perfect Score!";
-    } else if (percentage === 80){
-        resultMessage.textContent = "Great Job!";
-    } else if (percentage === 60){
-        resultMessage.textContent = "Good Effort!";
-    } else if (percentage === 40) {
-        resultMessage.textContent = "Not bad!";
-    } else {
-        resultMessage.textContent = "Needs Improvement!";
-    }
+  // Top-down threshold evaluation allows the question pool size to change without breaking the grading tiers
+  if (percentage >= 100) {
+      resultMessage.textContent = "Supurb Score!";
+  } else if (percentage >= 80) {
+      resultMessage.textContent = "Great Job!";
+  } else if (percentage >= 60) {
+      resultMessage.textContent = "Good Effort!";
+  } else if (percentage >= 40) {
+      resultMessage.textContent = "Not bad!";
+  } else {
+      resultMessage.textContent = "Needs Improvement!";
+  }
 }
 
 function restartQuiz() {
