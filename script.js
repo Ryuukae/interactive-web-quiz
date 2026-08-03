@@ -15,7 +15,52 @@ const maxScoreSpan = document.getElementById("max-score");
 const resultMessage = document.getElementById("result-message");
 const restartButton = document.getElementById("restart-btn");
 const progressBar = document.getElementById("progress");
+
+/**
+ * Global reference to the application's state manager.
+ * Declared at the root scope to allow UI controller functions 
+ * to interface with the business logic.
+ * @type {QuizState}
+ */
 let quizState;
+
+/**
+ * Asynchronously retrieves and parses the quiz dataset from the local environment.
+ * @returns {Promise<Array<Object>>} A promise resolving to an array of question data.
+ */
+async function fetchQuizContent() {
+  // Fetches the raw file and immediately parses the JSON stream into native JS structures
+  return await fetch('questions.json').then(res => res.json());
+}
+
+/**
+* Bootstraps the application on initial script load.
+* Responsible for fetching data, hydrating the state manager, 
+* and preparing the UI for user interaction.
+*/
+async function initializeApp() {
+  try {
+      // Await the asynchronous network request before proceeding
+      const questionData = await fetchQuizContent();
+      
+      // Hydrate the state manager with the retrieved dataset
+      quizState = new QuizState(questionData);
+      
+      // The data layer is now ready; the UI can safely interact with quizState
+      console.log("Quiz initialized successfully with dataset:", quizState.questionData);
+      
+      // Note: Event listeners for the 'Start' button could be enabled here 
+      // to prevent users from starting the quiz before the data payload is fully loaded.
+  } catch (error) {
+      // Failsafe in case the JSON file is missing or contains syntax errors
+      console.error("Failed to initialize the quiz application data layer:", error);
+  }
+}
+
+// Execute the bootstrap sequence immediately
+initializeApp();
+
+// ------------------------------------------------------------------------------
 
 
 
@@ -149,4 +194,3 @@ function restartQuiz() {
     resultScreen.classList.remove("active");
     startQuiz();
 }
-
