@@ -136,7 +136,6 @@ function showQuestion() {
 function selectAnswer(event) {
     // Prevent duplicate submissions during the transition delay
     if (quizState.disabled) return;
-    quizState.disabled = true;
     
     const selectedButton = event.target;
     const isCorrect = selectedButton.dataset.correct === "true";
