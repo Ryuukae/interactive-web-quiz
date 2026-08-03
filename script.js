@@ -47,18 +47,18 @@ async function initializeApp() {
       quizState = new QuizState(questionData);
       
       // The data layer is now ready; the UI can safely interact with quizState
-      console.log("Quiz initialized successfully with dataset:", quizState.questionData);
-      
+      console.log("Quiz initialized successfully with dataset:", quizState.questionData)
+    
       // Note: Event listeners for the 'Start' button could be enabled here 
       // to prevent users from starting the quiz before the data payload is fully loaded.
   } catch (error) {
       // Failsafe in case the JSON file is missing or contains syntax errors
-      console.error("Failed to initialize the quiz application data layer:", error);
+      console.error("Failed to initialize the quiz application data layer:", error)
   }
 }
 
 // Execute the bootstrap sequence immediately
-initializeApp();
+initializeApp()
 
 // ------------------------------------------------------------------------------
 
@@ -69,8 +69,8 @@ maxScoreSpan.textContent= quizQuestions.length;
 
 // event listeners
 // Attach functions to buttons so they run when clicked
-startButton.addEventListener("click", startQuiz);
-restartButton.addEventListener("click", restartQuiz);
+startButton.addEventListener("click", startQuiz)
+restartButton.addEventListener("click", restartQuiz)
 
 /**
  * Initiates a new quiz session by resetting the application state, 
@@ -78,52 +78,58 @@ restartButton.addEventListener("click", restartQuiz);
  * and triggering the rendering of the first question.
  */
 function startQuiz() {
-    // reset quiz state
-    quizState.resetQuiz()
-    
-    // update score value
-    scoreSpan.textContent = quizState.score
+  // reset quiz state
+  quizState.resetQuiz()
+  
+  // update score value
+  scoreSpan.textContent = quizState.score
 
-    // Swap the visible screens by toggling the "active" CSS class
-    startScreen.classList.remove("active");
-    quizScreen.classList.add("active");
+  // swap the visible screens by toggling the "active" CSS class
+  startScreen.classList.remove("active")
+  quizScreen.classList.add("active")
 
-    showQuestion();
+  showQuestion();
 }
 
-
+/**
+ * Renders the current question and its associated answer choices to the DOM.
+ * Updates UI progression metrics (progress bar, question counter) and 
+ * dynamically attaches event listeners to the new answer buttons.
+ */
 function showQuestion() {
-    // Re-enable clicks for the new question
-    answersDisabled = false;  
-    
-    const currentQuestion = quizQuestions[currentQuestionIndex];
+  // Re-enable interaction for the new question
+  quizState.resetClickLock();
+  
+  // Fetch the current question data object from the state manager
+  const currentQuestion = quizState.getCurrentQuestion();
 
-    // Update UI text (add 1 because arrays start at index 0)
-    currentQuestionSpan.textContent = currentQuestionIndex + 1;
+  // Update UI progression text (e.g., "Question 1")
+  currentQuestionSpan.textContent = quizState.index + 1;
 
-    // Calculate and apply progress bar width dynamically
-    const progressPercent = (currentQuestionIndex / quizQuestions.length) * 100;
-    progressBar.style.width = progressPercent + "%";
-    
-    questionText.textContent = currentQuestion.question;
-    
-    // Clear out any old answer buttons from the previous question
-    answersContainer.innerHTML = "";
+  // Calculate and apply the progress bar width dynamically
+  const progressPercent = quizState.getProgressPercentage();
+  progressBar.style.width = progressPercent + "%";
+  
+  // Inject the question text into the DOM
+  questionText.textContent = currentQuestion.question;
+  
+  // Clear out any old answer buttons from the previous question
+  answersContainer.innerHTML = "";
 
-    // Loop through the current question's answers to generate fresh buttons
-    currentQuestion.answers.forEach(answer => {
-        const button = document.createElement("button");
-        button.textContent = answer.text;
-        button.classList.add("answer-btn");
+  // Generate fresh answer buttons and append them to the container
+  currentQuestion.answers.forEach(answer => {
+      const button = document.createElement("button");
+      button.textContent = answer.text;
+      button.classList.add("answer-btn");
 
-        // Store the correct/false boolean in a data attribute directly on the HTML element
-        button.dataset.correct = answer.correct;
+      // Note: This converts the boolean to a string ("true" or "false") in the HTML
+      button.dataset.correct = answer.correct;
 
-        // When this specific dynamically-created button is clicked, check the answer
-        button.addEventListener("click", selectAnswer);
+      // Attach the evaluation logic to the click event
+      button.addEventListener("click", selectAnswer);
 
-        answersContainer.appendChild(button);
-    });
+      answersContainer.appendChild(button);
+  });
 }
 
 function selectAnswer(event) {
