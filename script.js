@@ -29,8 +29,8 @@ let quizState;
  * @returns {Promise<Array<Object>>} A promise resolving to an array of question data.
  */
 async function fetchQuizContent() {
-  // Fetches the raw file and immediately parses the JSON stream into native JS structures
-  return await fetch('questions.json').then(res => res.json());
+    // Fetches the raw file and immediately parses the JSON stream into native JS structures
+    return await fetch('questions.json').then(res => res.json());
 }
 
 /**
@@ -39,38 +39,35 @@ async function fetchQuizContent() {
 * and preparing the UI for user interaction.
 */
 async function initializeApp() {
-  try {
-      // Await the asynchronous network request before proceeding
-      const questionData = await fetchQuizContent();
+    try {
+        // Await the asynchronous network request before proceeding
+        const questionData = await fetchQuizContent();
+        
+        // Hydrate the state manager with the retrieved dataset
+        quizState = new QuizState(questionData);
+        
+        // Safely update DOM elements that depend on the loaded dataset length
+        totalQuestionsSpan.textContent = quizState.questionData.length;
+        maxScoreSpan.textContent = quizState.questionData.length;
+        
+        // The data layer is now ready; the UI can safely interact with quizState
+        console.log("Quiz initialized successfully with dataset:", quizState.questionData);
       
-      // Hydrate the state manager with the retrieved dataset
-      quizState = new QuizState(questionData);
-      
-      // The data layer is now ready; the UI can safely interact with quizState
-      console.log("Quiz initialized successfully with dataset:", quizState.questionData)
-    
-      // Note: Event listeners for the 'Start' button could be enabled here 
-      // to prevent users from starting the quiz before the data payload is fully loaded.
-  } catch (error) {
-      // Failsafe in case the JSON file is missing or contains syntax errors
-      console.error("Failed to initialize the quiz application data layer:", error)
-  }
+    } catch (error) {
+        // Failsafe in case the JSON file is missing or contains syntax errors
+        console.error("Failed to initialize the quiz application data layer:", error);
+    }
 }
 
 // Execute the bootstrap sequence immediately
-initializeApp()
+initializeApp();
 
 // ------------------------------------------------------------------------------
 
-
-
-totalQuestionsSpan.textContent = quizState.questionData.length;
-maxScoreSpan.textContent= quizState.questionData.length;
-
 // event listeners
 // Attach functions to buttons so they run when clicked
-startButton.addEventListener("click", startQuiz)
-restartButton.addEventListener("click", restartQuiz)
+startButton.addEventListener("click", startQuiz);
+restartButton.addEventListener("click", restartQuiz);
 
 /**
  * Initiates a new quiz session by resetting the application state, 
@@ -78,17 +75,17 @@ restartButton.addEventListener("click", restartQuiz)
  * and triggering the rendering of the first question.
  */
 function startQuiz() {
-  // reset quiz state
-  quizState.resetQuiz()
-  
-  // update score value
-  scoreSpan.textContent = quizState.score
+    // reset quiz state
+    quizState.resetQuiz();
+    
+    // update score value
+    scoreSpan.textContent = quizState.score;
 
-  // swap the visible screens by toggling the "active" CSS class
-  startScreen.classList.remove("active")
-  quizScreen.classList.add("active")
+    // swap the visible screens by toggling the "active" CSS class
+    startScreen.classList.remove("active");
+    quizScreen.classList.add("active");
 
-  showQuestion();
+    showQuestion();
 }
 
 /**
@@ -97,39 +94,39 @@ function startQuiz() {
  * dynamically attaches event listeners to the new answer buttons.
  */
 function showQuestion() {
-  // Re-enable interaction for the new question
-  quizState.resetClickLock();
-  
-  // Fetch the current question data object from the state manager
-  const currentQuestion = quizState.getCurrentQuestion();
+    // Re-enable interaction for the new question
+    quizState.resetClickLock();
+    
+    // Fetch the current question data object from the state manager
+    const currentQuestion = quizState.getCurrentQuestion();
 
-  // Update UI progression text (e.g., "Question 1")
-  currentQuestionSpan.textContent = quizState.index + 1;
+    // Update UI progression text (e.g., "Question 1")
+    currentQuestionSpan.textContent = quizState.index + 1;
 
-  // Calculate and apply the progress bar width dynamically
-  const progressPercent = quizState.getProgressPercentage();
-  progressBar.style.width = progressPercent + "%";
-  
-  // Inject the question text into the DOM
-  questionText.textContent = currentQuestion.question;
-  
-  // Clear out any old answer buttons from the previous question
-  answersContainer.innerHTML = "";
+    // Calculate and apply the progress bar width dynamically
+    const progressPercent = quizState.getProgressPercentage();
+    progressBar.style.width = progressPercent + "%";
+    
+    // Inject the question text into the DOM
+    questionText.textContent = currentQuestion.question;
+    
+    // Clear out any old answer buttons from the previous question
+    answersContainer.innerHTML = "";
 
-  // Generate fresh answer buttons and append them to the container
-  currentQuestion.answers.forEach(answer => {
-      const button = document.createElement("button");
-      button.textContent = answer.text;
-      button.classList.add("answer-btn");
+    // Generate fresh answer buttons and append them to the container
+    currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.textContent = answer.text;
+        button.classList.add("answer-btn");
 
-      // Note: This converts the boolean to a string ("true" or "false") in the HTML
-      button.dataset.correct = answer.correct;
+        // Note: This converts the boolean to a string ("true" or "false") in the HTML
+        button.dataset.correct = answer.correct;
 
-      // Attach the evaluation logic to the click event
-      button.addEventListener("click", selectAnswer);
+        // Attach the evaluation logic to the click event
+        button.addEventListener("click", selectAnswer);
 
-      answersContainer.appendChild(button);
-  });
+        answersContainer.appendChild(button);
+    });
 }
 
 /**
@@ -137,31 +134,32 @@ function showQuestion() {
  * @param {Event} event - The click event triggered by the answer button.
  */
 function selectAnswer(event) {
-  // Prevent duplicate submissions during the transition delay
-  if (quizState.disabled) return;
-  quizState.disabled = true;
-  
-  const selectedButton = event.target;
-  const isCorrect = selectedButton.dataset.correct === "true";
+    // Prevent duplicate submissions during the transition delay
+    if (quizState.disabled) return;
+    quizState.disabled = true;
+    
+    const selectedButton = event.target;
+    const isCorrect = selectedButton.dataset.correct === "true";
 
-  // Expose correct/incorrect visual states across all available options
-  Array.from(answersContainer.children).forEach((button) => {
-      button.classList.add(button.dataset.correct === "true" ? "correct" : "incorrect");
-  });
+    // Expose correct/incorrect visual states across all available options
+    Array.from(answersContainer.children).forEach((button) => {
+        button.classList.add(button.dataset.correct === "true" ? "correct" : "incorrect");
+    });
 
-  quizState.evaluateAnswer(isCorrect);
-  scoreSpan.textContent = quizState.score;
+    quizState.evaluateAnswer(isCorrect);
+    scoreSpan.textContent = quizState.score;
 
-  // Defer progression to allow the user to process the visual outcome
-  setTimeout(() => {
-      quizState.advanceQuestion();
+    // Defer progression to allow the user to process the visual outcome
+    setTimeout(() => {
+        quizState.advanceQuestion();
 
-      if (quizState.isQuizOver()) {
-          showQuestion();
-      } else {
-          showResults();
-      }
-  }, 1000);
+        // Correct routing: show results if done, else next question
+        if (quizState.isQuizOver()) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }, 1000);
 }
 
 /**
@@ -169,28 +167,28 @@ function selectAnswer(event) {
  * Decouples grading logic from hardcoded values to support dynamic dataset lengths.
  */
 function showResults() {
-  // Swap visibility states to reveal the final results container
-  quizScreen.classList.remove("active");
-  resultScreen.classList.add("active");
+    // Swap visibility states to reveal the final results container
+    quizScreen.classList.remove("active");
+    resultScreen.classList.add("active");
 
-  // Inject the raw score from the state manager
-  finalScoreSpan.textContent = quizState.score;
+    // Inject the raw score from the state manager
+    finalScoreSpan.textContent = quizState.score;
 
-  // Fetch the calculated grade percentage directly from the state manager
-  const percentage = quizState.getGradePercentage();
+    // Fetch the calculated grade percentage directly from the state manager
+    const percentage = quizState.getGradePercentage();
 
-  // Top-down threshold evaluation allows the question pool size to change without breaking the grading tiers
-  if (percentage >= 100) {
-      resultMessage.textContent = "Supurb Score!";
-  } else if (percentage >= 80) {
-      resultMessage.textContent = "Great Job!";
-  } else if (percentage >= 60) {
-      resultMessage.textContent = "Good Effort!";
-  } else if (percentage >= 40) {
-      resultMessage.textContent = "Not bad!";
-  } else {
-      resultMessage.textContent = "Needs Improvement!";
-  }
+    // Top-down threshold evaluation allows the question pool size to change without breaking the grading tiers
+    if (percentage >= 100) {
+        resultMessage.textContent = "Perfect Score!";
+    } else if (percentage >= 80) {
+        resultMessage.textContent = "Great Job!";
+    } else if (percentage >= 60) {
+        resultMessage.textContent = "Good Effort!";
+    } else if (percentage >= 40) {
+        resultMessage.textContent = "Not bad!";
+    } else {
+        resultMessage.textContent = "Needs Improvement!";
+    }
 }
 
 function restartQuiz() {
