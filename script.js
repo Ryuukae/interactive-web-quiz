@@ -132,44 +132,36 @@ function showQuestion() {
   });
 }
 
+/**
+ * Handles answer selection, delegates scoring to state, and triggers UI feedback.
+ * @param {Event} event - The click event triggered by the answer button.
+ */
 function selectAnswer(event) {
-    // state check: If an answer was already clicked, ignore subsequent clicks
-    if (answersDisabled) return;
+  // Prevent duplicate submissions during the transition delay
+  if (quizState.disabled) return;
+  quizState.disabled = true;
+  
+  const selectedButton = event.target;
+  const isCorrect = selectedButton.dataset.correct === "true";
 
-    // Lock in the choice
-    answersDisabled = true;
-    
-    // 'event.target' refers to the exact button the user clicked
-    const selectedButton = event.target;
-    // Check our hidden data attribute to see if they got it right
-    const isCorrect = selectedButton.dataset.correct === "true";
+  // Expose correct/incorrect visual states across all available options
+  Array.from(answersContainer.children).forEach((button) => {
+      button.classList.add(button.dataset.correct === "true" ? "correct" : "incorrect");
+  });
 
-    // Loop through ALL buttons to reveal which ones were right/wrong visually
-    Array.from(answersContainer.children).forEach((button) => {
-        if(button.dataset.correct === "true") {
-            button.classList.add("correct");
-        } else {
-            button.classList.add("incorrect");
-        }
-    });
+  quizState.evaluateAnswer(isCorrect);
+  scoreSpan.textContent = quizState.score;
 
-    if(isCorrect) {
-        score++;
-        scoreSpan.textContent = score;
-    }
+  // Defer progression to allow the user to process the visual outcome
+  setTimeout(() => {
+      quizState.advanceQuestion();
 
-    // Pause for 1 second (1000ms) so the user can see if they were right before moving on
-    setTimeout(() => {
-        currentQuestionIndex++;
-
-        // If we haven't reached the end of the array, show the next question
-        if(currentQuestionIndex < quizQuestions.length) {
-         showQuestion();
-        } else {
-            // Otherwise, wrap it up
-            showResults();
-        }
-    }, 1000);
+      if (quizState.isQuizOver()) {
+          showQuestion();
+      } else {
+          showResults();
+      }
+  }, 1000);
 }
 
 function showResults() {
