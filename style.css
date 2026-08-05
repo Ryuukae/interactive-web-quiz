@@ -10,8 +10,8 @@
 /* ROOT STYLES */
 
 body {
-    /* Soft gray-blue background to reduce eye strain compared to pure white */
-    background: #f3f4f6; 
+    /* Deep midnight base to kill the stark white and create a premium environment */
+    background: #0f172a;
     /* Flexbox is used here on the body to perfectly center the .container 
        both horizontally and vertically on the screen. */
     display: flex;
@@ -22,14 +22,57 @@ body {
     min-height: 100vh;
     padding: 1rem;
     font-family: sans-serif;
+    color: #1e293b;
+    /* Required to keep the background orbs from causing horizontal scrolling */
+    overflow-x: hidden; 
+    position: relative;
+    z-index: 1;
+}
+
+/* Create abstract vibrant orbs behind the glass */
+body::before,
+body::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1; /* Pushes the orbs behind the main container */
+    filter: blur(90px); /* Softens the shapes into abstract gradients */
+}
+
+body::before {
+    width: 400px;
+    height: 400px;
+    background: #6366f1; /* Deep Indigo */
+    /* Pulled inward so it sits directly behind the top-left of the glass */
+    top: 15%;
+    left: 20%;
+}
+
+body::after {
+    width: 350px;
+    height: 350px;
+    background: #d946ef; /* Vibrant Fuchsia/Purple */
+    /* Pulled inward so it sits directly behind the bottom-right of the glass */
+    bottom: 15%;
+    right: 20%;
 }
 
 .container {
-    background: white;
+    /* The Glass Canvas: 25% opaque white */
+    background: rgba(255, 255, 255, 0.25);
+    /* The Frosting: Blurs the orbs sitting behind the card */
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    /* The Edge: Simulates the light catching the rim of the glass */
+    border: 2px solid rgba(255, 255, 255, 0.7);
     /* Rounded corners for a soft, modern card look */
     border-radius: 1.2rem; 
     /* Subtle shadow to lift the container off the background, creating depth. */
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); 
+    box-shadow: 
+        /* A deep outer shadow grounds the card against the background. */
+        0 24px 40px rgba(0, 0, 0, 0.15), 
+        /* The 'inset' white shadow simulates light reflecting off the top inner rim of the glass. */
+        inset 0 1px 0 rgba(255, 255, 255, 0.8); 
     /* Constrains the width on large screens so text doesn't become too wide to read comfortably */
     max-width: 640px; 
     /* Ensures it shrinks on smaller screens */
