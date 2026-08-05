@@ -2,7 +2,7 @@
  * @class QuizDataLoader
  * @description Encapsulates the client-side file reading architecture. 
  * Responsible for intercepting local file uploads, parsing JSON payloads into memory via the native FileReader API, 
- * and handling synchronous UI state updates to reflect file validation status.
+ * validating structural schema integrity, and handling synchronous UI state updates to reflect validation status.
  */
 class QuizDataLoader {
     
@@ -59,7 +59,7 @@ class QuizDataLoader {
         
         // --- UI STATE UPDATE ---
         // Injects the extracted filename into the DOM and triggers the CSS opacity transition
-        this.file_status.textContent = file.name;
+        this.file_status.textContent = `Analyzing ${file.name}...`;
         this.file_status.classList.add("visible");
 
         // --- ASYNCHRONOUS FILE PARSING ---
@@ -74,15 +74,24 @@ class QuizDataLoader {
                 
                 // Attempt to parse the raw string into a structured JavaScript object.
                 // This is a volatile operation that will throw a SyntaxError if the JSON is malformed.
-                this.customData = JSON.parse(rawText);
+                const parsedData = JSON.parse(rawText);
+                
+                // Explicitly validate the dataset schema before trusting the payload in the state machine
+                this.validateSchema(parsedData);
+                
+                // Hydrate internal memory once syntax and schema are both verified
+                this.customData = parsedData;
+                
+                // Provide positive visual feedback indicating the payload is verified and ready
+                this.file_status.textContent = `${file.name} (Ready)`;
                 
                 console.log("Custom JSON successfully parsed and hydrated into memory.", this.customData);
             } catch (error) {
                 // Intercepts parsing errors to gracefully degrade rather than crashing the application thread.
                 console.error("QuizDataLoader Error - Failed to parse payload:", error);
                 
-                // Provides immediate, localized visual error feedback to the user
-                this.file_status.textContent = "Error: Invalid JSON format";
+                // Provides immediate, localized visual error feedback to the user, dynamically displaying the specific failure point
+                this.file_status.textContent = `Error: ${error.message || "Invalid format"}`;
                 
                 // Strictly resets the payload state to prevent the execution of corrupted data
                 this.customData = null; 
@@ -92,6 +101,44 @@ class QuizDataLoader {
         // Executes the file reading operation, instructing the API to decode the buffer as UTF-8 text.
         // This is non-blocking; the onload callback resolves once this thread completes.
         reader.readAsText(file);
+    }
+
+    // ==========================================
+    // --- SCHEMA VALIDATION                  ---
+    // ==========================================
+
+    /**
+     * Validates the structural integrity of the ingested JSON dataset.
+     * Ensures the dataset is a non-empty array containing properly formatted question and answer objects.
+     * 
+     * @param {Array<Object>} data - The parsed JSON data to validate.
+     * @throws {Error} Throws an explicit error if the schema does not match specifications.
+     */
+    validateSchema(data) {
+        // Enforce root type and non-empty bounds
+        if (!Array.isArray(data) || data.length === 0) {
+            throw new Error("File must contain a non-empty array of questions.");
+        }
+
+        // Iterate through each question object to inspect internal properties
+        for (let index = 0; index < data.length; index++) {
+            const item = data[index];
+            
+            // Validate the parent question node
+            if (!item || typeof item.question !== "string" || !Array.isArray(item.answers) || item.answers.length === 0) {
+                throw new Error(`Malformed question structure at entry #${index + 1}.`);
+            }
+
+            // Validate nested answer objects
+            for (let ansIndex = 0; ansIndex < item.answers.length; ansIndex++) {
+                const answer = item.answers[ansIndex];
+                
+                // Ensure strictly typed properties required by the DOM rendering and scoring logic
+                if (!answer || typeof answer.text !== "string" || typeof answer.correct !== "boolean") {
+                    throw new Error(`Malformed answer option at Q${index + 1}, Answer #${ansIndex + 1}.`);
+                }
+            }
+        }
     }
     
     // ==========================================
