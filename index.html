@@ -120,10 +120,12 @@
       SCRIPT DEPENDENCY TREE
       Scripts must be loaded in strict sequential order to prevent reference errors.
       1. QuizState: Establishes the core data models and logic structures.
-      2. UIController: Defines the view rendering and DOM manipulation methods.
-      3. Script: The main execution thread that binds state, UI, and event listeners.
+      2. QuizDataLoader: Handles the intake and processing of custom quiz data.
+      3. UIController: Defines the view rendering and DOM manipulation methods.
+      4. Script: The main execution thread that binds state, UI, and event listeners.
     -->
     <script src="QuizState.js"></script>
+    <script src="QuizDataLoader.js"></script>
     <script src="UIController.js"></script>
     <script src="script.js"></script>
 </body>
