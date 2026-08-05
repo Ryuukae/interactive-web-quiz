@@ -10,8 +10,8 @@
 /* ROOT STYLES */
 
 body {
-    /* Soft gray-blue background to reduce eye strain compared to pure white */
-    background: #f3f4f6; 
+    /* Deep midnight base to kill the stark white and create a premium environment */
+    background: #0f172a;
     /* Flexbox is used here on the body to perfectly center the .container 
        both horizontally and vertically on the screen. */
     display: flex;
@@ -22,14 +22,61 @@ body {
     min-height: 100vh;
     padding: 1rem;
     font-family: sans-serif;
+    color: #1e293b;
+    /* Required to keep the background orbs from causing horizontal scrolling */
+    overflow-x: hidden; 
+    position: relative;
+    z-index: 1;
+}
+
+/* Create abstract vibrant orbs behind the glass */
+body::before,
+body::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1; /* Pushes the orbs behind the main container */
+    filter: blur(90px); /* Softens the shapes into abstract gradients */
+}
+
+body::before {
+    width: 400px;
+    height: 400px;
+    background: #6366f1; /* Deep Indigo */
+    /* Pulled inward so it sits directly behind the top-left of the glass */
+    top: 15%;
+    left: 20%;
+}
+
+body::after {
+    width: 350px;
+    height: 350px;
+    background: #d946ef; /* Vibrant Fuchsia/Purple */
+    /* Pulled inward so it sits directly behind the bottom-right of the glass */
+    bottom: 15%;
+    right: 20%;
 }
 
 .container {
-    background: white;
+    /* The Glass Canvas: 25% opaque white */
+    background: rgba(255, 255, 255, 0.25);
+
+    /* The Frosting: Blurs the orbs sitting behind the card */
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+
+    /* The Edge: Simulates the light catching the rim of the glass */
+    border: 2px solid rgba(255, 255, 255, 0.7);
     /* Rounded corners for a soft, modern card look */
     border-radius: 1.2rem; 
+
     /* Subtle shadow to lift the container off the background, creating depth. */
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); 
+    box-shadow: 
+        /* A deep outer shadow grounds the card against the background. */
+        0 24px 40px rgba(0, 0, 0, 0.15), 
+        /* The 'inset' white shadow simulates light reflecting off the top inner rim of the glass. */
+        inset 0 1px 0 rgba(255, 255, 255, 0.8); 
+
     /* Constrains the width on large screens so text doesn't become too wide to read comfortably */
     max-width: 640px; 
     /* Ensures it shrinks on smaller screens */
@@ -56,42 +103,90 @@ body {
     display: block;
 }
 
-/* START SCREEN */
+/* START SCREEN  */
 
 #start-screen h1 {
-    /* Primary indigo accent color used to draw attention to key elements */
-    color: #4f46e5; 
-    margin-bottom: 24px;
-    /* Large font size to establish visual hierarchy for the main title */
-    font-size: 2.25rem; 
+    /* Pure white for maximum contrast against the dark background */
+    color: #ffffff; 
+    margin-bottom: 16px;
+    font-size: 2.5rem; 
+    font-weight: 700;
+    /* A subtle text shadow acts like a drop-shadow for text, pulling it off the glass */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-#start-btn {
-    margin-top: 25px;
+#start-screen p {
+    /* Light slate gray: bright enough to read, but darker than the H1 to establish hierarchy */
+    color: #e2e8f0; 
+    font-size: 1.1rem;
+    margin-bottom: 32px;
+    line-height: 1.5;
+}
+
+button {
+    /* A rich gradient that mirrors the abstract orbs in the background */
+    background: linear-gradient(135deg, #6366f1 0%, #d946ef 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 32px; 
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    
+    /* Creates a colored outer glow instead of a standard black drop shadow */
+    box-shadow: 0 4px 15px rgba(217, 70, 239, 0.4);
+    
+    /* cubic-bezier creates a slightly bouncy, incredibly smooth animation */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover {
+    /* Lifts the button up towards the user */
+    transform: translateY(-4px);
+    /* Expands and intensifies the glow */
+    box-shadow: 0 8px 25px rgba(217, 70, 239, 0.6);
+    /* Slightly brightens the button colors */
+    filter: brightness(1.1);
+}
+
+button:active {
+    /* The "Squish" effect: pushes the button down and makes it slightly smaller */
+    transform: translateY(1px) scale(0.96);
+    /* Pulls the shadow in tight to simulate the button being pressed into the glass */
+    box-shadow: 0 2px 8px rgba(217, 70, 239, 0.3);
 }
 
 /* QUIZ SCREEN */
+
 .quiz-header {
     margin-bottom: 2.5rem;
 }
 
 #question-text {
     /* Dark gray instead of pure black for better contrast that is gentler on the eyes */
-    color: #1e293b; 
-    font-size: 1.4rem;
-    margin-bottom: 1.2rem;
-    /* line-height of 1.5 creates breathing room between lines for longer questions, 
+    color: #e2e8f0;
+    font-size: 1.6rem; /* Increased from the default size for better readability */
+    font-weight: 600; /* Bolder font to give the question more weight */
+    margin-bottom: 24px;
+    /* creates breathing room between lines for longer questions, 
        improving readability. */
-    line-height: 1.5; 
+    line-height: 1.4; 
+    /* Soft shadow to lift it off the glass */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .quiz-info {
     display: flex;
     /* Pushes the question counter (e.g., 1/10) and score to opposite ends of the header */
     justify-content: space-between;
-    /* Muted slate tone to indicate this is secondary information */
-    color: #64748b; 
-    margin-bottom: 12px;
+    /* Muted blue slate tone to indicate this is secondary information */
+    color: #a7d5ff;
+    font-size: 1.05rem;
+    font-style: italic;
+    font-weight: 500;
+    margin-bottom: 24px;
 }
 
 .answers-container {
@@ -107,14 +202,22 @@ body {
 .answer-btn {
     /* Light slate gray background with a subtle border provides a clickable appearance */
     background-color: #f8fafc; 
-    color: #334155;
+    color: #e2e8f0;
     border: 2px solid #cbd5e1;
-    /* Matches the container's soft look with rounded edges */
-    border-radius: 12px; 
-    /* Comfortable padding creates a large enough tap target */
-    padding: 1.1rem; 
     cursor: pointer;
     text-align: left;
+    font-weight: 600;
+    /* A tight, dark text shadow ensures the text remains highly readable 
+       even if it sits over a very bright part of the gradient background */
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+
+    /* Matches the container's soft look with rounded edges */
+    border-radius: 12px; 
+
+    /* Adds a little extra spacing between the text and button edges */
+    padding: 16px 24px; 
+    margin-bottom: 12px;
+
     /* smooths out the hover effect and correct/incorrect state changes 
        so they fade in over 0.3 seconds instead of snapping instantly. */
     transition: all 0.3s ease;
@@ -125,7 +228,6 @@ body {
     border-color: #94a3b8;
 }
 
-/* Dynamic classes added via JS when an answer is selected */
 .answer-btn.correct {
     /* Green background and border clearly indicate a correct selection */
     background-color: #ecfdf5;
@@ -136,54 +238,157 @@ body {
 .answer-btn.incorrect {
     /* Red background and border clearly indicate an incorrect selection */
     background-color: #fef2f2;
-    border-color: #fca5a5;
-    color: #ef4444;
+    border-color: rgb(235, 121, 121);
+    color: #e02525;
 }
 
 /* Progress bar track (the empty background) */
 .progress-bar {
+    /* A dark, semi-transparent track to blend with the glass container */
+    background: rgba(255, 255, 255, 0.08);
+    
     /* Thick enough to be easily visible, but not so thick it distracts from the content */
     height: 12px; 
-    background-color: #e2e8f0;
-    border-radius: 6px; 
-    overflow: hidden; /* Keeps the colored fill strictly inside the rounded pill shape */
+    border-radius: 12px; 
     margin-top: 24px;
+
+    overflow: hidden; /* Keeps the colored fill strictly inside the rounded pill shape */
+    
+    /* An inset shadow simulates depth, making it look like a groove */
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* The actual colored progress indicator */
 .progress {
+    /* Expands the peripheral color stops (20% and 80%) to substantially widen 
+       the blue center streak, allowing the #7eb6e6 core to stretch and bleed 
+       naturally across a larger percentage of the bar. */
+    background: linear-gradient(90deg, #ffffff 20%, #7eb6e6 50%, #ffffff 80%);
+    
+    /* Applies a 3x scale to the background footprint to accommodate the linear translation */
+    background-size: 300% 100%;
+    
+    border-radius: 12px;
     height: 100%;
-    /* Indigo color matches the primary accent color to tie the design together */
-    background-color: #4f46e5; 
-    width: 0%; /* This width gets updated by JS as the quiz progresses */
-    /* Animates the bar growing longer smoothly rather than jumping instantly */
-    transition: width 0.3s ease;
+    
+    /* Dynamically updated via JavaScript DOM manipulation */
+    width: 0%; 
+    
+    /* Utilizes a custom cubic-bezier timing function for organic, non-linear width transitions */
+    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Binds the streak and luminescence animation over a 4-second cycle */
+    animation: progress-streak-pulse 4s infinite ease-in-out;
+}
+
+/* --- ANIMATION: STREAK & LUMINESCENCE --- */
+/* Orchestrates a dual-property animation loop: a linear translation of the background 
+   gradient (simulating a light streak) paired with synchronized box-shadow and 
+   brightness modulation (pulsing glow). */
+   @keyframes progress-streak-pulse {
+    0% {
+        /* 0%: Initial baseline state. */
+        
+        /* Offsets the 300% background-size gradient to the far left (100% position), 
+           staging the highlight streak outside the visible clipping bounds. */
+        background-position: 100% 0; 
+        
+        /* Establishes a minimal 4px blur radius for ambient separation against the container. */
+        box-shadow: 0 0 4px rgba(126, 182, 230, 0.4);
+        
+        /* Initializes standard rendering brightness. */
+        filter: brightness(1);
+    }
+    50% {
+        /* 50%: The Impact. */
+        
+        /* The streak has now translated to the right edge (0% position) over a full 2 seconds. 
+           The shadow and brightness remain at baseline, completing the movement BEFORE the flash begins. */
+        background-position: 0% 0; 
+        
+        /* Retains the baseline 4px ambient shadow, ensuring the element maintains static depth 
+           and prevents any premature blooming during the linear translation phase. */
+        box-shadow: 0 0 4px rgba(126, 182, 230, 0.4);
+        
+        filter: brightness(1);
+    }
+    75% {
+        /* 75%: Animation apogee / Visual peak (High-Intensity Surge). */
+        
+        /* The streak holds its position at the right bounds while the luminescence scales exponentially. */
+        background-position: 0% 0; 
+        
+        box-shadow: 
+            /* Layer 1 (Core): 16px blur with a 2px positive spread radius forces the high-alpha 
+               rim light to physically expand beyond the element boundaries. */
+            0 0 16px 2px rgba(126, 182, 230, 0.95), 
+            
+            /* Layer 2 (Halo): 40px blur with a 4px spread at 0.7 alpha produces a massive 
+               ambient bleed, flooding the surrounding 3D space with high-intensity diffuse light. */
+            0 0 40px 4px rgba(126, 182, 230, 0.7);
+            
+        /* Scales luminance by 40% synchronized with the streak's stasis, 
+           synthesizing a heavily amplified composite bloom effect. */
+        filter: brightness(1.4);
+    }
+    100% {
+        /* 100%: Resolution and reset. */
+        
+        /* The streak still holds position while the flash smoothly interpolates back to baseline. */
+        background-position: 0% 0; 
+        
+        /* Returns box-shadow spread/opacity and filter brightness to initial baseline values, 
+           guaranteeing a seamless reset before the loop cycles. */
+        box-shadow: 0 0 4px rgba(126, 182, 230, 0.4);
+        filter: brightness(1);
+    }
 }
 
 /* RESULT SCREEN */
+
 #result-screen h1 {
-    color: #4f46e5;
+/* Matches the Start Screen H1 perfectly for visual consistency */
+    color: #ffffff;
     margin-bottom: 32px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .result-info {
-    /* Light slate background visually separates the score summary from the rest of the page */
-    background-color: #f1f5f9; 
+    /* Creates a dark, recessed glass panel effect */
+    background: rgba(0, 0, 0, 0.2); 
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 32px;
+    font-style: italic;
+    
+    /* An inset shadow creates the illusion that this box is carved into the glass */
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .result-info p {
-    font-size: 1.2rem;
-    color: #334155;
+    font-size: 1.25rem;
+    /* Bright off-white to stand out clearly against the dark recessed background */
+    color: #a7d5ff;
     margin-bottom: 1.2rem;
+    font-weight: 500;
 }
 
 #result-message {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #4f46e5;
+    font-size: 1.6rem;
+    font-weight: 700;
+    
+    /* Creates a beautiful, vibrant gradient text effect for the final message */
+    background: linear-gradient(135deg, #a7d5ff 0%, #d946ef 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    /* Fallback color just in case a very old browser doesn't support gradient text */
+    color: #d946ef; 
+    
+    /* text-shadow doesn't work well with background-clip, so we use a drop-shadow filter 
+       to create a soft, rewarding glow around the words */
+    filter: drop-shadow(0 4px 12px rgba(217, 70, 239, 0.4));
 }
 
 button {
