@@ -60,19 +60,23 @@ body::after {
 .container {
     /* The Glass Canvas: 25% opaque white */
     background: rgba(255, 255, 255, 0.25);
+
     /* The Frosting: Blurs the orbs sitting behind the card */
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
+
     /* The Edge: Simulates the light catching the rim of the glass */
     border: 2px solid rgba(255, 255, 255, 0.7);
     /* Rounded corners for a soft, modern card look */
     border-radius: 1.2rem; 
+
     /* Subtle shadow to lift the container off the background, creating depth. */
     box-shadow: 
         /* A deep outer shadow grounds the card against the background. */
         0 24px 40px rgba(0, 0, 0, 0.15), 
         /* The 'inset' white shadow simulates light reflecting off the top inner rim of the glass. */
         inset 0 1px 0 rgba(255, 255, 255, 0.8); 
+        
     /* Constrains the width on large screens so text doesn't become too wide to read comfortably */
     max-width: 640px; 
     /* Ensures it shrinks on smaller screens */
@@ -154,7 +158,6 @@ button:active {
     box-shadow: 0 2px 8px rgba(217, 70, 239, 0.3);
 }
 
-
 /* QUIZ SCREEN */
 
 .quiz-header {
@@ -163,21 +166,26 @@ button:active {
 
 #question-text {
     /* Dark gray instead of pure black for better contrast that is gentler on the eyes */
-    color: #1e293b; 
-    font-size: 1.4rem;
-    margin-bottom: 1.2rem;
-    /* line-height of 1.5 creates breathing room between lines for longer questions, 
+    color: #e2e8f0;
+    font-size: 1.6rem; /* Increased from the default size for better readability */
+    font-weight: 600; /* Bolder font to give the question more weight */
+    margin-bottom: 24px;
+    /* creates breathing room between lines for longer questions, 
        improving readability. */
-    line-height: 1.5; 
+    line-height: 1.4; 
+    /* Soft shadow to lift it off the glass */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .quiz-info {
     display: flex;
     /* Pushes the question counter (e.g., 1/10) and score to opposite ends of the header */
     justify-content: space-between;
-    /* Muted slate tone to indicate this is secondary information */
-    color: #64748b; 
-    margin-bottom: 12px;
+    /* Muted blue slate tone to indicate this is secondary information */
+    color: #a7d5ff;
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin-bottom: 24px;
 }
 
 .answers-container {
@@ -193,14 +201,22 @@ button:active {
 .answer-btn {
     /* Light slate gray background with a subtle border provides a clickable appearance */
     background-color: #f8fafc; 
-    color: #334155;
+    color: #e2e8f0;
     border: 2px solid #cbd5e1;
-    /* Matches the container's soft look with rounded edges */
-    border-radius: 12px; 
-    /* Comfortable padding creates a large enough tap target */
-    padding: 1.1rem; 
     cursor: pointer;
     text-align: left;
+    font-weight: 600;
+    /* A tight, dark text shadow ensures the text remains highly readable 
+       even if it sits over a very bright part of the gradient background */
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+
+    /* Matches the container's soft look with rounded edges */
+    border-radius: 12px; 
+
+    /* Adds a little extra spacing between the text and button edges */
+    padding: 16px 24px; 
+    margin-bottom: 12px;
+
     /* smooths out the hover effect and correct/incorrect state changes 
        so they fade in over 0.3 seconds instead of snapping instantly. */
     transition: all 0.3s ease;
@@ -211,7 +227,6 @@ button:active {
     border-color: #94a3b8;
 }
 
-/* Dynamic classes added via JS when an answer is selected */
 .answer-btn.correct {
     /* Green background and border clearly indicate a correct selection */
     background-color: #ecfdf5;
@@ -222,8 +237,8 @@ button:active {
 .answer-btn.incorrect {
     /* Red background and border clearly indicate an incorrect selection */
     background-color: #fef2f2;
-    border-color: #fca5a5;
-    color: #ef4444;
+    border-color: rgb(235, 121, 121);
+    color: #e02525;
 }
 
 /* Progress bar track (the empty background) */
