@@ -51,7 +51,7 @@ class QuizState {
   getProgressPercentage() {
     // Computes derived state on the fly rather than caching it as a property.
     // This strictly prevents state desynchronization bugs where the index updates but a cached percentage does not.
-    return (this.index / this.questionData.length) * 100;
+    return ((this.index + 1) / this.questionData.length) * 100;
   }
 
   /**
