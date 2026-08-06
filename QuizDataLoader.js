@@ -58,6 +58,9 @@ class QuizDataLoader {
         if (!file) return;
         
         // --- UI STATE UPDATE ---
+        // Resets any previous error states before processing a new file
+        this.file_status.classList.remove("error");
+        
         // Injects the extracted filename into the DOM and triggers the CSS opacity transition
         this.file_status.textContent = `Analyzing ${file.name}...`;
         this.file_status.classList.add("visible");
@@ -90,7 +93,9 @@ class QuizDataLoader {
                 // Intercepts parsing errors to gracefully degrade rather than crashing the application thread.
                 console.error("QuizDataLoader Error - Failed to parse payload:", error);
                 
-                // Provides immediate, localized visual error feedback to the user, dynamically displaying the specific failure point
+                // --- UI STATE UPDATE (ERROR) ---
+                // Applies the red error class and provides localized visual error feedback to the user
+                this.file_status.classList.add("error");
                 this.file_status.textContent = `Error: ${error.message || "Invalid format"}`;
                 
                 // Strictly resets the payload state to prevent the execution of corrupted data
