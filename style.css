@@ -421,7 +421,7 @@ button:active {
 }
 
 #result-message {
-    font-size: 1.6rem;
+    font-size: 2.5rem;
     font-weight: 700;
     
     /* Orchestrates a high-vibrancy linear gradient mapped directly to the text rendering path via WebKit masking. */
