@@ -137,10 +137,16 @@
                 <div id="result-message">Results</div>
             </div>
             
-            <!-- Reset trigger: Clears State instances and returns to the initial DOM view -->
-            <button id="restart-btn">Restart Quiz</button>
-        </div> 
-    </div>
+            <!-- Implements the action-stack class, similar to the start screen -->
+            <div class="action-stack">
+                <!-- RESET TRIGGER -->
+                <button id="restart-btn">Restart Quiz</button>
+                <!-- SECONDARY FILE UPLOAD ARCHITECTURE -->
+                <input type="file" id="result-file-input" accept=".json" hidden>
+                <label for="result-file-input" class="secondary-btn">Upload New JSON</label>
+                <span id="result-file-status" class="file-status"></span>
+            </div> 
+        </div>
     
     <!-- 
       SCRIPT DEPENDENCY TREE
