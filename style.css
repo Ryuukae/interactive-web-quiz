@@ -114,7 +114,7 @@ padding: 2.5rem;
 #start-screen h1 {
     /* Forces a pure white fill to achieve maximum accessible contrast against the dark gradient background. */
     color: #ffffff; 
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     font-size: 2.5rem; 
     font-weight: 700;
     
@@ -122,11 +122,20 @@ padding: 2.5rem;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-#start-screen p {
-    /* Utilizes a muted slate gray color grade to establish a clear visual hierarchy below the primary H1 header. */
+#start-screen-p1 {
+    /* Utilizes a semi-muted slate gray color grade to establish a clear visual hierarchy below the primary H1 header. */
+    color: #e2e8f0c7; 
+    margin-bottom: 24px;
+    line-height: 1.5;
+    font-size: 18px;
+    font-style: italic;
+}
+
+#start-screen-p2 {
+    /* Utilizes a lighter slate gray color grade so that it does not compete with H1 yet draws more attention than p1 */
     color: #e2e8f0; 
     font-size: 1.1rem;
-    margin-bottom: 32px;
+    margin-bottom: 38px;
     line-height: 1.5;
 }
 
