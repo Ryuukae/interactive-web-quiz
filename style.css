@@ -53,7 +53,7 @@ body {
 /* ========================================= */
 
 .container {
-padding: 2.5rem;
+    padding: 1.5rem;
     text-align: center;
 
     /* Establishes the primary glassmorphism canvas using a 40% smoked glass fill. */
@@ -387,7 +387,7 @@ button:active {
 }
 
 /* ========================================= */
-/* --- TERMINAL RESULT SCREEN            --- */
+/* --- RESULT SCREEN                     --- */
 /* ========================================= */
 
 #result-screen h1 {
@@ -395,6 +395,7 @@ button:active {
     color: #ffffff;
     margin-bottom: 32px;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    font-size: 3rem;
 }
 
 .result-info {
