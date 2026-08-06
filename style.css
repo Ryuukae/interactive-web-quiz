@@ -116,8 +116,7 @@ padding: 2.5rem;
     color: #ffffff; 
     margin-bottom: 12px;
     font-size: 2.5rem; 
-    font-weight: 700;
-    
+    font-weight: 700;    
     /* Applies a localized drop-shadow filter to the typography, physically separating the text layer from the frosted background. */
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
@@ -139,10 +138,14 @@ padding: 2.5rem;
     line-height: 1.5;
 }
 
+/* ========================================= */
+/* --- ROOT BUTTON STYLING           --- */
+/* ========================================= */
+
 button {
     /* Injects a vibrant linear-gradient background coordinate to mirror the ambient environmental lighting setup. */
     background: linear-gradient(135deg, #6366f1 0%, #d946ef 100%);
-    color: #ffffff;
+    color: #e2e8f0;
     border: none;
     border-radius: 12px;
     padding: 14px 32px; 
@@ -152,7 +155,11 @@ button {
     cursor: pointer;
     
     /* Synthesizes a localized, color-matched outer bloom effect, rejecting standard achromatic drop shadows. */
-    box-shadow: 0 4px 15px rgba(217, 70, 239, 0.4);
+    /* NOTE: Opacity (alpha channel) lowered to 0.15 to kill the harsh neon glare. */
+    box-shadow: 0 4px 15px rgba(217, 70, 239, 0.15);
+    
+    /* Dims the overall rendering brightness to reduce intensity without washing out the color saturation. */
+    filter: brightness(0.85);
     
     /* Binds hardware-accelerated transitions utilizing a custom cubic-bezier curve for organic, non-linear physical interpolation. */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -163,7 +170,7 @@ button:hover {
     transform: translateY(-4px);
     
     /* Amplifies the box-shadow spread and opacity, resulting in a high-intensity luminescent bloom. */
-    box-shadow: 0 8px 25px rgba(217, 70, 239, 0.6);
+    box-shadow: 0 8px 25px rgba(217, 70, 239, 0.4);
     
     /* Overdrives the rendering brightness by 10% to provide immediate visual interactive feedback. */
     filter: brightness(1.1);
@@ -174,7 +181,10 @@ button:active {
     transform: translateY(1px) scale(0.96);
     
     /* Constricts the shadow blur and spread radii, visually recessing the element into the Z-axis plane. */
-    box-shadow: 0 2px 8px rgba(217, 70, 239, 0.3);
+    box-shadow: 0 2px 8px rgba(217, 70, 239, 0.15);
+    
+    /* Keeps the active state slightly dimmed to reinforce tactile feedback. */
+    filter: brightness(0.95);
 }
 
 /* ========================================= */
@@ -426,10 +436,9 @@ button:active {
     filter: drop-shadow(0 4px 12px rgba(217, 70, 239, 0.4));
 }
 
-/* Defines an alternative fallback baseline button configuration for unclassed interactive components. */
-button {
+
+#restart-btn {
     background-color: #4f46e5;
-    color: white;
     border: none;
     border-radius: 12px;
     padding: 14px 28px; 
@@ -437,7 +446,7 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+#restart-btn:hover {
     /* Triggers a discrete hex color shift during hover state to yield immediate interactive feedback. */
     background-color: #4338ca; 
 }
