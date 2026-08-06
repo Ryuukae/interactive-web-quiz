@@ -8,12 +8,12 @@ class QuizState {
    * Initializes the quiz state machine and hydrates it with the provided dataset.
    * Note: Invokes an immediate O(n * m) randomization of the question pool on instantiation.
    * 
-   * @param {Array<Object>} questions - The parsed array of question objects to ingest.
+   * @param {Array<Object>} questionData - The parsed array of question objects to ingest.
    */
-  constructor(questions) {
+  constructor(questionData) {
     // Ingest the raw data layer and immediately randomize it. 
     // This creates our unpredictable baseline for the user session.
-    this.questionData = this.randomizeDeck(questions);
+    this.questionData = this.randomizeDeck(questionData);
     
     // Initialize mutable state trackers
     this.score = 0;

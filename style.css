@@ -1,49 +1,67 @@
-/* Basic Reset */
+/* ========================================= */
+/* --- GLOBAL RESET & BOX MODEL          --- */
+/* ========================================= */
+
 * {
     margin: 0;
     padding: 0;
-    /* Forces padding and borders to be included in the element's total width and height, 
-       preventing unexpected layout breaking when padding is added. */
+    
+    /* Enforces a uniform box model across all elements, incorporating padding and borders 
+       into the computed dimensions to prevent layout recalculation errors. */
     box-sizing: border-box;
 }
 
-/* ROOT STYLES */
+/* ========================================= */
+/* --- ROOT & VIEWPORT ARCHITECTURE      --- */
+/* ========================================= */
 
 body {
-    /* Deep midnight base to kill the stark white and create a premium environment */
+    /* Establishes a deep midnight base layer to eliminate stark contrast and render a premium, low-light environment. */
     background: #0f172a;
-    /* Flexbox is used here on the body to perfectly center the .container 
-       both horizontally and vertically on the screen. */
+    
+    /* Utilizes a flexible box model on the viewport root to orchestrate absolute center alignment for the main application container. */
     display: flex;
-    justify-content: center; /* Centers horizontally */
-    align-items: center;     /* Centers vertically */
-        /* 100vh ensures the body takes up at least 100% of the viewport height, 
-       giving the flexbox vertical space to center the container within. */
+    
+    /* Aligns child elements along the primary cross-axis (horizontal centering). */
+    justify-content: center; 
+    
+    /* Aligns child elements along the main flex axis (vertical centering). */
+    align-items: center;     
+    
+    /* Binds the minimum height to 100% of the viewport, guaranteeing sufficient vertical axis space for accurate flexbox centering calculations. */
     min-height: 100vh;
     padding: 1rem;
     font-family: sans-serif;
     color: #1e293b;
-    /* Required to keep the background orbs from causing horizontal scrolling */
+    
+    /* Suppresses horizontal overflow rendering, preventing viewport scrolling caused by off-axis decorative ambient elements. */
     overflow-x: hidden; 
     position: relative;
     z-index: 1;
 }
 
-/* Create abstract vibrant orbs behind the glass */
+/* Injects absolute-positioned pseudo-elements to render abstract ambient lighting nodes behind the primary glass container. */
 body::before,
 body::after {
     content: '';
     position: absolute;
     border-radius: 50%;
-    z-index: -1; /* Pushes the orbs behind the main container */
-    filter: blur(90px); /* Softens the shapes into abstract gradients */
+    
+    /* Demotes the render order, pushing the lighting nodes directly behind the main container layer. */
+    z-index: -1; 
+    
+    /* Applies a heavy filter algorithm to soften the vector shapes into abstract, diffuse gradients. */
+    filter: blur(90px); 
 }
 
 body::before {
     width: 400px;
     height: 400px;
-    background: #6366f1; /* Deep Indigo */
-    /* Pulled inward so it sits directly behind the top-left of the glass */
+    
+    /* Configures the primary ambient node to a deep indigo spectrum. */
+    background: #6366f1; 
+    
+    /* Anchors the node relative to the top-left quadrant of the viewport coordinate system. */
     top: 15%;
     left: 20%;
 }
@@ -51,72 +69,88 @@ body::before {
 body::after {
     width: 350px;
     height: 350px;
-    background: #d946ef; /* Vibrant Fuchsia/Purple */
-    /* Pulled inward so it sits directly behind the bottom-right of the glass */
+    
+    /* Configures the secondary ambient node to a vibrant fuchsia spectrum. */
+    background: #d946ef; 
+    
+    /* Anchors the node relative to the bottom-right quadrant of the viewport coordinate system. */
     bottom: 15%;
     right: 20%;
 }
 
+/* ========================================= */
+/* --- PRIMARY UI GLASS CONTAINER        --- */
+/* ========================================= */
+
 .container {
-    /* The Glass Canvas: 25% opaque white */
+    /* Establishes the primary glassmorphism canvas using a 25% alpha channel white fill. */
     background: rgba(255, 255, 255, 0.25);
 
-    /* The Frosting: Blurs the orbs sitting behind the card */
+    /* Applies hardware-accelerated backdrop filtering to heavily blur the underlying ambient pseudo-elements, synthesizing frosted glass. */
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
 
-    /* The Edge: Simulates the light catching the rim of the glass */
+    /* Constructs a high-opacity specular edge border to simulate directional lighting catching the physical rim of the glass pane. */
     border: 2px solid rgba(255, 255, 255, 0.7);
-    /* Rounded corners for a soft, modern card look */
+    
+    /* Softens the geometric structure with proportional border radii for a modern UI aesthetic. */
     border-radius: 1.2rem; 
 
-    /* Subtle shadow to lift the container off the background, creating depth. */
+    /* Synthesizes a composite 3D shadow system to separate the UI layer from the background environment. */
     box-shadow: 
-        /* A deep outer shadow grounds the card against the background. */
+        /* Layer 1 (Outer): A deep, diffused drop shadow grounding the Z-index layer. */
         0 24px 40px rgba(0, 0, 0, 0.15), 
-        /* The 'inset' white shadow simulates light reflecting off the top inner rim of the glass. */
+        
+        /* Layer 2 (Inner): A sharp inset shadow acting as a localized specular reflection on the top inner bevel. */
         inset 0 1px 0 rgba(255, 255, 255, 0.8); 
 
-    /* Constrains the width on large screens so text doesn't become too wide to read comfortably */
+    /* Imposes a strict maximum layout width to preserve typographic line-length readability standards on wide viewports. */
     max-width: 640px; 
-    /* Ensures it shrinks on smaller screens */
+    
+    /* Permits fluid width scaling on restricted horizontal viewports (mobile devices). */
     width: 100%; 
-    /* overflow: hidden ensures that any child elements (like headers or progress bars) 
-       don't spill outside the rounded corners of this container. */
+    
+    /* Clips all overflowing child nodes, ensuring internal components rigidly respect the established border-radius geometry. */
     overflow: hidden;
     position: relative;
 }
 
-/* SCREENS */
+/* ========================================= */
+/* --- STATE MANAGEMENT & SCREENS        --- */
+/* ========================================= */
 
-/* This acts as a Single Page Application (SPA) setup. 
-   All screens are hidden by default... */
+/* Establishes the foundational Single Page Application (SPA) routing layer. 
+   All discrete UI views are stripped from the render tree by default. */
 .screen {
     display: none;
-    /* Generous padding gives the content breathing room away from the edges */
+    
+    /* Enforces generous internal padding to maintain spatial hierarchy and prevent content collision with the glass perimeter. */
     padding: 2.5rem; 
     text-align: center;
 }
 
-/* ...until JavaScript adds the "active" class to the current screen. */
+/* State class toggled via JavaScript DOM controller to explicitly inject the active view back into the visual render tree. */
 .screen.active {
     display: block;
 }
 
-/* START SCREEN  */
+/* ========================================= */
+/* --- START SCREEN COMPONENTS           --- */
+/* ========================================= */
 
 #start-screen h1 {
-    /* Pure white for maximum contrast against the dark background */
+    /* Forces a pure white fill to achieve maximum accessible contrast against the dark gradient background. */
     color: #ffffff; 
     margin-bottom: 16px;
     font-size: 2.5rem; 
     font-weight: 700;
-    /* A subtle text shadow acts like a drop-shadow for text, pulling it off the glass */
+    
+    /* Applies a localized drop-shadow filter to the typography, physically separating the text layer from the frosted background. */
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 #start-screen p {
-    /* Light slate gray: bright enough to read, but darker than the H1 to establish hierarchy */
+    /* Utilizes a muted slate gray color grade to establish a clear visual hierarchy below the primary H1 header. */
     color: #e2e8f0; 
     font-size: 1.1rem;
     margin-bottom: 32px;
@@ -124,7 +158,7 @@ body::after {
 }
 
 button {
-    /* A rich gradient that mirrors the abstract orbs in the background */
+    /* Injects a vibrant linear-gradient background coordinate to mirror the ambient environmental lighting setup. */
     background: linear-gradient(135deg, #6366f1 0%, #d946ef 100%);
     color: #ffffff;
     border: none;
@@ -135,53 +169,65 @@ button {
     font-family: inherit;
     cursor: pointer;
     
-    /* Creates a colored outer glow instead of a standard black drop shadow */
+    /* Synthesizes a localized, color-matched outer bloom effect, rejecting standard achromatic drop shadows. */
     box-shadow: 0 4px 15px rgba(217, 70, 239, 0.4);
     
-    /* cubic-bezier creates a slightly bouncy, incredibly smooth animation */
+    /* Binds hardware-accelerated transitions utilizing a custom cubic-bezier curve for organic, non-linear physical interpolation. */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button:hover {
-    /* Lifts the button up towards the user */
+    /* Translates the element upward on the Y-axis to simulate physical proximity during user targeting. */
     transform: translateY(-4px);
-    /* Expands and intensifies the glow */
+    
+    /* Amplifies the box-shadow spread and opacity, resulting in a high-intensity luminescent bloom. */
     box-shadow: 0 8px 25px rgba(217, 70, 239, 0.6);
-    /* Slightly brightens the button colors */
+    
+    /* Overdrives the rendering brightness by 10% to provide immediate visual interactive feedback. */
     filter: brightness(1.1);
 }
 
 button:active {
-    /* The "Squish" effect: pushes the button down and makes it slightly smaller */
+    /* Executes a dual-transform (Y-axis translation + uniform scale down) to simulate physical tactile depression. */
     transform: translateY(1px) scale(0.96);
-    /* Pulls the shadow in tight to simulate the button being pressed into the glass */
+    
+    /* Constricts the shadow blur and spread radii, visually recessing the element into the Z-axis plane. */
     box-shadow: 0 2px 8px rgba(217, 70, 239, 0.3);
 }
 
-/* QUIZ SCREEN */
+/* ========================================= */
+/* --- QUIZ SCREEN SPECIFICS             --- */
+/* ========================================= */
 
 .quiz-header {
     margin-bottom: 2.5rem;
 }
 
 #question-text {
-    /* Dark gray instead of pure black for better contrast that is gentler on the eyes */
+    /* Utilizes an off-white slate tone rather than pure white to reduce ocular strain while preserving strict contrast ratios. */
     color: #e2e8f0;
-    font-size: 1.6rem; /* Increased from the default size for better readability */
-    font-weight: 600; /* Bolder font to give the question more weight */
+    
+    /* Scales the typographic size upward to prioritize semantic readability for the core question payload. */
+    font-size: 1.6rem; 
+    
+    /* Increases the font-weight to establish the question node as the primary visual anchor in the viewport. */
+    font-weight: 600; 
     margin-bottom: 24px;
-    /* creates breathing room between lines for longer questions, 
-       improving readability. */
+    
+    /* Expands the line-height multiplier to ensure multi-line question strings maintain comfortable vertical rhythm. */
     line-height: 1.4; 
-    /* Soft shadow to lift it off the glass */
+    
+    /* Injects a subtle text-shadow parameter to provide depth separation from the underlying glass canvas. */
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .quiz-info {
     display: flex;
-    /* Pushes the question counter (e.g., 1/10) and score to opposite ends of the header */
+    
+    /* Forces a space-between flex alignment, docking the metadata nodes to the absolute edges of the parent container. */
     justify-content: space-between;
-    /* Muted blue slate tone to indicate this is secondary information */
+    
+    /* Applies a desaturated blue-slate color grade, visually demoting the metadata to a secondary hierarchical level. */
     color: #a7d5ff;
     font-size: 1.05rem;
     font-style: italic;
@@ -191,35 +237,35 @@ button:active {
 
 .answers-container {
     display: flex;
-    /* Stacks the answer buttons vertically instead of side-by-side */
+    
+    /* Enforces a vertical column flex-direction, stacking the interactive answer nodes chronologically on the Y-axis. */
     flex-direction: column; 
-    /* gap applies clean, even spacing between the flex items (buttons) 
-       without needing to add margins to individual buttons. */
+    
+    /* Implements a structural flex gap property to govern consistent node spacing, eliminating the need for brittle margin declarations. */
     gap: 12px; 
     margin-bottom: 28px;
 }
 
 .answer-btn {
-    /* Light slate gray background with a subtle border provides a clickable appearance */
+    /* Establishes a localized neutral base fill and subtle stroke to architect a distinctly interactive bounding box. */
     background-color: #f8fafc; 
     color: #e2e8f0;
     border: 2px solid #cbd5e1;
     cursor: pointer;
     text-align: left;
     font-weight: 600;
-    /* A tight, dark text shadow ensures the text remains highly readable 
-       even if it sits over a very bright part of the gradient background */
+    
+    /* Applies a highly constricted, dark text-shadow layer to guarantee typographic legibility regardless of underlying background shifts. */
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 
-    /* Matches the container's soft look with rounded edges */
+    /* Mirrors the global container styling by applying uniform border radii to the interactive nodes. */
     border-radius: 12px; 
 
-    /* Adds a little extra spacing between the text and button edges */
+    /* Injects specific padding values to ensure adequate touch-target sizing and typographic breathing room. */
     padding: 16px 24px; 
     margin-bottom: 12px;
 
-    /* smooths out the hover effect and correct/incorrect state changes 
-       so they fade in over 0.3 seconds instead of snapping instantly. */
+    /* Binds universal hardware transitions to ensure DOM state modifications interpolate smoothly rather than resolving instantaneously. */
     transition: all 0.3s ease;
 }
 
@@ -229,59 +275,63 @@ button:active {
 }
 
 .answer-btn.correct {
-    /* Green background and border clearly indicate a correct selection */
+    /* State class appended via JS logic controller. Overrides baseline styles with positive (green) feedback indicators. */
     background-color: #ecfdf5;
     border-color: #6ee7b7;
     color: #10b981;
 }
 
 .answer-btn.incorrect {
-    /* Red background and border clearly indicate an incorrect selection */
+    /* State class appended via JS logic controller. Overrides baseline styles with negative (red) feedback indicators. */
     background-color: #fef2f2;
     border-color: rgb(235, 121, 121);
     color: #e02525;
 }
 
-/* Progress bar track (the empty background) */
+/* ========================================= */
+/* --- PROGRESS BAR ANIMATIONS           --- */
+/* ========================================= */
+
+/* Defines the structural empty track for the progress indicator. */
 .progress-bar {
-    /* A dark, semi-transparent track to blend with the glass container */
+    /* Establishes a dark, low-opacity base fill to seamlessly blend the track into the parent glass container. */
     background: rgba(255, 255, 255, 0.08);
     
-    /* Thick enough to be easily visible, but not so thick it distracts from the content */
+    /* Sets a balanced 12px vertical height footprint, ensuring visibility without overriding primary UI components. */
     height: 12px; 
     border-radius: 12px; 
     margin-top: 24px;
 
-    overflow: hidden; /* Keeps the colored fill strictly inside the rounded pill shape */
+    /* Confines the animated internal colored fill strictly within the rounded boundaries of the parent track. */
+    overflow: hidden; 
     
-    /* An inset shadow simulates depth, making it look like a groove */
+    /* Injects an inset box-shadow to synthesize physical depth, rendering the track as a recessed groove. */
     box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
-/* The actual colored progress indicator */
+/* Defines the internal dynamic progress indicator node. */
 .progress {
     /* Expands the peripheral color stops (20% and 80%) to substantially widen 
        the blue center streak, allowing the #7eb6e6 core to stretch and bleed 
        naturally across a larger percentage of the bar. */
     background: linear-gradient(90deg, #ffffff 20%, #7eb6e6 50%, #ffffff 80%);
     
-    /* Applies a 3x scale to the background footprint to accommodate the linear translation */
+    /* Applies a 3x scale to the background footprint to accommodate the linear translation. */
     background-size: 300% 100%;
     
     border-radius: 12px;
     height: 100%;
     
-    /* Dynamically updated via JavaScript DOM manipulation */
+    /* Core structural property dynamically updated via JavaScript DOM manipulation. */
     width: 0%; 
     
-    /* Utilizes a custom cubic-bezier timing function for organic, non-linear width transitions */
+    /* Utilizes a custom cubic-bezier timing function for organic, non-linear width transitions. */
     transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* Binds the streak and luminescence animation over a 4-second cycle */
+    /* Binds the streak and luminescence keyframe animation to a continuous 4-second cycle. */
     animation: progress-streak-pulse 4s infinite ease-in-out;
 }
 
-/* --- ANIMATION: STREAK & LUMINESCENCE --- */
 /* Orchestrates a dual-property animation loop: a linear translation of the background 
    gradient (simulating a light streak) paired with synchronized box-shadow and 
    brightness modulation (pulsing glow). */
@@ -344,17 +394,19 @@ button:active {
     }
 }
 
-/* RESULT SCREEN */
+/* ========================================= */
+/* --- TERMINAL RESULT SCREEN            --- */
+/* ========================================= */
 
 #result-screen h1 {
-/* Matches the Start Screen H1 perfectly for visual consistency */
+    /* Inherits and mirrors the primary typographic styling of the initialization screen to enforce strict visual consistency. */
     color: #ffffff;
     margin-bottom: 32px;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .result-info {
-    /* Creates a dark, recessed glass panel effect */
+    /* Constructs a heavily darkened, semi-transparent panel layer to visually recess this component from the main glass plane. */
     background: rgba(0, 0, 0, 0.2); 
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
@@ -362,13 +414,14 @@ button:active {
     margin-bottom: 32px;
     font-style: italic;
     
-    /* An inset shadow creates the illusion that this box is carved into the glass */
+    /* Applies an aggressive inset shadow vector to synthesize the optical illusion of physical carving into the DOM node. */
     box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .result-info p {
     font-size: 1.25rem;
-    /* Bright off-white to stand out clearly against the dark recessed background */
+    
+    /* Re-establishes high-contrast legibility against the localized darkened parent container. */
     color: #a7d5ff;
     margin-bottom: 1.2rem;
     font-weight: 500;
@@ -378,19 +431,20 @@ button:active {
     font-size: 1.6rem;
     font-weight: 700;
     
-    /* Creates a beautiful, vibrant gradient text effect for the final message */
+    /* Orchestrates a high-vibrancy linear gradient mapped directly to the text rendering path via WebKit masking. */
     background: linear-gradient(135deg, #a7d5ff 0%, #d946ef 100%);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     
-    /* Fallback color just in case a very old browser doesn't support gradient text */
+    /* Defines a static, high-visibility fallback color for deprecated rendering engines lacking background-clip support. */
     color: #d946ef; 
     
-    /* text-shadow doesn't work well with background-clip, so we use a drop-shadow filter 
-       to create a soft, rewarding glow around the words */
+    /* Bypasses text-shadow clipping conflicts by utilizing a global drop-shadow CSS filter, rendering a localized glowing aura. */
     filter: drop-shadow(0 4px 12px rgba(217, 70, 239, 0.4));
 }
 
+/* Defines an alternative fallback baseline button configuration for unclassed interactive components. */
 button {
     background-color: #4f46e5;
     color: white;
@@ -402,13 +456,243 @@ button {
 }
 
 button:hover {
-    /* Darkens slightly on hover to provide visual feedback that the element is interactive */
+    /* Triggers a discrete hex color shift during hover state to yield immediate interactive feedback. */
     background-color: #4338ca; 
 }
 
-/* RESPONSIVE DESIGN */
-/* These rules only apply when the screen width is 540px or smaller (mobile devices). 
-   They slightly shrink paddings and fonts so the app doesn't feel cramped on small screens. */
+/* ========================================= */
+/* --- START SCREEN ACTION STACK         --- */
+/* ========================================= */
+
+/* Orchestrates the layout of the primary and secondary Start Screen actions. */
+.action-stack {
+    /* Utilizes a flexible box model to easily manage vertical stacking */
+    display: flex;
+    
+    /* Forces child elements to stack vertically in a column rather than side-by-side */
+    flex-direction: column;
+    
+    /* Centers all child elements along the cross-axis (horizontally in this column layout) */
+    align-items: center;
+    
+    /* Enforces a strict 16px structural gap between the buttons, negating the need for margins */
+    gap: 16px; 
+    
+    /* Pushes the entire stack down from the subtitle text above it */
+    margin-top: 32px;
+}
+
+/* ========================================= */
+/* --- SECONDARY OUTLINE BUTTON          --- */
+/* ========================================= */
+
+/* Styles the `<label>` element to visually behave as a secondary button. 
+   Designed with lower visual weight to avoid competing with the primary CTA. */
+.secondary-btn {
+    /* Removes standard background fills to allow the glassmorphism container to show through */
+    background: transparent;
+    
+    /* Applies a minimal 1px border using a 30% alpha channel for a subtle, recessed look */
+    border: 1px solid rgba(167, 213, 255, 0.3);
+    
+    /* Matches the application's secondary accent color for typographic consistency */
+    color: #a7d5ff;
+    
+    /* Defines a comfortable, accessible hit area for mouse and touch inputs */
+    padding: 10px 24px;
+    border-radius: 8px;
+    
+    /* Slightly scaled-down typography to reinforce its secondary hierarchy */
+    font-size: 0.95rem;
+    font-weight: 500;
+    
+    /* Forces the cursor to a pointer, signaling interactivity on a non-button element */
+    cursor: pointer;
+    
+    /* Hardware-accelerated transitions for smooth interpolation of state changes. 
+       We specifically target only the properties that change to optimize rendering performance. */
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+/* Hover state: Enhances visibility when the user targets the element */
+.secondary-btn:hover {
+    /* Injects a very faint 10% alpha fill to simulate a soft lighting bloom */
+    background: rgba(167, 213, 255, 0.1);
+    
+    /* Increases the border opacity to 60% for stronger edge definition */
+    border-color: rgba(167, 213, 255, 0.6);
+}
+
+/* Active state: Triggers during the physical mouse-down or screen tap */
+.secondary-btn:active {
+    /* Executes a 3% physical scale down to provide immediate, tactile micro-interaction feedback */
+    transform: scale(0.97);
+}
+
+/* ========================================= */
+/* --- FILE STATUS TEXT                  --- */
+/* ========================================= */
+
+/* Provides a discreet readout area to dynamically display the parsed JSON filename */
+.file-status {
+    font-size: 0.85rem;
+    color: #a7d5ff;
+    font-style: italic;
+    margin-top: -8px;
+    
+    /* Hidden by default using opacity rather than `display: none` to preserve 
+       layout structure and allow for smooth CSS transition fading. */
+    opacity: 0; 
+    
+    /* Animates the opacity over 300ms for a smooth fade-in effect */
+    transition: opacity 0.3s ease;
+}
+
+/* State class appended via JavaScript DOM manipulation when a file is successfully loaded */
+.file-status.visible {
+    /* Brings the text to 80% opacity, keeping it slightly muted compared to the buttons */
+    opacity: 0.8;
+}
+
+/* State class appended dynamically when schema validation fails */
+.file-status.error {
+    color: #e02525;
+    font-weight: 600;
+}
+
+/* ========================================= */
+/* --- FORMATTING ACCORDION              --- */
+/* ========================================= */
+
+.format-guide {
+    /* Establishes the default CLOSED state footprint (tighter width to match the visual weight of the upload button) */
+    width: 100%;
+    max-width: 185px; 
+    
+    /* Uses a negative margin to pull the accordion up, overriding the invisible flex-gap 
+       created by the hidden file-status text node above it */
+    margin-top: -8px; 
+    
+    text-align: left;
+
+    
+    /* Synthesizes a recessed, glassmorphic panel layer */
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(167, 213, 255, 0.15);
+    border-radius: 12px;
+    
+    /* Hides content overflow during the native browser expansion */
+    overflow: hidden;
+
+    /* Binds a hardware-accelerated transition to smoothly animate the horizontal expansion */
+    transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dynamically modifies the architectural bounds when the native DOM state is 'open' */
+.format-guide[open] {
+    /* Expands the footprint to accommodate the internal JSON code block */
+    max-width: 480px; 
+}
+
+.format-guide summary {
+    /* Reduced padding and typographic scale to lower the visual weight of the trigger */
+    padding: 8px 16px;
+    color: #a7d5ff;
+    font-size: 0.70rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-style: italic;
+    
+    /* Resets the default HTML marker styling to allow for custom cross-browser indicators */
+    list-style: none; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Purges the default WebKit disclosure triangle in Chrome/Safari */
+.format-guide summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Synthesizes a custom expandable indicator (+ sign) */
+.format-guide summary::after {
+    content: '+';
+    /* Scaled down the indicator to match the reduced summary text */
+    font-size: .70rem;
+    font-weight: 300;
+    transition: transform 0.3s ease;
+}
+
+/* Rotates the indicator into an (x) when the native 'open' attribute is applied */
+.format-guide[open] summary::after {
+    transform: rotate(45deg);
+}
+
+.guide-content {
+    /* Enforces internal spatial hierarchy without inflating the parent container */
+    padding: 0 16px 16px 16px;
+    color: #e2e8f0;
+}
+
+#start-screen .guide-content p {
+    /* Appending the #start-screen ID guarantees this rule overrides the global paragraph style */
+    font-size: 0.85rem;
+    font-weight: 300; /* Lowers the visual weight of the text */
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.guide-content pre {
+    /* Styles the `<pre>` tag as a distinct, recessed terminal emulator window */
+    background: rgba(0, 0, 0, 0.4);
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+    border: 1px inset rgba(255, 255, 255, 0.05);
+}
+
+.guide-content code {
+    /* Enforces a monospace font stack for code alignment and syntax aesthetics */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    
+    /* Utilizes a low-saturation mint green to simulate syntax highlighting */
+    color: #6ee7b7; 
+}
+
+.download-link {
+    /* Converts to a block element to allow margin positioning */
+    display: block;
+    
+    /* Constricts the interactive click area tightly to the text itself */
+    width: fit-content;
+    
+    /* Automatically calculates the remaining space on the left, pushing the link entirely to the right */
+    margin-left: auto;
+    
+    /* Re-mapped to the established secondary UI slate-blue tone */
+    color: #a7d5ff;
+    text-decoration: none;
+    font-style: italic;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.download-link:hover {
+    /* Brightens the blue slightly to provide immediate interactive feedback */
+    color: #e0f2fe;
+    text-decoration: underline;
+}
+
+/* ========================================= */
+/* --- RESPONSIVE MEDIA QUERIES          --- */
+/* ========================================= */
+
+/* Implements a discrete viewport breakpoint at 540px, dynamically recalculating internal 
+   paddings and typographic scales to optimize spatial density for mobile hardware rendering. */
 @media (max-width: 540px) {
 
     .screen {

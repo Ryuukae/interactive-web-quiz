@@ -1,59 +1,163 @@
-<!DOCTYPE html lang="en">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <!-- Character encoding explicitly set to support a wide range of text characters -->
     <meta charset="utf-8">
+    
+    <!-- Viewport configuration critical for responsive design and mobile hardware scaling -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Interactive Quiz</title>
+    
+    <!-- External stylesheet linkage (CSSOM rendering pipeline) -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- root container -->
+    <!-- 
+      ROOT CONTAINER
+      Acts as the primary wrapper for the application layout. Confines the UI bounds
+      and provides a stable backdrop for the glassmorphism rendering.
+    -->
     <div class="container">
 
-        <!-- start screen -->
+        <!-- ========================================== -->
+        <!-- STAGE 1: START SCREEN (INITIAL STATE)      -->
+        <!-- ========================================== -->
+        <!-- The 'active' class dictates visibility upon initial DOM load. -->
         <div class="screen active" id="start-screen">
             <h1>Quiz Time!</h1>
             <p>Test your knowledge with these fun questions</p>
-            <button id="start-btn">Start Quiz</button>
+            
+            <!-- 
+              ACTION STACK
+              A structural flex-container designed to group primary and secondary 
+              actions while enforcing consistent vertical rhythm.
+            -->
+            <div class="action-stack">
+                
+                <!-- Primary Call to Action (CTA): Initializes the default quiz flow -->
+                <button id="start-btn">Start Quiz</button>
+                
+                <!-- 
+                  FILE UPLOAD ARCHITECTURE
+                  The native <input type="file"> is hidden from the UI because default browser 
+                  rendering cannot be consistently styled across platforms. 
+                  We restrict the payload to JSON format via the 'accept' attribute.
+                -->
+                <input type="file" id="custom-file-input" accept=".json" hidden>
+                
+                <!-- 
+                  PROXY TRIGGER
+                  The <label> element is programmatically linked to the hidden input via the 'for' attribute. 
+                  Clicking this styled label seamlessly delegates the click event to the native file browser.
+                -->
+                <label for="custom-file-input" class="secondary-btn">Upload Custom JSON</label>
+                
+                <!-- Dedicated output node for JS to inject the parsed file name, providing user feedback -->
+                <span id="file-name-display" class="file-status"></span>
+
+                <!-- 
+                   INSTRUCTIONAL ACCORDION
+                   A native, zero-JS collapsible node to provide formatting documentation
+                   and template access without cluttering the primary viewport.
+                -->
+                <details class="format-guide">
+                    <summary>How do I format my JSON?</summary>
+                    <div class="guide-content">
+                        <p>Your custom file must be an array of question objects containing exactly these properties:</p>
+                        
+                        <!-- Preformatted code block to preserve whitespace and indentation -->
+                        <pre><code>[
+  {
+    "question": "Your question here?",
+    "answers": [
+      { "text": "Correct option", "correct": true },
+      { "text": "Wrong option", "correct": false }
+    ]
+  }
+]</code></pre>
+                        
+                        <!-- Native download attribute forces the browser to download rather than navigate -->
+                        <a href="template.json" download class="download-link">Download Template</a>
+                    </div>
+                </details>
+            </div>
         </div>
         
-        <!-- quiz screen -->
+        <!-- ========================================== -->
+        <!-- STAGE 2: QUIZ SCREEN (ACTIVE STATE)        -->
+        <!-- ========================================== -->
         <div class="screen" id="quiz-screen">
             
-            <!-- quiz header -->
+            <!-- QUIZ HEADER: Houses the dynamic question text and real-time metadata -->
             <div class="quiz-header">
+                <!-- Text node updated dynamically by QuizState progression -->
                 <h2 id="question-text">Question goes here...</h2>
             
-                <!-- quiz details -->
+                <!-- Metadata container: Tracks chronological progress and current scoring -->
                 <div class="quiz-info">
                     <p>Question <span id="current-question">#</span> of <span id="totalQuestionsSpan">#</span></p>
                     <p>Score: <span id="score">#</span></p>
                 </div>
             </div>
 
-            <!-- quiz answers -->
+            <!-- 
+              ANSWERS CONTAINER
+              Acts as an empty DOM injection target. UIController.js will dynamically 
+              construct and append interactive <button> elements here based on the JSON payload.
+            -->
             <div id="answers-container" class="answers-container">
-                <!-- Answer buttons will be populated using js -->
+                <!-- Answer buttons will be populated using JS -->
             </div>
 
-            <!-- quiz progress bar -->
+            <!-- 
+              PROGRESS BAR
+              Visual indicator of quiz completion. The inner '.progress' div's width is 
+              manipulated via inline CSS transitions handled in script.js.
+            -->
             <div class="progress-bar">
                 <div id="progress" class="progress"></div>
             </div>
         </div>
 
-        <!-- results screen -->
+        <!-- ========================================== -->
+        <!-- STAGE 3: RESULTS SCREEN (TERMINAL STATE)   -->
+        <!-- ========================================== -->
         <div id="result-screen" class="screen">
             <h1>Quiz Results</h1>
-            <!-- results content -->
+            
+            <!-- 
+              RESULTS CONTENT
+              A recessed UI component displaying the final computed metrics.
+            -->
             <div class="result-info">
                 <p>You scored <span id="final-score">#</span> out of <span id="max-score">#</span></p>
+                
+                <!-- Target node for dynamic performance feedback strings -->
                 <div id="result-message">Results</div>
             </div>
-            <button id="restart-btn">Restart Quiz</button>
-        </div> 
-    </div>
+            
+            <!-- Implements the action-stack class, similar to the start screen -->
+            <div class="action-stack">
+                <!-- RESET TRIGGER -->
+                <button id="restart-btn">Restart Quiz</button>
+                <!-- SECONDARY FILE UPLOAD ARCHITECTURE -->
+                <input type="file" id="result-file-input" accept=".json" hidden>
+                <label for="result-file-input" class="secondary-btn">Upload New JSON</label>
+                <span id="result-file-status" class="file-status"></span>
+            </div> 
+        </div>
+    
+    <!-- 
+      SCRIPT DEPENDENCY TREE
+      Scripts must be loaded in strict sequential order to prevent reference errors.
+      1. QuizState: Establishes the core data models and logic structures.
+      2. QuizDataLoader: Handles the intake and processing of custom quiz data.
+      3. UIController: Defines the view rendering and DOM manipulation methods.
+      4. Script: The main execution thread that binds state, UI, and event listeners.
+    -->
     <script src="QuizState.js"></script>
+    <script src="QuizDataLoader.js"></script>
     <script src="UIController.js"></script>
     <script src="script.js"></script>
 </body>

@@ -2,10 +2,15 @@
 *
 
 # Only allow certain files
+!.gitignore
+
+!questions.json
+!template.json
+
 !index.html
 !style.css
+
 !script.js
-!questions.json
-!.gitignore
 !QuizState.js
 !UIController.js
+!QuizDataLoader.js

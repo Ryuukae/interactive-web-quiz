@@ -1,0 +1,27 @@
+[
+    {
+      "question": "<question_1>",
+      "answers": [
+        { "text": "<correct_answer>", "correct": true },
+        { "text": "<incorrect_answer>", "correct": false }
+      ]
+    },
+    {
+      "question": "<question_2>",
+      "answers": [
+        { "text": "<correct_answer>", "correct": true },
+        { "text": "<incorrect_answer>", "correct": false },
+        { "text": "<incorrect_answer>", "correct": false },
+        { "text": "<incorrect_answer>", "correct": false }
+      ]
+    },
+    {
+      "question": "Which protocol is used for secure web browsing?",
+      "answers": [
+        { "text": "FTP", "correct": false },
+        { "text": "HTTP", "correct": false },
+        { "text": "HTTPS", "correct": true },
+        { "text": "SMTP", "correct": false }
+      ]
+    }
+  ]
