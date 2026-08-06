@@ -538,6 +538,7 @@ button:hover {
     font-size: 0.85rem;
     color: #a7d5ff;
     font-style: italic;
+    margin-top: -8px;
     
     /* Hidden by default using opacity rather than `display: none` to preserve 
        layout structure and allow for smooth CSS transition fading. */
@@ -551,6 +552,133 @@ button:hover {
 .file-status.visible {
     /* Brings the text to 80% opacity, keeping it slightly muted compared to the buttons */
     opacity: 0.8;
+}
+
+/* ========================================= */
+/* --- FORMATTING ACCORDION              --- */
+/* ========================================= */
+
+.format-guide {
+    /* Establishes the default CLOSED state footprint (tighter width to match the visual weight of the upload button) */
+    width: 100%;
+    max-width: 185px; 
+    
+    /* Uses a negative margin to pull the accordion up, overriding the invisible flex-gap 
+       created by the hidden file-status text node above it */
+    margin-top: -8px; 
+    
+    text-align: left;
+
+    
+    /* Synthesizes a recessed, glassmorphic panel layer */
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(167, 213, 255, 0.15);
+    border-radius: 12px;
+    
+    /* Hides content overflow during the native browser expansion */
+    overflow: hidden;
+
+    /* Binds a hardware-accelerated transition to smoothly animate the horizontal expansion */
+    transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dynamically modifies the architectural bounds when the native DOM state is 'open' */
+.format-guide[open] {
+    /* Expands the footprint to accommodate the internal JSON code block */
+    max-width: 480px; 
+}
+
+.format-guide summary {
+    /* Reduced padding and typographic scale to lower the visual weight of the trigger */
+    padding: 8px 16px;
+    color: #a7d5ff;
+    font-size: 0.70rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-style: italic;
+    
+    /* Resets the default HTML marker styling to allow for custom cross-browser indicators */
+    list-style: none; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Purges the default WebKit disclosure triangle in Chrome/Safari */
+.format-guide summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Synthesizes a custom expandable indicator (+ sign) */
+.format-guide summary::after {
+    content: '+';
+    /* Scaled down the indicator to match the reduced summary text */
+    font-size: .70rem;
+    font-weight: 300;
+    transition: transform 0.3s ease;
+}
+
+/* Rotates the indicator into an (x) when the native 'open' attribute is applied */
+.format-guide[open] summary::after {
+    transform: rotate(45deg);
+}
+
+.guide-content {
+    /* Enforces internal spatial hierarchy without inflating the parent container */
+    padding: 0 16px 16px 16px;
+    color: #e2e8f0;
+}
+
+#start-screen .guide-content p {
+    /* Appending the #start-screen ID guarantees this rule overrides the global paragraph style */
+    font-size: 0.85rem;
+    font-weight: 300; /* Lowers the visual weight of the text */
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.guide-content pre {
+    /* Styles the `<pre>` tag as a distinct, recessed terminal emulator window */
+    background: rgba(0, 0, 0, 0.4);
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+    border: 1px inset rgba(255, 255, 255, 0.05);
+}
+
+.guide-content code {
+    /* Enforces a monospace font stack for code alignment and syntax aesthetics */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    
+    /* Utilizes a low-saturation mint green to simulate syntax highlighting */
+    color: #6ee7b7; 
+}
+
+.download-link {
+    /* Converts to a block element to allow margin positioning */
+    display: block;
+    
+    /* Constricts the interactive click area tightly to the text itself */
+    width: fit-content;
+    
+    /* Automatically calculates the remaining space on the left, pushing the link entirely to the right */
+    margin-left: auto;
+    
+    /* Re-mapped to the established secondary UI slate-blue tone */
+    color: #a7d5ff;
+    text-decoration: none;
+    font-style: italic;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.download-link:hover {
+    /* Brightens the blue slightly to provide immediate interactive feedback */
+    color: #e0f2fe;
+    text-decoration: underline;
 }
 
 /* ========================================= */
