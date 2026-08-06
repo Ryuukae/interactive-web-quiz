@@ -1,5 +1,5 @@
 /* ========================================= */
-/* --- GLOBAL RESET & BOX MODEL          --- */
+/* --- GLOBAL RESET & TYPOGRAPHY         --- */
 /* ========================================= */
 
 * {
@@ -15,6 +15,11 @@
 /* --- ROOT & VIEWPORT ARCHITECTURE      --- */
 /* ========================================= */
 
+html {
+    max-width: 100vw;
+    overflow-x: hidden; /* Viewport Stabilization */
+}
+
 body {
     /* Establishes a deep midnight base layer to eliminate stark contrast and render a premium, low-light environment. */
     background: #0f172a;
@@ -26,12 +31,15 @@ body {
     justify-content: center; 
     
     /* Aligns child elements along the main flex axis (vertical centering). */
-    align-items: center;     
+    align-items: center;  
+    
+    /* Binds the minimum height of the viewport to 100vw. */
+    max-width: 100vw;
     
     /* Binds the minimum height to 100% of the viewport, guaranteeing sufficient vertical axis space for accurate flexbox centering calculations. */
     min-height: 100vh;
     padding: 1rem;
-    font-family: sans-serif;
+
     color: #1e293b;
     
     /* Suppresses horizontal overflow rendering, preventing viewport scrolling caused by off-axis decorative ambient elements. */
@@ -40,61 +48,26 @@ body {
     z-index: 1;
 }
 
-/* Injects absolute-positioned pseudo-elements to render abstract ambient lighting nodes behind the primary glass container. */
-body::before,
-body::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    
-    /* Demotes the render order, pushing the lighting nodes directly behind the main container layer. */
-    z-index: -1; 
-    
-    /* Applies a heavy filter algorithm to soften the vector shapes into abstract, diffuse gradients. */
-    filter: blur(90px); 
-}
-
-body::before {
-    width: 400px;
-    height: 400px;
-    
-    /* Configures the primary ambient node to a deep indigo spectrum. */
-    background: #6366f1; 
-    
-    /* Anchors the node relative to the top-left quadrant of the viewport coordinate system. */
-    top: 15%;
-    left: 20%;
-}
-
-body::after {
-    width: 350px;
-    height: 350px;
-    
-    /* Configures the secondary ambient node to a vibrant fuchsia spectrum. */
-    background: #d946ef; 
-    
-    /* Anchors the node relative to the bottom-right quadrant of the viewport coordinate system. */
-    bottom: 15%;
-    right: 20%;
-}
-
 /* ========================================= */
 /* --- PRIMARY UI GLASS CONTAINER        --- */
 /* ========================================= */
 
 .container {
-    /* Establishes the primary glassmorphism canvas using a 25% alpha channel white fill. */
-    background: rgba(255, 255, 255, 0.25);
+padding: 2.5rem;
+    text-align: center;
+
+    /* Establishes the primary glassmorphism canvas using a 40% smoked glass fill. */
+    background: rgba(20, 20, 20, 0.4);
 
     /* Applies hardware-accelerated backdrop filtering to heavily blur the underlying ambient pseudo-elements, synthesizing frosted glass. */
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 
     /* Constructs a high-opacity specular edge border to simulate directional lighting catching the physical rim of the glass pane. */
-    border: 2px solid rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     
     /* Softens the geometric structure with proportional border radii for a modern UI aesthetic. */
-    border-radius: 1.2rem; 
+    border-radius: 1rem; 
 
     /* Synthesizes a composite 3D shadow system to separate the UI layer from the background environment. */
     box-shadow: 
@@ -105,10 +78,10 @@ body::after {
         inset 0 1px 0 rgba(255, 255, 255, 0.8); 
 
     /* Imposes a strict maximum layout width to preserve typographic line-length readability standards on wide viewports. */
-    max-width: 640px; 
+    max-width: 600px; 
     
     /* Permits fluid width scaling on restricted horizontal viewports (mobile devices). */
-    width: 100%; 
+    width: 90%; 
     
     /* Clips all overflowing child nodes, ensuring internal components rigidly respect the established border-radius geometry. */
     overflow: hidden;
@@ -685,6 +658,10 @@ button:hover {
     /* Brightens the blue slightly to provide immediate interactive feedback */
     color: #e0f2fe;
     text-decoration: underline;
+}
+
+#accordion_btn {
+    font-family: sans-serif;
 }
 
 /* ========================================= */
