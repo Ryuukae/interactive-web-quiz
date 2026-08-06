@@ -204,22 +204,9 @@ class UIController {
         // Pull the raw integer score
         this.finalScoreSpan.textContent = this.quizState.score;
         
-        // Pull the computed percentage to determine the tier
+        // Pull the computed percentage and display it
         const percentage = this.quizState.getGradePercentage();
-
-        // Top-down threshold evaluation. This pattern decouples the grading logic from 
-        // the total question count, allowing the dataset size to change without breaking the tier system.
-        if (percentage >= 100) {
-            this.resultMessage.textContent = "Perfect Score!";
-        } else if (percentage >= 80) {
-            this.resultMessage.textContent = "Great Job!";
-        } else if (percentage >= 60) {
-            this.resultMessage.textContent = "Good Effort!";
-        } else if (percentage >= 40) {
-            this.resultMessage.textContent = "Not bad!";
-        } else {
-            this.resultMessage.textContent = "Needs Improvement!";
-        }
+        this.resultMessage.textContent = percentage + "%"
     }
 
     /**

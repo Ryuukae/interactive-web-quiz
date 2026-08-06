@@ -8,6 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Interactive Quiz</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <!-- External stylesheet linkage (CSSOM rendering pipeline) -->
     <link rel="stylesheet" href="style.css">
@@ -26,7 +31,8 @@
         <!-- The 'active' class dictates visibility upon initial DOM load. -->
         <div class="screen active" id="start-screen">
             <h1>Quiz Time!</h1>
-            <p>Test your knowledge with these fun questions</p>
+            <p id="start-screen-p1">"A flexible evaluation platform built for deploying customized assessments in any environment."</p>
+            <p id="start-screen-p2">Provide a formatted question set to initialize the assessment</p>
             
             <!-- 
               ACTION STACK
@@ -62,7 +68,7 @@
                    and template access without cluttering the primary viewport.
                 -->
                 <details class="format-guide">
-                    <summary>How do I format my JSON?</summary>
+                    <summary id="accordion_btn">How do I format my JSON?</summary>
                     <div class="guide-content">
                         <p>Your custom file must be an array of question objects containing exactly these properties:</p>
                         

@@ -1,5 +1,5 @@
 /* ========================================= */
-/* --- GLOBAL RESET & BOX MODEL          --- */
+/* --- GLOBAL RESET & TYPOGRAPHY         --- */
 /* ========================================= */
 
 * {
@@ -15,6 +15,11 @@
 /* --- ROOT & VIEWPORT ARCHITECTURE      --- */
 /* ========================================= */
 
+html {
+    max-width: 100vw;
+    overflow-x: hidden; /* Viewport Stabilization */
+}
+
 body {
     /* Establishes a deep midnight base layer to eliminate stark contrast and render a premium, low-light environment. */
     background: #0f172a;
@@ -26,12 +31,15 @@ body {
     justify-content: center; 
     
     /* Aligns child elements along the main flex axis (vertical centering). */
-    align-items: center;     
+    align-items: center;  
+    
+    /* Binds the minimum height of the viewport to 100vw. */
+    max-width: 100vw;
     
     /* Binds the minimum height to 100% of the viewport, guaranteeing sufficient vertical axis space for accurate flexbox centering calculations. */
     min-height: 100vh;
     padding: 1rem;
-    font-family: sans-serif;
+
     color: #1e293b;
     
     /* Suppresses horizontal overflow rendering, preventing viewport scrolling caused by off-axis decorative ambient elements. */
@@ -40,61 +48,26 @@ body {
     z-index: 1;
 }
 
-/* Injects absolute-positioned pseudo-elements to render abstract ambient lighting nodes behind the primary glass container. */
-body::before,
-body::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    
-    /* Demotes the render order, pushing the lighting nodes directly behind the main container layer. */
-    z-index: -1; 
-    
-    /* Applies a heavy filter algorithm to soften the vector shapes into abstract, diffuse gradients. */
-    filter: blur(90px); 
-}
-
-body::before {
-    width: 400px;
-    height: 400px;
-    
-    /* Configures the primary ambient node to a deep indigo spectrum. */
-    background: #6366f1; 
-    
-    /* Anchors the node relative to the top-left quadrant of the viewport coordinate system. */
-    top: 15%;
-    left: 20%;
-}
-
-body::after {
-    width: 350px;
-    height: 350px;
-    
-    /* Configures the secondary ambient node to a vibrant fuchsia spectrum. */
-    background: #d946ef; 
-    
-    /* Anchors the node relative to the bottom-right quadrant of the viewport coordinate system. */
-    bottom: 15%;
-    right: 20%;
-}
-
 /* ========================================= */
 /* --- PRIMARY UI GLASS CONTAINER        --- */
 /* ========================================= */
 
 .container {
-    /* Establishes the primary glassmorphism canvas using a 25% alpha channel white fill. */
-    background: rgba(255, 255, 255, 0.25);
+    padding: 1.5rem;
+    text-align: center;
+
+    /* Establishes the primary glassmorphism canvas using a 40% smoked glass fill. */
+    background: rgba(20, 20, 20, 0.4);
 
     /* Applies hardware-accelerated backdrop filtering to heavily blur the underlying ambient pseudo-elements, synthesizing frosted glass. */
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 
     /* Constructs a high-opacity specular edge border to simulate directional lighting catching the physical rim of the glass pane. */
-    border: 2px solid rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     
     /* Softens the geometric structure with proportional border radii for a modern UI aesthetic. */
-    border-radius: 1.2rem; 
+    border-radius: 1rem; 
 
     /* Synthesizes a composite 3D shadow system to separate the UI layer from the background environment. */
     box-shadow: 
@@ -105,10 +78,10 @@ body::after {
         inset 0 1px 0 rgba(255, 255, 255, 0.8); 
 
     /* Imposes a strict maximum layout width to preserve typographic line-length readability standards on wide viewports. */
-    max-width: 640px; 
+    max-width: 600px; 
     
     /* Permits fluid width scaling on restricted horizontal viewports (mobile devices). */
-    width: 100%; 
+    width: 90%; 
     
     /* Clips all overflowing child nodes, ensuring internal components rigidly respect the established border-radius geometry. */
     overflow: hidden;
@@ -139,28 +112,53 @@ body::after {
 /* ========================================= */
 
 #start-screen h1 {
-    /* Forces a pure white fill to achieve maximum accessible contrast against the dark gradient background. */
     color: #ffffff; 
-    margin-bottom: 16px;
-    font-size: 2.5rem; 
-    font-weight: 700;
-    
-    /* Applies a localized drop-shadow filter to the typography, physically separating the text layer from the frosted background. */
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    font-size: 3.4rem; 
+    font-weight: 800;
+    letter-spacing: -0.02em; 
+    margin-bottom: 8px;
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
 }
 
-#start-screen p {
-    /* Utilizes a muted slate gray color grade to establish a clear visual hierarchy below the primary H1 header. */
-    color: #e2e8f0; 
-    font-size: 1.1rem;
-    margin-bottom: 32px;
+#start-screen-p1 {
+    font-size: 1.05rem;
+    font-style: italic;
+    font-weight: 300; 
+    color: rgba(255, 255, 255, 0.65); 
     line-height: 1.5;
+    padding: 0 16px;
+
+    
+    /* Adjusted to exactly 32px to equalize the spatial gap above the badge */
+    margin-bottom: 28px; 
 }
+
+#start-screen-p2 {
+    display: inline-block;
+    background: rgba(167, 213, 255, 0.08);
+    border: 1px solid rgba(167, 213, 255, 0.2);
+    border-radius: 24px;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em; 
+    color: #a7d5ff;
+    
+    /* Adds a 16px bottom margin. Combined with the action-stack's 16px top margin, 
+       this creates a perfect 32px gap below, suspending the badge directly in the center. */
+    margin: 0 auto 16px auto; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ========================================= */
+/* --- ROOT BUTTON STYLING           --- */
+/* ========================================= */
 
 button {
     /* Injects a vibrant linear-gradient background coordinate to mirror the ambient environmental lighting setup. */
     background: linear-gradient(135deg, #6366f1 0%, #d946ef 100%);
-    color: #ffffff;
+    color: #e2e8f0;
     border: none;
     border-radius: 12px;
     padding: 14px 32px; 
@@ -170,7 +168,11 @@ button {
     cursor: pointer;
     
     /* Synthesizes a localized, color-matched outer bloom effect, rejecting standard achromatic drop shadows. */
-    box-shadow: 0 4px 15px rgba(217, 70, 239, 0.4);
+    /* NOTE: Opacity (alpha channel) lowered to 0.15 to kill the harsh neon glare. */
+    box-shadow: 0 4px 15px rgba(217, 70, 239, 0.15);
+    
+    /* Dims the overall rendering brightness to reduce intensity without washing out the color saturation. */
+    filter: brightness(0.85);
     
     /* Binds hardware-accelerated transitions utilizing a custom cubic-bezier curve for organic, non-linear physical interpolation. */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -181,7 +183,7 @@ button:hover {
     transform: translateY(-4px);
     
     /* Amplifies the box-shadow spread and opacity, resulting in a high-intensity luminescent bloom. */
-    box-shadow: 0 8px 25px rgba(217, 70, 239, 0.6);
+    box-shadow: 0 8px 25px rgba(217, 70, 239, 0.4);
     
     /* Overdrives the rendering brightness by 10% to provide immediate visual interactive feedback. */
     filter: brightness(1.1);
@@ -192,7 +194,10 @@ button:active {
     transform: translateY(1px) scale(0.96);
     
     /* Constricts the shadow blur and spread radii, visually recessing the element into the Z-axis plane. */
-    box-shadow: 0 2px 8px rgba(217, 70, 239, 0.3);
+    box-shadow: 0 2px 8px rgba(217, 70, 239, 0.15);
+    
+    /* Keeps the active state slightly dimmed to reinforce tactile feedback. */
+    filter: brightness(0.95);
 }
 
 /* ========================================= */
@@ -395,7 +400,7 @@ button:active {
 }
 
 /* ========================================= */
-/* --- TERMINAL RESULT SCREEN            --- */
+/* --- RESULT SCREEN                     --- */
 /* ========================================= */
 
 #result-screen h1 {
@@ -403,6 +408,7 @@ button:active {
     color: #ffffff;
     margin-bottom: 32px;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    font-size: 3rem;
 }
 
 .result-info {
@@ -428,7 +434,7 @@ button:active {
 }
 
 #result-message {
-    font-size: 1.6rem;
+    font-size: 2.5rem;
     font-weight: 700;
     
     /* Orchestrates a high-vibrancy linear gradient mapped directly to the text rendering path via WebKit masking. */
@@ -444,10 +450,9 @@ button:active {
     filter: drop-shadow(0 4px 12px rgba(217, 70, 239, 0.4));
 }
 
-/* Defines an alternative fallback baseline button configuration for unclassed interactive components. */
-button {
+
+#restart-btn {
     background-color: #4f46e5;
-    color: white;
     border: none;
     border-radius: 12px;
     padding: 14px 28px; 
@@ -455,9 +460,24 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+#restart-btn:hover {
     /* Triggers a discrete hex color shift during hover state to yield immediate interactive feedback. */
     background-color: #4338ca; 
+}
+
+/* ========================================= */
+/* --- ACCESSIBILITY & FOCUS STATES      --- */
+/* ========================================= */
+
+/* 
+ * Global focus-visible ring (WCAG 2.1 AA compliant - 3px outline / 3px offset).
+ * Utilizes :where() to prevent specificity inflation and selector creep.
+ * Note: transition on outline is omitted for cross-browser reliability.
+ */
+ :where(button, input, select, textarea, [tabindex="0"]):focus-visible {
+    outline: 3px solid #a7d5ff; 
+    outline-offset: 3px;
+    border-radius: 0.5rem;
 }
 
 /* ========================================= */
@@ -479,7 +499,7 @@ button:hover {
     gap: 16px; 
     
     /* Pushes the entire stack down from the subtitle text above it */
-    margin-top: 32px;
+    margin-top: 16px;
 }
 
 /* ========================================= */
@@ -687,13 +707,54 @@ button:hover {
     text-decoration: underline;
 }
 
+#accordion_btn {
+    font-family: sans-serif;
+}
+
 /* ========================================= */
 /* --- RESPONSIVE MEDIA QUERIES          --- */
 /* ========================================= */
 
-/* Implements a discrete viewport breakpoint at 540px, dynamically recalculating internal 
-   paddings and typographic scales to optimize spatial density for mobile hardware rendering. */
+/* 
+ * TABLET & SMALL DESKTOP (Max-width: 768px) 
+ * Adjusts structural padding and slightly scales down primary typography 
+ * to accommodate constrained horizontal viewports without breaking layout.
+ */
+ @media (max-width: 768px) {
+    .container {
+        /* Reduces the massive desktop padding to preserve internal screen real estate */
+        padding: 2rem;
+        width: 92%;
+    }
+
+    #start-screen h1 {
+        font-size: 2.25rem;
+    }
+
+    #question-text {
+        font-size: 1.4rem;
+    }
+
+    button {
+        padding: 12px 28px;
+    }
+}
+
+/* 
+ * LARGE MOBILE & PHABLET (Max-width: 540px)
+ * Dynamically recalculates internal paddings and typographic scales 
+ * to optimize spatial density for mobile hardware rendering.
+ */
 @media (max-width: 540px) {
+    /* Eliminates ambient orbs on mobile viewports to guarantee zero distractions and prevent layout shift */
+    body::before, body::after {
+        display: none; 
+    }
+
+    .container {
+        padding: 1.5rem;
+        width: 95%;
+    }
 
     .screen {
         padding: 1.2rem;
@@ -703,16 +764,82 @@ button:hover {
         font-size: 2rem;
     }
 
+    #start-screen p {
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+    }
+
+    #start-screen-p2 {
+        padding: 0px 16px;
+    }
+
     #question-text {
         font-size: 1.25rem;
+    }
+    
+    .quiz-info {
+        /* Intercepts the default row layout and stacks metadata vertically to prevent text collision */
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
     }
 
     .answer-btn {
         padding: 14px;
+        font-size: 0.95rem;
+    }
+
+    .action-stack {
+        margin-top: 0px;
     }
 
     button {
         padding: 12px 24px;
         font-size: 1rem;
+    }
+}
+
+/* 
+ * SMALL MOBILE (Max-width: 380px)
+ * Aggressive scaling for narrow devices to prevent text overflow and 
+ * ensure touch targets remain strictly confined within the viewport bounds.
+ */
+@media (max-width: 380px) {
+    .container {
+        /* Minimizes outer structural padding to dedicate maximum width to the core content */
+        padding: 1.2rem;
+        width: 98%;
+    }
+
+    .screen {
+        padding: 1rem;
+    }
+
+    #start-screen h1 {
+        font-size: 1.75rem;
+    }
+
+    #start-screen p {
+        font-size: 0.85rem;
+    }
+
+    #question-text {
+        font-size: 1.15rem;
+    }
+
+    .answer-btn {
+        /* Constricts touch target padding slightly to prevent multi-line answers from bloating the container height */
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .action-stack {
+        /* Tightens the structural gap between grouped interactive buttons */
+        gap: 12px;
+    }
+
+    button, .secondary-btn {
+        padding: 10px 20px;
     }
 }
