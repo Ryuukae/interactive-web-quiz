@@ -53,74 +53,63 @@ class QuizDataLoader {
         // Extract the physical File object from the event's FileList array
         const file = event.target.files[0];
 
-        // Guard clause: Terminates execution immediately if the user cancels the OS file dialog, 
-        // preventing null reference exceptions down the pipeline.
+        // Guard clause: Terminates execution immediately if the user cancels the OS file dialog
         if (!file) return;
         
-        // --- UI STATE UPDATE ---
-        // Resets any previous error states before processing a new file
-        this.file_status.classList.remove("error");
+        // Target the primary CTA button to manage its interaction lock
+        const startBtn = document.getElementById("start-btn");
+        if (startBtn) startBtn.disabled = true; // Explicitly lock during analysis
         
-        // Injects the extracted filename into the DOM and triggers the CSS opacity transition
+        // --- UI STATE UPDATE ---
+        this.file_status.classList.remove("error");
         this.file_status.textContent = `Analyzing ${file.name}...`;
         this.file_status.classList.add("visible");
 
-        // Extracts the file extension by splitting the name at the final period.
         const fileExtension = file.name.split('.').pop().toLowerCase();
-
-        // --- ASYNCHRONOUS FILE PARSING ---
-        // Instantiate the browser's native FileReader to handle local memory buffer reading
         const reader = new FileReader();
 
-        // Establish the callback fired when the I/O read operation resolves successfully
         reader.onload = (loadEvent) => {
             try {
-                // Extract the raw text buffer from the resolved event target
                 const rawText = loadEvent.target.result;
                 let parsedData;
                 
                 /* Executes format-specific parsing routines based on file extension. */
-                // ----------------------------------------------------------------------
                 if (fileExtension === 'txt') {
-                    // Delegates plain-text digestion to the dedicated QAD formatting class.
                     parsedData = QADParser.parseQADFormat(rawText);
                 } else if (fileExtension === 'json') {
-                    // Utilizes the native browser JSON engine for standard architectural payloads.
                     parsedData = JSON.parse(rawText);
                 } else {
-                    // Throws an error if a user bypasses the input 'accept' attribute.
                     throw new Error("Unsupported file format. Please upload a .txt or .json file.");
                 }
-                // ----------------------------------------------------------------------
                 
-                // Explicitly validate the dataset schema before trusting the payload in the state machine.
-                // Because QADParser outputs the exact same structure as a JSON file, we can use 
-                // the existing validation logic seamlessly!
+                // Explicitly validate the dataset schema
                 this.validateSchema(parsedData);
                 
                 // Hydrate internal memory once syntax and schema are both verified
                 this.customData = parsedData;
                 
-                // Provide positive visual feedback indicating the payload is verified and ready
+                // Provide positive visual feedback
                 this.file_status.textContent = `${file.name} (Ready)`;
+                
+                // --- UNLOCK APPLICATION ---
+                // Permits the user to begin the assessment now that a valid payload is ready
+                if (startBtn) startBtn.disabled = false; 
                 
                 console.log("Custom Quizset successfully parsed and hydrated into memory.", this.customData);
             } catch (error) {
-                // Intercepts parsing errors to gracefully degrade rather than crashing the application thread.
                 console.error("QuizDataLoader Error - Failed to parse payload:", error);
                 
                 // --- UI STATE UPDATE (ERROR) ---
-                // Applies the red error class and provides localized visual error feedback to the user
                 this.file_status.classList.add("error");
                 this.file_status.textContent = `Error: ${error.message || "Invalid format"}`;
                 
                 // Strictly resets the payload state to prevent the execution of corrupted data
                 this.customData = null; 
+                
+                // Note: The start button intentionally remains locked in this catch block
             }
         };
 
-        // Executes the file reading operation, instructing the API to decode the buffer as UTF-8 text.
-        // This is non-blocking; the onload callback resolves once this thread completes.
         reader.readAsText(file);
     }
 

@@ -349,16 +349,31 @@ button:active {
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
+    
+    /* Purges global <button> properties to perfectly match <label> rendering */
+    box-shadow: none;
+    filter: none;
+    
     transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
 }
 
 .secondary-btn:hover {
     background: rgba(167, 213, 255, 0.1);
     border-color: rgba(167, 213, 255, 0.6);
+    
+    /* Overrides the global <button> hover animations (glow and upward float) */
+    box-shadow: none;
+    filter: none;
+    transform: none; 
 }
 
 .secondary-btn:active {
+    /* Executes the physical scale down micro-interaction */
     transform: scale(0.97);
+    
+    /* Keeps the global <button> active states purged */
+    box-shadow: none;
+    filter: none;
 }
 
 /* ========================================= */
@@ -620,4 +635,37 @@ input.glass-input.d-input {
 
 .collapsed .toggle-icon {
     transform: rotate(-90deg);
+}
+
+/* ========================================= */
+/* --- BUTTON DISABLED STATES            --- */
+/* ========================================= */
+
+/* Strips interactivity and color from the primary button when locked by the application state */
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(1);
+    box-shadow: none;
+    transform: none;
+}
+
+/* ========================================= */
+/* --- SECONDARY ACTION ROW              --- */
+/* ========================================= */
+
+/* Horizontally groups the secondary buttons with flex-wrap to prevent overflow on very small mobile screens */
+.secondary-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+#btn-add-question {
+    padding: 3px 4px 3px 4px;
+    margin-bottom: 20px;
+
 }

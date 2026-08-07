@@ -43,25 +43,29 @@
             <div class="action-stack">
                 
                 <!-- Primary Call to Action (CTA): Initializes the default quiz flow -->
-                <button id="start-btn">Start Quiz</button>
+                <button id="start-btn" disabled>Start Quiz</button>
 
-                <!-- Instantiates the visual form builder GUI to support code-free quiz generation. -->
-                <button id="create-quizset-btn">Create Quizset</button>
+                <!-- Secondary Action Row: Houses the builder and the file importer horizontally -->
+                <div class="secondary-actions">
+
+                    <!-- Instantiates the visual form builder GUI to support code-free quiz generation. -->
+                    <button id="create-quizset-btn" class="secondary-btn">Create Quizset</button>
                 
-                <!-- 
-                  FILE UPLOAD ARCHITECTURE
-                  The native <input type="file"> is hidden from the UI because default browser 
-                  rendering cannot be consistently styled across platforms. 
-                  We restrict the payload to either a TXT or JSON format via the 'accept' attribute.
-                -->
-                <input type="file" id="custom-file-input" accept=".json, .txt, .text, .doc, .docx" hidden>
-                
-                <!-- 
-                  PROXY TRIGGER
-                  The <label> element is programmatically linked to the hidden input via the 'for' attribute. 
-                  Clicking this styled label seamlessly delegates the click event to the native file browser.
-                -->
-                <label for="custom-file-input" class="secondary-btn">Import Quizset</label>
+                    <!-- 
+                    FILE UPLOAD ARCHITECTURE
+                      The native <input type="file"> is hidden from the UI because default browser 
+                      rendering cannot be consistently styled across platforms. 
+                      We restrict the payload to either a TXT or JSON format via the 'accept' attribute.
+                    -->
+                    <input type="file" id="custom-file-input" accept=".json, .txt, .text, .doc, .docx" hidden>
+                    
+                    <!-- 
+                     PROXY TRIGGER
+                     The <label> element is programmatically linked to the hidden input via the 'for' attribute. 
+                     Clicking this styled label seamlessly delegates the click event to the native file browser.
+                    -->
+                    <label for="custom-file-input" class="secondary-btn">Import Quizset</label>
+                </div>
                 
                 <!-- Dedicated output node for JS to inject the parsed file name, providing user feedback -->
                 <span id="file-name-display" class="file-status"></span>
@@ -224,8 +228,8 @@ q=Which protocol is considered secure?
                 <!-- RESET TRIGGER -->
                 <button id="restart-btn">Restart Quiz</button>
                 <!-- SECONDARY FILE UPLOAD ARCHITECTURE -->
-                <input type="file" id="result-file-input" accept=".json" hidden>
-                <label for="result-file-input" class="secondary-btn">Upload New JSON</label>
+                <input type="file" id="result-file-input" accept=".json, .txt, .text, .doc, .docx" hidden>
+                <label for="result-file-input" class="secondary-btn">Upload New Quizset</label>
                 <span id="result-file-status" class="file-status"></span>
             </div> 
         </div>
@@ -266,8 +270,8 @@ q=Which protocol is considered secure?
 
             <!-- Implements the action-stack class for consistent UI spacing -->
             <div id="creator-action-stack" class="action-stack">
-                <button id="btn-add-question" class="secondary-btn">+ Add Question</button>
-                <button id="btn-export-quiz">Save & Download JSON</button>
+                <button id="btn-add-question" class="secondary-btn">+</button>
+                <button id="btn-export-quiz">Download JSON</button>
                 <button id="btn-cancel-create" class="secondary-btn">Back to Start</button>
             </div>
         </div>
