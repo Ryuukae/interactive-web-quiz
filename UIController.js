@@ -1,24 +1,30 @@
 /**
- * UIController Class
- * Encapsulates all DOM element caching, event listener bindings, 
- * and UI rendering operations for the interactive quiz application.
+ * UIController
+ * 
+ * Architectural Responsibilities: Encapsulates all DOM element caching, event listener bindings, 
+ * and UI rendering operations for both the interactive quiz and the form builder. Acts as the 
+ * sole bridge between the visual View layer and the underlying State models.
+ * 
+ * Encapsulation Scope: Strictly isolated to DOM manipulation. Reads physical inputs and 
+ * fires visual transitions, but defers all business logic, scoring, and data parsing back 
+ * to the Model layer.
  */
 class UIController {
     
     // ==========================================
-    // --- DOM CACHING & INITIALIZATION       ---
+    // --- DOM CACHING & INITIALIZATION ---
     // ==========================================
 
     /**
      * Instantiates the controller, caches DOM references, and sets up event delegation.
+     * 
      * @param {QuizState} quizState - The active instance of the state manager.
      */
     constructor(quizState) {
-        // Inject the state dependency so the UI controller can read from and write to the data layer
+        // Inject the state dependency so the UI controller can read from and write to the data layer.
         this.quizState = quizState;
 
-        // Cache DOM elements in memory once on initialization. 
-        // This prevents expensive and synchronous document.getElementById() lookups during rapid UI repaints.
+        // Cache Quiz Session DOM Elements
         this.startScreen = document.getElementById("start-screen");
         this.quizScreen = document.getElementById("quiz-screen");
         this.resultScreen = document.getElementById("result-screen");
@@ -34,48 +40,63 @@ class UIController {
         this.restartButton = document.getElementById("restart-btn");
         this.progressBar = document.getElementById("progress");
 
-        // Cache the new DOM nodes required for the custom JSON upload feature
+        // Cache Data Loader DOM Elements
         this.fileInput = document.getElementById("custom-file-input");
         this.fileStatus = document.getElementById("file-name-display");
         this.resultFileInput = document.getElementById("result-file-input");
         this.resultFileStatus = document.getElementById("result-file-status");
-        
-        /* These calls immediately bind the asynchronous file listeners behind the scenes. */
+
+        // Cache Builder DOM Elements
+        this.builderContainer = document.getElementById("builder-questions-container");
+        this.bulkImportText = document.getElementById("bulk-import-text");
+        this.bulkImportStatus = document.getElementById("bulk-import-status");
+        this.bulkImportPanel = document.getElementById("bulk-import-panel");
+
+        /* Instantiates file processing dependencies immediately upon construction. */
         // ----------------------------------------------------------------------
-        // Instantiate the file loader class, injecting the required DOM nodes.
         this.dataLoader = new QuizDataLoader(this.fileInput, this.fileStatus);
-        // Instantiate a secondary loader specifically for the results screen
         this.resultDataLoader = new QuizDataLoader(this.resultFileInput, this.resultFileStatus);
         // ----------------------------------------------------------------------
 
-        // Immediately bind static global events now that the DOM references exist
+        // Immediately bind static global events now that the DOM references exist.
         this.initializeEventListeners();
     }
 
     // ==========================================
-    // --- EVENT LISTENER DELEGATION          ---
+    // --- EVENT LISTENER DELEGATION ---
     // ==========================================
 
     /**
-     * Binds click events to static buttons.
-     * Uses arrow functions to preserve the class scope (`this`).
+     * Binds static click events to the DOM to route user interactions.
+     * 
+     * @returns {void} - Does not return a value.
      */
     initializeEventListeners() {
-        // Arrow functions map the lexical 'this' to the UIController instance. 
-        // Without them, 'this' would refer to the HTML button triggering the event, breaking our class scope.
+        // Quiz Flow Bindings
         this.startButton.addEventListener("click", () => this.startQuiz());
         this.restartButton.addEventListener("click", () => this.restartQuiz());
+
+        // Builder Bindings
+        document.getElementById("btn-add-question").addEventListener("click", () => this.addBuilderQuestionCard());
+        document.getElementById("btn-export-quiz").addEventListener("click", () => this.exportBuilderQuiz());
+        document.getElementById("btn-parse-bulk").addEventListener("click", () => this.handleBulkImport());
+
+        // Toggles the advanced ingestion module panel.
+        document.getElementById("bulk-import-header").addEventListener("click", () => {
+            this.bulkImportPanel.classList.toggle("collapsed");
+        });
     }
 
     // ==========================================
-    // --- QUIZ FLOW & RENDERING LOGIC        ---
+    // --- QUIZ FLOW & RENDERING LOGIC ---
     // ==========================================
 
     /**
      * Synchronizes static UI bounds with the loaded dataset length.
+     * 
+     * @returns {void} - Does not return a value.
      */
     synchronizeBounds() {
-        // Establish the ceiling metrics for the UI based on the dynamically loaded dataset
         const totalCount = this.quizState.questionData.length;
         this.totalQuestionsSpan.textContent = totalCount;
         this.maxScoreSpan.textContent = totalCount;
@@ -83,104 +104,80 @@ class UIController {
 
     /**
      * Starts a new quiz session and reveals the active screen.
-     * Evaluates the data loader for a custom client-side payload before execution.
+     * 
+     * @returns {void} - Does not return a value.
      */
     startQuiz() {
-        /* Evaluate both data loaders. Prioritize a newly uploaded file from the results screen, 
-           falling back to the start screen payload if no new file was provided. */
         const customPayload = this.resultDataLoader.getCustomData() || this.dataLoader.getCustomData();
         
         if (customPayload) {
-            console.log("Custom payload detected. Hydrating new state machine.");
-            
-            // Overwrite the existing state machine with the custom dataset, bypassing the default server fetch
             this.quizState = new QuizState(customPayload);
-            
-            // Re-sync the ceiling bounds (total questions, max score) for the newly injected dataset length
             this.synchronizeBounds();
         }
 
-        // Reset the underlying data model before touching the view
         this.quizState.resetQuiz();
-        
-        // Synchronize the starting score baseline
         this.scoreSpan.textContent = this.quizState.score;
-
-        // Execute the SPA routing by swapping the CSS visibility classes
+        
         this.startScreen.classList.remove("active");
         this.quizScreen.classList.add("active");
-
-        // Trigger the first dynamic render cycle
+        
         this.showQuestion();
     }
 
     /**
      * Renders the current question and dynamically generates answer choices.
+     * 
+     * @returns {void} - Does not return a value.
      */
     showQuestion() {
-        // Lift the interaction lock to allow the user to make a new selection
         this.quizState.resetClickLock();
         
-        // Pull the current chunk of data from the state manager
         const currentQuestion = this.quizState.getCurrentQuestion();
-
-        // Update text and stylistic metrics
+        
         this.currentQuestionSpan.textContent = this.quizState.index + 1;
         this.progressBar.style.width = `${this.quizState.getProgressPercentage()}%`;
         this.questionText.textContent = currentQuestion.question;
-
-        // Purge the previous answer nodes to prevent ghost elements and ensure a clean DOM slate
+        
         this.answersContainer.innerHTML = "";
-
-        // Dynamically reconstruct the answer nodes for the active state
+        
         currentQuestion.answers.forEach(answer => {
             const button = document.createElement("button");
             button.textContent = answer.text;
             button.classList.add("answer-btn");
             
-            // Map the boolean correctness to a string dataset property for easy DOM evaluation later
             button.dataset.correct = answer.correct;
-
-            // Attach a scoped listener to each dynamically generated node
             button.addEventListener("click", (event) => this.selectAnswer(event));
+            
             this.answersContainer.appendChild(button);
         });
     }
 
     // ==========================================
-    // --- EVALUATION & STATE MUTATION        ---
+    // --- EVALUATION & STATE MUTATION ---
     // ==========================================
 
     /**
      * Handles user selection, applies visual feedback, and defers navigation.
+     * 
      * @param {Event} event - The button click event object.
+     * @returns {void} - Does not return a value.
      */
     selectAnswer(event) {
-        // Enforce the interaction lock immediately. This drops execution if a user double-clicks, 
-        // preventing race conditions or double-scoring on a single question.
         if (this.quizState.disabled) return;
-
+        
         const selectedButton = event.target;
         const isCorrect = selectedButton.dataset.correct === "true";
-
-        // Traverse the child nodes to paint the visual feedback state across all options simultaneously
+        
         Array.from(this.answersContainer.children).forEach((button) => {
             button.classList.add(button.dataset.correct === "true" ? "correct" : "incorrect");
         });
-
-        // Pass the evaluated truthiness back to the data layer for scoring
-        this.quizState.evaluateAnswer(isCorrect);
         
-        // Paint the updated score synchronously
+        this.quizState.evaluateAnswer(isCorrect);
         this.scoreSpan.textContent = this.quizState.score;
-
-        // Defer state progression. This keeps the current view locked for 3 seconds 
-        // so the user can process the visual feedback before the DOM repaints.
+        
         setTimeout(() => {
-            // Increment the data pointer
             this.quizState.advanceQuestion();
-
-            // Branch the execution path based on the dataset boundaries
+            
             if (this.quizState.isQuizOver()) {
                 this.showResults();
             } else {
@@ -190,31 +187,239 @@ class UIController {
     }
 
     // ==========================================
-    // --- TERMINAL STATE & RESETS            ---
+    // --- TERMINAL STATE & RESETS ---
     // ==========================================
 
     /**
      * Reveals the results view and updates final performance metrics.
+     * 
+     * @returns {void} - Does not return a value.
      */
     showResults() {
-        // Execute final SPA screen routing
         this.quizScreen.classList.remove("active");
         this.resultScreen.classList.add("active");
-
-        // Pull the raw integer score
+        
         this.finalScoreSpan.textContent = this.quizState.score;
         
-        // Pull the computed percentage and display it
         const percentage = this.quizState.getGradePercentage();
-        this.resultMessage.textContent = percentage + "%"
+        this.resultMessage.textContent = percentage + "%";
     }
 
     /**
      * Resets screen routing and restarts the quiz session.
+     * 
+     * @returns {void} - Does not return a value.
      */
     restartQuiz() {
-        // Hide the final view and delegate the heavy reset logic back to the start controller
         this.resultScreen.classList.remove("active");
         this.startQuiz();
+    }
+
+    // ==========================================
+    // --- BUILDER UI & DOM INJECTION ---
+    // ==========================================
+
+    /**
+     * Initializes the creator environment, clearing previous states and injecting a foundational card.
+     * 
+     * @returns {void} - Does not return a value.
+     */
+    initializeBuilder() {
+        // Clears any previous session data to ensure a pristine building environment.
+        this.builderContainer.innerHTML = "";
+        
+        // Injects a foundational empty question block to guide the user.
+        this.addBuilderQuestionCard();
+    }
+
+    /**
+     * Constructs and injects a new interactive question block into the Builder DOM.
+     * 
+     * @param {Object} prefillData - Optional data payload for populating the inputs.
+     * @returns {void} - Does not return a value.
+     */
+    addBuilderQuestionCard(prefillData = null) {
+        const card = document.createElement("div");
+        card.className = "glass-panel question-card";
+
+        const questionVal = prefillData ? prefillData.question : "";
+        let correctVal = "";
+        let distractorVals = [""];
+
+        /* Extracts answer strings from the prefill payload to map them to the correct input tiers. */
+        // ----------------------------------------------------------------------
+        if (prefillData && prefillData.answers) {
+            const correctAns = prefillData.answers.find(a => a.correct);
+            if (correctAns) correctVal = correctAns.text;
+
+            const distractors = prefillData.answers.filter(a => !a.correct);
+            if (distractors.length > 0) {
+                distractorVals = distractors.map(d => d.text).slice(0, 6);
+            }
+        }
+        // ----------------------------------------------------------------------
+
+        const headerTitle = questionVal ? questionVal : "New Question...";
+
+        // Injects the enhanced HTML structure.
+        card.innerHTML = `
+            <div class="card-header">
+                <span class="card-title">${headerTitle}</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            
+            <div class="card-body">
+                <div class="input-group">
+                    <label class="input-label">Question</label>
+                    <input type="text" class="glass-input q-input" placeholder="e.g., What is the default port for HTTPS?" value="${questionVal}">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label correct-label">Correct Answer</label>
+                    <input type="text" class="glass-input a-input correct-input" placeholder="e.g., 443" value="${correctVal}">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label distractor-label">Distractors (Max 6)</label>
+                    <div class="distractors-container">
+                        ${distractorVals.map(val => `<input type="text" class="glass-input d-input" placeholder="e.g., 80" value="${val}">`).join('')}
+                    </div>
+                    
+                    <button class="secondary-btn btn-add-distractor">+ Add Distractor</button>
+                </div>
+            </div>
+        `;
+
+        const addBtn = card.querySelector(".btn-add-distractor");
+        const dContainer = card.querySelector(".distractors-container");
+        const cardHeader = card.querySelector(".card-header");
+        const qInput = card.querySelector(".q-input");
+        const cardTitle = card.querySelector(".card-title");
+
+        /* Binds local DOM events to govern card collapsibility, live text updates, and distractor limitations. */
+        // ----------------------------------------------------------------------
+        if (distractorVals.length >= 6) {
+            addBtn.style.display = "none";
+        }
+
+        cardHeader.addEventListener("click", () => {
+            card.classList.toggle("collapsed");
+        });
+
+        qInput.addEventListener("input", (e) => {
+            cardTitle.textContent = e.target.value || "New Question...";
+        });
+
+        addBtn.addEventListener("click", () => {
+            const currentCount = dContainer.querySelectorAll(".d-input").length;
+
+            if (currentCount < 6) {
+                const input = document.createElement("input");
+                input.type = "text";
+                input.className = "glass-input d-input";
+                input.placeholder = "e.g., 8080";
+                dContainer.appendChild(input);
+
+                if (currentCount + 1 >= 6) {
+                    addBtn.style.display = "none";
+                }
+            }
+        });
+        // ----------------------------------------------------------------------
+
+        if (prefillData) {
+            card.classList.add("collapsed");
+        }
+
+        this.builderContainer.appendChild(card);
+    }
+
+    /**
+     * Intercepts raw text, delegates logic parsing to the Builder State, and renders the UI changes.
+     * 
+     * @returns {void} - Does not return a value.
+     */
+    handleBulkImport() {
+        const rawText = this.bulkImportText.value;
+
+        // Bypasses execution if the field is empty.
+        if (!rawText.trim()) return;
+
+        // Resets previous error states.
+        this.bulkImportStatus.classList.remove("error", "visible");
+        this.bulkImportStatus.textContent = "";
+
+        try {
+            // Delegates the pure logic evaluation to the State/Model class.
+            const parsedData = QuizBuilderState.parseBulkPayload(rawText);
+
+            if (!parsedData || parsedData.length === 0) {
+                throw new Error("No valid QAD or JSON questions detected.");
+            }
+
+            this.builderContainer.innerHTML = "";
+            parsedData.forEach(q => this.addBuilderQuestionCard(q));
+            this.bulkImportText.value = "";
+            
+        } catch (error) {
+            console.error("Bulk parsing failed:", error);
+            this.bulkImportStatus.textContent = `Error: ${error.message}`;
+            this.bulkImportStatus.classList.add("error", "visible");
+        }
+    }
+
+    /**
+     * Scrapes the Builder DOM to serialize the visual form into a valid schema.
+     * 
+     * @returns {Array<Object>} - The compiled assessment dataset.
+     */
+    serializeBuilderForm() {
+        const cards = this.builderContainer.querySelectorAll(".question-card");
+        const finalJSON = [];
+
+        /* Iterates through the physical DOM nodes to extract and format user input. */
+        // ----------------------------------------------------------------------
+        cards.forEach(card => {
+            const qText = card.querySelector(".q-input").value.trim();
+            const aText = card.querySelector(".a-input").value.trim();
+            const dInputs = card.querySelectorAll(".d-input");
+
+            // Bypasses the card entirely if the user left the primary question field blank.
+            if (!qText) return;
+
+            const answers = [];
+
+            if (aText) {
+                answers.push({ text: aText, correct: true });
+            }
+
+            dInputs.forEach(input => {
+                const dText = input.value.trim();
+                if (dText) {
+                    answers.push({ text: dText, correct: false });
+                }
+            });
+
+            finalJSON.push({
+                question: qText,
+                answers: answers
+            });
+        });
+        // ----------------------------------------------------------------------
+
+        return finalJSON;
+    }
+
+    /**
+     * Extracts the view data and delegates the file generation to the export utility.
+     * 
+     * @returns {void} - Does not return a value.
+     */
+    exportBuilderQuiz() {
+        // Scrapes the physical view for the current state.
+        const payload = this.serializeBuilderForm();
+        
+        // Delegates the OS download action to the stateless utility class.
+        FileExportUtil.downloadAsJSON(payload, "custom_quizset.json");
     }
 }

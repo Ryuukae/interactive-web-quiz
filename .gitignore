@@ -13,8 +13,9 @@
 !responsive.css
 
 !script.js
+!Utils.js
 !QuizState.js
-!QuizCreator.js
+!QuizBuilderState.js
 !UIController.js
 !QuizDataLoader.js
 !QADParser.js

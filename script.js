@@ -63,8 +63,8 @@ document.getElementById("create-quizset-btn").addEventListener("click", () => {
   document.getElementById("start-screen").classList.remove("active");
   document.getElementById("creator-screen").classList.add("active");
   
-  // Mounts the initial UI state for the creator engine.
-  QuizCreator.initialize();
+  // Triggers the view controller to construct the builder environment.
+  uiController.initializeBuilder();
 });
 
 // Resets the view and returns the user to the initial Start screen.
