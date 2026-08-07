@@ -801,6 +801,54 @@ button:active {
 }
 
 /* ========================================= */
+/* --- COLLAPSIBLE CARD UI               --- */
+/* ========================================= */
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(167, 213, 255, 0.1);
+    margin-bottom: 16px;
+    transition: padding 0.2s ease, margin 0.2s ease, border-color 0.2s ease;
+}
+
+.card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #a7d5ff;
+    
+    /* Truncates excessively long question strings to preserve the header layout boundaries */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+}
+
+.toggle-icon {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dynamically alters structural layout when the state class is appended via JS */
+.question-card.collapsed .card-body {
+    display: none;
+}
+
+.question-card.collapsed .card-header {
+    border-bottom-color: transparent;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.question-card.collapsed .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+/* ========================================= */
 /* --- RESPONSIVE MEDIA QUERIES          --- */
 /* ========================================= */
 

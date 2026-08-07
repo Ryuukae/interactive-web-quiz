@@ -42,8 +42,8 @@ class QuizCreator {
     /**
      * Constructs and injects a new interactive question block into the DOM.
      * 
-     * Assembles the structured input groups for the question, correct answer, and distractors. 
-     * Enforces a maximum payload of 6 distractors to maintain schema integrity.
+     * Assembles the structured input groups within a collapsible container architecture. 
+     * Enforces a maximum payload of 6 distractors and binds live-updating header text for spatial efficiency.
      *
      * @param {Object} prefillData - Optional data payload for populating the inputs during a bulk import.
      * @returns {void}
@@ -73,36 +73,60 @@ class QuizCreator {
         }
         // ----------------------------------------------------------------------
 
-        // Injects the enhanced HTML structure utilizing explicit accessibility labels and input groups.
+        // Determines the initial header text, falling back to a default label if no prefill data exists.
+        const headerTitle = questionVal ? questionVal : "New Question...";
+
+        // Injects the enhanced HTML structure utilizing explicit accessibility labels, input groups, and a collapsible structural wrapper.
         card.innerHTML = `
-            <div class="input-group">
-                <label class="input-label">Question</label>
-                <input type="text" class="glass-input q-input" placeholder="e.g., What is the default port for HTTPS?" value="${questionVal}">
+            <div class="card-header">
+                <span class="card-title">${headerTitle}</span>
+                <span class="toggle-icon">▼</span>
             </div>
             
-            <div class="input-group">
-                <label class="input-label correct-label">Correct Answer</label>
-                <input type="text" class="glass-input a-input correct-input" placeholder="e.g., 443" value="${correctVal}">
-            </div>
-            
-            <div class="input-group">
-                <label class="input-label distractor-label">Distractors (Max 6)</label>
-                <div class="distractors-container">
-                    ${distractorVals.map(val => `<input type="text" class="glass-input d-input" placeholder="e.g., 80" value="${val}">`).join('')}
+            <div class="card-body">
+                <div class="input-group">
+                    <label class="input-label">Question</label>
+                    <input type="text" class="glass-input q-input" placeholder="e.g., What is the default port for HTTPS?" value="${questionVal}">
                 </div>
                 
-                <!-- Updated inline styles to dock the interaction node to the right bounds -->
-                <button class="secondary-btn btn-add-distractor" style="display: block; margin-left: auto; margin-top: 12px; font-size: 0.75rem; padding: 6px 12px;">+ Add Distractor</button>
+                <div class="input-group">
+                    <label class="input-label correct-label">Correct Answer</label>
+                    <input type="text" class="glass-input a-input correct-input" placeholder="e.g., 443" value="${correctVal}">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label distractor-label">Distractors (Max 6)</label>
+                    <div class="distractors-container">
+                        ${distractorVals.map(val => `<input type="text" class="glass-input d-input" placeholder="e.g., 80" value="${val}">`).join('')}
+                    </div>
+                    
+                    <button class="secondary-btn btn-add-distractor" style="display: block; margin-left: auto; margin-top: 12px; font-size: 0.75rem; padding: 6px 12px;">+ Add Distractor</button>
+                </div>
             </div>
         `;
 
         const addBtn = card.querySelector(".btn-add-distractor");
         const dContainer = card.querySelector(".distractors-container");
+        const cardHeader = card.querySelector(".card-header");
+        const qInput = card.querySelector(".q-input");
+        const cardTitle = card.querySelector(".card-title");
 
+        /* Binds local DOM events to govern card collapsibility, live text updates, and distractor limitations. */
+        // ----------------------------------------------------------------------
         // Evaluates initial load state to immediately restrict addition if the prefill hit the ceiling.
         if (distractorVals.length >= 6) {
             addBtn.style.display = "none";
         }
+
+        // Toggles the collapsed state class on the parent card node to optimize vertical rendering space.
+        cardHeader.addEventListener("click", () => {
+            card.classList.toggle("collapsed");
+        });
+
+        // Mirrors the question input value directly to the card header to ensure the collapsed state remains identifiable.
+        qInput.addEventListener("input", (e) => {
+            cardTitle.textContent = e.target.value || "New Question...";
+        });
 
         // Binds the localized addition event strictly to the current card context.
         addBtn.addEventListener("click", () => {
@@ -122,26 +146,42 @@ class QuizCreator {
                 }
             }
         });
+        // ----------------------------------------------------------------------
+
+        // Defaults prefilled cards to a collapsed state to immediately conserve viewport space during bulk imports.
+        if (prefillData) {
+            card.classList.add("collapsed");
+        }
 
         container.appendChild(card);
     }
 
     /**
-     * Intercepts raw text from the advanced input field and routes it through the QAD parser.
-     * 
-     * Transforms plain text into an array of question objects and mirrors them into the visual 
-     * form for user verification.
+     * Intercepts raw text from the advanced input field and routes it through the dynamic format parser.
+     * Transforms the raw payload (JSON or QAD) into an array of question objects, validates the 
+     * structural integrity, and mirrors them into the visual form while providing localized UI feedback.
      *
      * @returns {void}
      */
     static handleBulkImport() {
         const rawText = document.getElementById("bulk-import-text").value;
+        const statusNode = document.getElementById("bulk-import-status");
 
         // Bypasses execution if the user triggers the import sequence on an empty field.
         if (!rawText.trim()) return;
 
+        // Resets previous error states before initiating a new parsing sequence.
+        statusNode.classList.remove("error", "visible");
+        statusNode.textContent = "";
+
         try {
-            const parsedData = QADParser.parseQADFormat(rawText);
+            // Routes the raw string through the dynamic format detection engine.
+            const parsedData = this.parseBulkPayload(rawText);
+
+            // Enforces strict validation to ensure the parser actually extracted usable data structures.
+            if (!parsedData || parsedData.length === 0) {
+                throw new Error("No valid QAD or JSON questions detected.");
+            }
 
             // Purges the container to prevent appending imported data to the default empty block.
             document.getElementById("builder-questions-container").innerHTML = "";
@@ -154,8 +194,49 @@ class QuizCreator {
             
         } catch (error) {
             console.error("Bulk parsing failed:", error);
-            alert("Could not parse the text. Please check your QAD formatting.");
+            
+            // Triggers the localized visual error feedback loop instead of a blocking window alert.
+            statusNode.textContent = `Error: ${error.message}`;
+            statusNode.classList.add("error", "visible");
         }
+    }
+
+    /**
+     * Evaluates the raw input string to determine its structural format and routes it to the appropriate parser.
+     * Explores the payload for JSON array boundaries. If valid JSON is detected, it utilizes the native browser engine. 
+     * Otherwise, it gracefully falls back to the custom QAD text digester.
+     *
+     * @param {string} rawText - The raw string payload pasted by the user.
+     * @returns {Array<Object>} - The fully parsed and formatted assessment dataset.
+     * @throws {Error} Throws an explicit error if the payload fails structural validation.
+     */
+    static parseBulkPayload(rawText) {
+        const cleanText = rawText.trim();
+        
+        /* Attempts native JSON parsing first, failing over to custom QAD formatting on syntax errors or invalid schemas. */
+        // ----------------------------------------------------------------------
+        if (cleanText.startsWith("[")) {
+            try {
+                // Attempts to parse the structured payload via the native V8 JSON engine.
+                const jsonData = JSON.parse(cleanText);
+                
+                // Enforces a primitive schema validation to ensure the JSON matches the required array structure.
+                if (Array.isArray(jsonData)) {
+                    return jsonData;
+                }
+                
+                // Throws an error to exit the JSON try-block if the root structure is an object rather than an array.
+                throw new Error("JSON payload must be wrapped in a root array.");
+                
+            } catch (jsonError) {
+                // Silently catches JSON syntax errors to allow the QAD fallback execution path to continue.
+                console.warn("JSON parsing failed, falling back to QAD digestion.", jsonError);
+            }
+        }
+        
+        // Delegates plain-text digestion to the dedicated QAD formatting class.
+        return QADParser.parseQADFormat(cleanText);
+        // ----------------------------------------------------------------------
     }
 
     /**
