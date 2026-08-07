@@ -4,8 +4,7 @@
       "answers": [
         { "text": "London", "correct": false },
         { "text": "Berlin", "correct": false },
-        { "text": "Paris", "correct": true },
-        { "text": "Madrid", "correct": false }
+        { "text": "Paris", "correct": true }
       ]
     },
     {
@@ -32,7 +31,8 @@
         { "text": "Java", "correct": false },
         { "text": "Python", "correct": false },
         { "text": "Banana", "correct": true },
-        { "text": "JavaScript", "correct": false }
+        { "text": "JavaScript", "correct": false },
+        { "text": "Rust", "correct": false }
       ]
     },
     {
@@ -41,7 +41,16 @@
         { "text": "Go", "correct": false },
         { "text": "Gd", "correct": false },
         { "text": "Au", "correct": true },
-        { "text": "Ag", "correct": false }
+        { "text": "Ag", "correct": false },
+        { "text": "Fn", "correct": false },
+        { "text": "Co", "correct": false }
+      ]
+    },
+    {
+      "question": "Markdown is a programming language.",
+      "answers": [
+        { "text": "True", "correct": false },
+        { "text": "False", "correct": true }
       ]
     }
   ]

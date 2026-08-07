@@ -61,7 +61,7 @@ class QuizState {
    */
   getGradePercentage() {
     // Dynamically scales the grading threshold based on the arbitrary length of the ingested dataset
-    return (this.score / this.questionData.length) * 100;
+    return Math.round((this.score / this.questionData.length) * 100);
   }
 
   /**

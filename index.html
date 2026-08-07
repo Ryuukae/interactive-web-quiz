@@ -43,34 +43,90 @@
                 
                 <!-- Primary Call to Action (CTA): Initializes the default quiz flow -->
                 <button id="start-btn">Start Quiz</button>
+
+                <!-- Instantiates the visual form builder GUI to support code-free quiz generation. -->
+                <button id="create-quizset-btn">Create Quizset</button>
                 
                 <!-- 
                   FILE UPLOAD ARCHITECTURE
                   The native <input type="file"> is hidden from the UI because default browser 
                   rendering cannot be consistently styled across platforms. 
-                  We restrict the payload to JSON format via the 'accept' attribute.
+                  We restrict the payload to either a TXT or JSON format via the 'accept' attribute.
                 -->
-                <input type="file" id="custom-file-input" accept=".json" hidden>
+                <input type="file" id="custom-file-input" accept=".json, .text" hidden>
                 
                 <!-- 
                   PROXY TRIGGER
                   The <label> element is programmatically linked to the hidden input via the 'for' attribute. 
                   Clicking this styled label seamlessly delegates the click event to the native file browser.
                 -->
-                <label for="custom-file-input" class="secondary-btn">Upload Custom JSON</label>
+                <label for="custom-file-input" class="secondary-btn">Import Quizset</label>
                 
                 <!-- Dedicated output node for JS to inject the parsed file name, providing user feedback -->
                 <span id="file-name-display" class="file-status"></span>
 
                 <!-- 
-                   INSTRUCTIONAL ACCORDION
-                   A native, zero-JS collapsible node to provide formatting documentation
-                   and template access without cluttering the primary viewport.
+                  TXT INSTRUCTIONAL ACCORDION
+                  Provides non-technical users with plain-text formatting documentation
+                  and template access without cluttering the primary viewport.
+                -->
+                <details class="format-guide">
+                    <summary id="accordion_btn">How do I format my TXT?</summary>
+                    <div class="guide-content">
+                        <p>
+                            Easily build a quiz by typing your questions and answers as plain text. Use <strong>Q=</strong> for the Question, <strong>A=</strong> for the Correct Answer, and <strong>D=</strong> for a Distractor (wrong answer).
+                        </p>
+                        <ul style="margin-bottom: 16px; padding-left: 20px; line-height: 1.6;">
+                            <li><strong>Keep Groups Together:</strong> The lines for a single question must touch. Do not put blank lines inside a question block. Separate new questions with a blank line.</li>
+                            <li><strong>Required Lines:</strong> Each question group must have exactly one <strong>Q</strong>, exactly one <strong>A</strong>, and anywhere from 1 to 6 <strong>D</strong> lines.</li>
+                            <li><strong>Strict Order:</strong> The lines must always follow this exact sequence: Question, Answer, then Distractor(s).</li>
+                            <li><strong>Case Insensitive:</strong> You can use uppercase or lowercase prefixes (e.g., <code>Q=</code> or <code>q=</code>).</li>
+                            <li><strong>Indentation:</strong> Each line is trimmed so you may use whatever indentation you prefer.</li>
+                        </ul>
+                        
+                        <!-- Preformatted code block to preserve whitespace and formatting -->
+                        <pre><code>q=Your question here?
+a=Correct option
+d=Incorrect option
+
+                        
+Q=What is the default port for HTTPS?
+A=443
+D=80
+D=21
+D=22
+D=8080
+
+q=Which protocol is considered secure?
+  a=HTTPS
+    D=FTP
+    d=HTTP
+    D=TELNET
+</code></pre>
+                        
+                        <!-- Native download attribute forces the browser to download rather than navigate. -->
+                        <a href="template.txt" download class="download-link">Download Template</a>
+                    </div>
+                </details>
+
+                <!-- 
+                  JSON INSTRUCTIONAL ACCORDION
+                  A native, zero-JS collapsible node to provide formatting documentation
+                  and template access without cluttering the primary viewport.
+                  Provides explicit schema requirements to prevent ingestion parsing errors.
                 -->
                 <details class="format-guide">
                     <summary id="accordion_btn">How do I format my JSON?</summary>
                     <div class="guide-content">
-                        <p>Your custom file must be an array of question objects containing exactly these properties:</p>
+                        <p>
+                            Your custom file must be a valid JSON array containing individual question objects. Each object must strictly adhere to the following schema:
+                        </p>
+                        <ul style="margin-bottom: 16px; padding-left: 20px; line-height: 1.6;">
+                            <li><strong>Root Structure:</strong> The entire file must be wrapped in a single array <code>[ ]</code>.</li>
+                            <li><strong>Question Property:</strong> Each object requires a <code>"question"</code> key with a string value representing the prompt.</li>
+                            <li><strong>Answers Array:</strong> Each object requires an <code>"answers"</code> key containing an array of the available choices.</li>
+                            <li><strong>Answer Objects:</strong> Inside the answers array, each choice must contain a <code>"text"</code> key (the answer string) and a strict boolean <code>"correct"</code> key (<code>true</code> or <code>false</code> without quotes).</li>
+                        </ul>
                         
                         <!-- Preformatted code block to preserve whitespace and indentation -->
                         <pre><code>[
@@ -78,10 +134,29 @@
     "question": "Your question here?",
     "answers": [
       { "text": "Correct option", "correct": true },
-      { "text": "Wrong option", "correct": false }
+      { "text": "Incorrect option", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the default port for HTTPS?",
+    "answers": [
+      { "text": "443", "correct": true },
+      { "text": "80", "correct": false },
+      { "text": "21", "correct": false },
+      { "text": "22", "correct": false },
+      { "text": "8080", "correct": false } 
+    ]
+  },
+  {
+    "question": "Which protocol is considered secure?",
+    "answers": [
+      { "text": "FTP", "correct": false },
+      { "text": "HTTP", "correct": false },
+      { "text": "HTTPS", "correct": true },
+      { "text": "TELNET", "correct": false }
     ]
   }
-]</code></pre>
+</code></pre>
                         
                         <!-- Native download attribute forces the browser to download rather than navigate -->
                         <a href="template.json" download class="download-link">Download Template</a>

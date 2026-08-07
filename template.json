@@ -1,27 +1,28 @@
 [
-    {
-      "question": "<question_1>",
-      "answers": [
-        { "text": "<correct_answer>", "correct": true },
-        { "text": "<incorrect_answer>", "correct": false }
-      ]
-    },
-    {
-      "question": "<question_2>",
-      "answers": [
-        { "text": "<correct_answer>", "correct": true },
-        { "text": "<incorrect_answer>", "correct": false },
-        { "text": "<incorrect_answer>", "correct": false },
-        { "text": "<incorrect_answer>", "correct": false }
-      ]
-    },
-    {
-      "question": "Which protocol is used for secure web browsing?",
-      "answers": [
-        { "text": "FTP", "correct": false },
-        { "text": "HTTP", "correct": false },
-        { "text": "HTTPS", "correct": true },
-        { "text": "SMTP", "correct": false }
-      ]
-    }
-  ]
+  {
+    "question": "Your question here?",
+    "answers": [
+      { "text": "Correct option", "correct": true },
+      { "text": "Incorrect option", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the default port for HTTPS?",
+    "answers": [
+      { "text": "443", "correct": true },
+      { "text": "80", "correct": false },
+      { "text": "21", "correct": false },
+      { "text": "22", "correct": false },
+      { "text": "8080", "correct": false } 
+    ]
+  },
+  {
+    "question": "Which protocol is considered secure?",
+    "answers": [
+      { "text": "FTP", "correct": false },
+      { "text": "HTTP", "correct": false },
+      { "text": "HTTPS", "correct": true },
+      { "text": "TELNET", "correct": false }
+    ]
+  }
+]
