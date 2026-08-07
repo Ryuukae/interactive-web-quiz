@@ -23,7 +23,6 @@ class QuizCreator {
      * @returns {void}
      */
     static initialize() {
-
         // Clears any previous session data to ensure a pristine building environment.
         document.getElementById("builder-questions-container").innerHTML = "";
         
@@ -35,6 +34,12 @@ class QuizCreator {
             document.getElementById("btn-add-question").addEventListener("click", () => this.addQuestionCard());
             document.getElementById("btn-export-quiz").addEventListener("click", () => this.exportToJSON());
             document.getElementById("btn-parse-bulk").addEventListener("click", () => this.handleBulkImport());
+            
+            // Binds the localized toggle logic for the advanced ingestion module
+            document.getElementById("bulk-import-header").addEventListener("click", () => {
+                document.getElementById("bulk-import-panel").classList.toggle("collapsed");
+            });
+
             this.isInitialized = true;
         }
     }
@@ -100,7 +105,7 @@ class QuizCreator {
                         ${distractorVals.map(val => `<input type="text" class="glass-input d-input" placeholder="e.g., 80" value="${val}">`).join('')}
                     </div>
                     
-                    <button class="secondary-btn btn-add-distractor" style="display: block; margin-left: auto; margin-top: 12px; font-size: 0.75rem; padding: 6px 12px;">+ Add Distractor</button>
+                    <button class="secondary-btn btn-add-distractor">+ Add Distractor</button>
                 </div>
             </div>
         `;

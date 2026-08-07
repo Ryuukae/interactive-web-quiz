@@ -16,6 +16,7 @@
     
     <!-- External stylesheet linkage (CSSOM rendering pipeline) -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="responsive.css">
 </head>
 <body>
     <!-- 
@@ -234,20 +235,25 @@ q=Which protocol is considered secure?
         <!-- ========================================== -->
         <div id="creator-screen" class="screen">
             <h1>Quiz Builder</h1>
-            <p id="start-screen-p1" style="margin-bottom: 24px;">Visually construct your assessment or utilize the bulk digester.</p>
+            <p id="creator-subtitle">Visually construct your assessment or utilize the bulk digester.</p>
             
             <!-- 
               ADVANCED INGESTION MODULE
               Provides power users a frictionless method to paste QAD formatted text or raw JSON arrays, 
               instantly hydrating the visual form fields below.
             -->
-            <div class="glass-panel" style="margin-bottom: 32px;">
-                <h3 style="color: #a7d5ff; margin-bottom: 12px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.1em;">Bulk Import (Advanced)</h3>
-                <textarea id="bulk-import-text" class="glass-input" rows="4" placeholder="Paste your QAD text or formatted JSON array here..."></textarea>
-                <button id="btn-parse-bulk" class="secondary-btn" style="display: block; margin: 16px auto 0 auto;">Parse Quizset Data</button>
+            <div id="bulk-import-panel" class="glass-panel">
+                <div class="card-header" id="bulk-import-header">
+                    <span class="glass-panel-heading" style="margin-bottom: 0;">Bulk Import (Advanced)</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
                 
-                <!-- Dedicated output node for JS to inject validation errors, matching the start screen architecture -->
-                <span id="bulk-import-status" class="file-status" style="display: block; text-align: center; margin-top: 12px;"></span>
+                <div class="card-body">
+                    <textarea id="bulk-import-text" class="glass-input" rows="2" placeholder="Paste your QAD text or formatted JSON array here..."></textarea>
+                    <button id="btn-parse-bulk" class="secondary-btn">Parse Quizset Data</button>
+                    <!-- Dedicated output node for JS to inject validation errors -->
+                    <span id="bulk-import-status" class="file-status"></span>
+                </div>
             </div>
 
             <!-- 
@@ -259,10 +265,10 @@ q=Which protocol is considered secure?
             </div>
 
             <!-- Implements the action-stack class for consistent UI spacing -->
-            <div class="action-stack" style="margin-top: 32px;">
+            <div id="creator-action-stack" class="action-stack">
                 <button id="btn-add-question" class="secondary-btn">+ Add Question</button>
                 <button id="btn-export-quiz">Save & Download JSON</button>
-                <button id="btn-cancel-create" class="secondary-btn" style="border: none; opacity: 0.7;">Back to Start</button>
+                <button id="btn-cancel-create" class="secondary-btn">Back to Start</button>
             </div>
         </div>
     
