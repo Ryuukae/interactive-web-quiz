@@ -65,6 +65,9 @@ class QuizDataLoader {
         this.file_status.textContent = `Analyzing ${file.name}...`;
         this.file_status.classList.add("visible");
 
+        // Extracts the file extension by splitting the name at the final period.
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+
         // --- ASYNCHRONOUS FILE PARSING ---
         // Instantiate the browser's native FileReader to handle local memory buffer reading
         const reader = new FileReader();
@@ -74,12 +77,25 @@ class QuizDataLoader {
             try {
                 // Extract the raw text buffer from the resolved event target
                 const rawText = loadEvent.target.result;
+                let parsedData;
                 
-                // Attempt to parse the raw string into a structured JavaScript object.
-                // This is a volatile operation that will throw a SyntaxError if the JSON is malformed.
-                const parsedData = JSON.parse(rawText);
+                /* Executes format-specific parsing routines based on file extension. */
+                // ----------------------------------------------------------------------
+                if (fileExtension === 'txt') {
+                    // Delegates plain-text digestion to the dedicated QAD formatting class.
+                    parsedData = QADParser.parseQADFormat(rawText);
+                } else if (fileExtension === 'json') {
+                    // Utilizes the native browser JSON engine for standard architectural payloads.
+                    parsedData = JSON.parse(rawText);
+                } else {
+                    // Throws an error if a user bypasses the input 'accept' attribute.
+                    throw new Error("Unsupported file format. Please upload a .txt or .json file.");
+                }
+                // ----------------------------------------------------------------------
                 
-                // Explicitly validate the dataset schema before trusting the payload in the state machine
+                // Explicitly validate the dataset schema before trusting the payload in the state machine.
+                // Because QADParser outputs the exact same structure as a JSON file, we can use 
+                // the existing validation logic seamlessly!
                 this.validateSchema(parsedData);
                 
                 // Hydrate internal memory once syntax and schema are both verified
@@ -88,7 +104,7 @@ class QuizDataLoader {
                 // Provide positive visual feedback indicating the payload is verified and ready
                 this.file_status.textContent = `${file.name} (Ready)`;
                 
-                console.log("Custom JSON successfully parsed and hydrated into memory.", this.customData);
+                console.log("Custom Quizset successfully parsed and hydrated into memory.", this.customData);
             } catch (error) {
                 // Intercepts parsing errors to gracefully degrade rather than crashing the application thread.
                 console.error("QuizDataLoader Error - Failed to parse payload:", error);

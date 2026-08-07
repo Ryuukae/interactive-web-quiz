@@ -53,7 +53,7 @@
                   rendering cannot be consistently styled across platforms. 
                   We restrict the payload to either a TXT or JSON format via the 'accept' attribute.
                 -->
-                <input type="file" id="custom-file-input" accept=".json, .text" hidden>
+                <input type="file" id="custom-file-input" accept=".json, .txt, .text, .doc, .docx" hidden>
                 
                 <!-- 
                   PROXY TRIGGER
@@ -238,6 +238,7 @@ q=Which protocol is considered secure?
       4. Script: The main execution thread that binds state, UI, and event listeners.
     -->
     <script src="QuizState.js"></script>
+    <script src="QADParser.js"></script>
     <script src="QuizDataLoader.js"></script>
     <script src="UIController.js"></script>
     <script src="script.js"></script>
