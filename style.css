@@ -712,6 +712,95 @@ button:active {
 }
 
 /* ========================================= */
+/* --- QUIZ BUILDER UI COMPONENTS        --- */
+/* ========================================= */
+
+.glass-panel {
+    background: rgba(167, 213, 255, 0.05);
+    border: 1px solid rgba(167, 213, 255, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.glass-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(167, 213, 255, 0.15);
+    color: #ffffff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.glass-input:focus {
+    outline: none;
+    border-color: #a7d5ff;
+    box-shadow: 0 0 8px rgba(167, 213, 255, 0.2);
+}
+
+.glass-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+#creator-screen h1 {
+    /* Inherits and mirrors the primary typographic styling of the initialization screen to enforce strict visual consistency. */
+    color: #ffffff;
+    font-size: 3.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+.correct-input {
+    border-left: 4px solid #4CAF50;
+}
+
+.d-input {
+    border-left: 4px solid #F44336;
+}
+
+/* ========================================= */
+/* --- FORM BUILDER TYPOGRAPHY & SPACING --- */
+/* ========================================= */
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-label {
+    display: block;
+    font-size: 0.65rem; 
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 8px;
+    margin-left: 4px;
+}
+
+/* Visually links the label text to the green border of the correct input field */
+.correct-label {
+    color: #4CAF50;
+}
+
+/* Visually links the label text to the red border of the distractor input fields */
+.distractor-label {
+    color: #F44336;
+}
+
+/* ========================================= */
 /* --- RESPONSIVE MEDIA QUERIES          --- */
 /* ========================================= */
 
@@ -727,7 +816,7 @@ button:active {
         width: 92%;
     }
 
-    #start-screen h1 {
+    #start-screen h1, #creator-screen h1 {
         font-size: 2.25rem;
     }
 
@@ -760,7 +849,7 @@ button:active {
         padding: 1.2rem;
     }
 
-    #start-screen h1 {
+    #start-screen h1, #creator-screen h1 {
         font-size: 2rem;
     }
 
@@ -816,7 +905,7 @@ button:active {
         padding: 1rem;
     }
 
-    #start-screen h1 {
+    #start-screen h1, #creator-screen h1{
         font-size: 1.75rem;
     }
 

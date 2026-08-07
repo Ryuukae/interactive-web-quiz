@@ -13,6 +13,7 @@
 
 !script.js
 !QuizState.js
+!QuizCreator.js
 !UIController.js
 !QuizDataLoader.js
 !QADParser.js

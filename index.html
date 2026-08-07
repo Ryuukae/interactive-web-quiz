@@ -228,6 +228,42 @@ q=Which protocol is considered secure?
                 <span id="result-file-status" class="file-status"></span>
             </div> 
         </div>
+
+        <!-- ========================================== -->
+        <!-- STAGE 4: CREATOR SCREEN (BUILDER STATE)    -->
+        <!-- ========================================== -->
+        <div id="creator-screen" class="screen">
+            <h1>Quiz Builder</h1>
+            <p id="start-screen-p1" style="margin-bottom: 24px;">Visually construct your assessment or utilize the bulk digester.</p>
+            
+            <!-- 
+              ADVANCED INGESTION MODULE
+              Provides power users a frictionless method to paste QAD formatted text, 
+              instantly hydrating the visual form fields below.
+            -->
+            <div class="glass-panel" style="margin-bottom: 32px;">
+                <h3 style="color: #a7d5ff; margin-bottom: 12px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.1em;">Bulk Import (Advanced)</h3>
+                <textarea id="bulk-import-text" class="glass-input" rows="4" placeholder="q=Your Question&#10;a=Correct Answer&#10;d=Wrong Answer"></textarea>
+                
+                <!-- Inline styles for absolute centering -->
+                <button id="btn-parse-bulk" class="secondary-btn" style="display: block; margin: 16px auto 0 auto;">Parse QAD Text</button>
+            </div>
+
+            <!-- 
+              DYNAMIC GUI CONTAINER
+              Acts as the injection target for QuizCreator.js to mount interactive question cards.
+            -->
+            <div id="builder-questions-container">
+                <!-- Question cards injected via JS -->
+            </div>
+
+            <!-- Implements the action-stack class for consistent UI spacing -->
+            <div class="action-stack" style="margin-top: 32px;">
+                <button id="btn-add-question" class="secondary-btn">+ Add Question</button>
+                <button id="btn-export-quiz">Save & Download JSON</button>
+                <button id="btn-cancel-create" class="secondary-btn" style="border: none; opacity: 0.7;">Back to Start</button>
+            </div>
+        </div>
     
     <!-- 
       SCRIPT DEPENDENCY TREE
@@ -239,6 +275,7 @@ q=Which protocol is considered secure?
     -->
     <script src="QuizState.js"></script>
     <script src="QADParser.js"></script>
+    <script src="QuizCreator.js"></script>
     <script src="QuizDataLoader.js"></script>
     <script src="UIController.js"></script>
     <script src="script.js"></script>
