@@ -1,0 +1,132 @@
+/* ========================================= */
+/* --- RESPONSIVE MEDIA QUERIES          --- */
+/* ========================================= */
+
+/* 
+ * TABLET & SMALL DESKTOP (Max-width: 768px) 
+ * Adjusts structural padding and slightly scales down primary typography 
+ * to accommodate constrained horizontal viewports without breaking layout.
+ */
+ @media (max-width: 768px) {
+    .container {
+        /* Reduces the massive desktop padding to preserve internal screen real estate */
+        padding: 2rem;
+        width: 92%;
+    }
+
+    #start-screen h1, #creator-screen h1 {
+        font-size: 2.25rem;
+    }
+
+    #question-text {
+        font-size: 1.4rem;
+    }
+
+    button {
+        padding: 12px 28px;
+    }
+}
+
+/* 
+ * LARGE MOBILE & PHABLET (Max-width: 540px)
+ * Dynamically recalculates internal paddings and typographic scales 
+ * to optimize spatial density for mobile hardware rendering.
+ */
+@media (max-width: 540px) {
+    /* Eliminates ambient orbs on mobile viewports to guarantee zero distractions and prevent layout shift */
+    body::before, body::after {
+        display: none; 
+    }
+
+    .container {
+        padding: 1.5rem;
+        width: 95%;
+    }
+
+    .screen {
+        padding: 1.2rem;
+    }
+
+    #start-screen h1, #creator-screen h1 {
+        font-size: 2rem;
+    }
+
+    #start-screen p {
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+    }
+
+    #start-screen-p2 {
+        padding: 0px 16px;
+    }
+
+    #question-text {
+        font-size: 1.25rem;
+    }
+    
+    .quiz-info {
+        /* Intercepts the default row layout and stacks metadata vertically to prevent text collision */
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+    }
+
+    .answer-btn {
+        padding: 14px;
+        font-size: 0.95rem;
+    }
+
+    .action-stack {
+        margin-top: 0px;
+    }
+
+    button {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
+
+/* 
+ * SMALL MOBILE (Max-width: 380px)
+ * Aggressive scaling for narrow devices to prevent text overflow and 
+ * ensure touch targets remain strictly confined within the viewport bounds.
+ */
+@media (max-width: 380px) {
+    .container {
+        /* Minimizes outer structural padding to dedicate maximum width to the core content */
+        padding: 1.2rem;
+        width: 98%;
+    }
+
+    .screen {
+        padding: 1rem;
+    }
+
+    #start-screen h1, #creator-screen h1{
+        font-size: 1.75rem;
+    }
+
+    #start-screen p {
+        font-size: 0.85rem;
+    }
+
+    #question-text {
+        font-size: 1.15rem;
+    }
+
+    .answer-btn {
+        /* Constricts touch target padding slightly to prevent multi-line answers from bloating the container height */
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .action-stack {
+        /* Tightens the structural gap between grouped interactive buttons */
+        gap: 12px;
+    }
+
+    button, .secondary-btn {
+        padding: 10px 20px;
+    }
+}

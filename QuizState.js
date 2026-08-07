@@ -60,8 +60,9 @@ class QuizState {
    * @returns {number} The grade metric represented as a percentage (0-100).
    */
   getGradePercentage() {
-    // Dynamically scales the grading threshold based on the arbitrary length of the ingested dataset
-    return (this.score / this.questionData.length) * 100;
+    /* Dynamically scales the grading threshold based on the arbitrary length of the ingested dataset
+       and rounds the value to the nearest integer for a clean display of the percentage. */
+    return Math.round((this.score / this.questionData.length) * 100);
   }
 
   /**

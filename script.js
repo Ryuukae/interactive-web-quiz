@@ -57,3 +57,18 @@ async function initializeApp() {
 
 // Trigger the asynchronous bootstrap lifecycle immediately upon script evaluation
 initializeApp();
+
+// Binds the screen transition from the Start menu to the visual GUI Builder.
+document.getElementById("create-quizset-btn").addEventListener("click", () => {
+  document.getElementById("start-screen").classList.remove("active");
+  document.getElementById("creator-screen").classList.add("active");
+  
+  // Mounts the initial UI state for the creator engine.
+  QuizCreator.initialize();
+});
+
+// Resets the view and returns the user to the initial Start screen.
+document.getElementById("btn-cancel-create").addEventListener("click", () => {
+  document.getElementById("creator-screen").classList.remove("active");
+  document.getElementById("start-screen").classList.add("active");
+});
