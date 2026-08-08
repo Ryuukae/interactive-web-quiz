@@ -1,19 +1,19 @@
-// ==========================================
+// ===========================
 // --- FILE EXPORT UTILITY ---
-// ==========================================
+// ===========================
 
 /**
  * FileExportUtil
  * 
- * Architectural Responsibilities: Encapsulates all browser-native file generation 
+ * @description Architectural Responsibilities: Encapsulates all browser-native file generation 
  * and download triggers. 
  * 
- * Encapsulation Scope: Global utility. Completely agnostic to application state or DOM structure.
+ * @scope Encapsulation Scope: Global utility. Completely agnostic to application state or DOM structure.
  */
 class FileExportUtil {
     
     /**
-     * Converts a JavaScript payload into a formatted JSON file and triggers a client browser download.
+     * @description Converts a JavaScript payload into a formatted JSON file and triggers a client browser download.
      * 
      * @param {Array|Object} payload - The compiled data to serialize.
      * @param {string} filename - The designated output file name.
@@ -46,17 +46,17 @@ class FileExportUtil {
     }
 }
 
-// ==========================================
+// ========================
 // --- TEMPLATE UTILITY ---
-// ==========================================
+// ========================
 
 /**
  * TemplateUtil
  * 
- * Architectural Responsibilities: Houses static string payloads for injection 
+ * @description Architectural Responsibilities: Houses static string payloads for injection 
  * into user-facing text areas to assist with syntax formatting.
  * 
- * Encapsulation Scope: Global utility. Provides read-only data string generation.
+ * @scope Encapsulation Scope: Global utility. Provides read-only data string generation.
  */
 class TemplateUtil {
     
@@ -79,9 +79,9 @@ class TemplateUtil {
     }
 }
 
-// ==========================================
-// --- PROMPT UTILITY                     ---
-// ==========================================
+// ======================
+// --- PROMPT UTILITY ---
+// ======================
 
 /**
  * PromptUtil
