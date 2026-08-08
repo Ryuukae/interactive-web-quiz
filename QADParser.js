@@ -1,11 +1,8 @@
-// ===================
-// --- QAD PARSER ---
-// ===================
-
 /**
  * @class QADParser
- * 
- * @description Architectural Responsibilities: Responsible for ingesting raw QAD formatted 
+ * @name QADParser
+ * @description 
+ * Architectural Responsibilities: Responsible for ingesting raw QAD formatted 
  * text strings, normalizing line endings, and executing parsing loops to assemble 
  * valid question objects. Enforces strict schema rules (1 Question, 1 Answer, 1-6 Distractors).
  * 
@@ -15,15 +12,17 @@
 class QADParser {
 
     /**
-     * Parses custom QAD text files into a standardized JSON array for the application.
-     * 
+     * @name parseQADFormat
+     * @description Parses custom QAD text files into a standardized JSON array for the application.
      * @param {string} rawText - The raw text payload from the uploaded file or textarea.
      * @returns {Array<Object>} - Formatted question objects ready for state ingestion.
      * @throws {Error} Throws an explicit error if structural formatting rules are violated.
      */
     static parseQADFormat(rawText) {
+        // Normalizes line endings globally to ensure predictable array splitting.
         const normalizedText = rawText.replace(/\r\n/g, '\n').trim();
         const lines = normalizedText.split('\n');
+        
         const questions = [];
         let currentQuestion = null;
         let answerCount = 0;
@@ -32,7 +31,11 @@ class QADParser {
         /* Iterates sequentially through text lines to assemble discrete, validated question blocks. */
         // ----------------------------------------------------------------------
         for (let line of lines) {
+            
+            // Strips leading and trailing whitespace to prevent invisible character bugs.
             const cleanLine = line.trim();
+            
+            // Bypasses completely empty lines to allow users to format with generous vertical spacing.
             if (!cleanLine) continue;
 
             const lowerLine = cleanLine.toLowerCase();
@@ -48,6 +51,7 @@ class QADParser {
                     question: cleanLine.substring(2).trim(),
                     answers: []
                 };
+                
                 answerCount = 0;
                 distractorCount = 0;
             } else if (lowerLine.startsWith("a=")) {
@@ -77,7 +81,7 @@ class QADParser {
         }
         // ----------------------------------------------------------------------
 
-        // Validates and captures the final question block in the file.
+        // Validates and captures the final question block in the file since the iteration loop will terminate before it is pushed.
         if (currentQuestion !== null) {
             QADParser.validateBlock(currentQuestion, answerCount, distractorCount);
             questions.push(currentQuestion);
@@ -91,11 +95,12 @@ class QADParser {
     }
 
     /**
-     * Helper method to validate that a parsed QAD block meets strict structural requirements.
-     * 
+     * @name validateBlock
+     * @description Helper method to validate that a parsed QAD block meets strict structural requirements.
      * @param {Object} block - The question object being assembled.
      * @param {number} answers - Count of correct answers found.
      * @param {number} distractors - Count of distractors found.
+     * @returns {void} - Does not return a value.
      * @throws {Error} Throws an explicit error if counts fall outside acceptable parameters.
      */
     static validateBlock(block, answers, distractors) {

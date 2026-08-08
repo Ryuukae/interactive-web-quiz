@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Interactive Quiz</title>
-
+    
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,10 +25,9 @@
       and provides a stable backdrop for the glassmorphism rendering.
     -->
     <div class="container">
-
-        <!-- ====================================== -->
-        <!-- STAGE 1: START SCREEN (INITIAL STATE)  -->
-        <!-- ====================================== -->
+        <!-- ============================================= -->
+        <!-- --- STAGE 1: START SCREEN (INITIAL STATE) --- -->
+        <!-- ============================================= -->
         <!-- The 'active' class dictates visibility upon initial DOM load. -->
         <div class="screen active" id="start-screen">
             <h1>Quiz Time!</h1>
@@ -41,145 +40,45 @@
               actions while enforcing consistent vertical rhythm.
             -->
             <div class="action-stack">
-                
                 <!-- Primary Call to Action (CTA): Initializes the default quiz flow -->
                 <button id="start-btn" disabled>Start Quiz</button>
-
+                
                 <!-- Secondary Action Row: Houses the builder and the file importer horizontally -->
                 <div class="secondary-actions">
-
                     <!-- Instantiates the visual form builder GUI to support code-free quiz generation. -->
                     <button id="create-quizset-btn" class="secondary-btn">Create Quizset</button>
-                
+                    
                     <!-- 
-                    FILE UPLOAD ARCHITECTURE
+                      FILE UPLOAD ARCHITECTURE 
                       The native <input type="file"> is hidden from the UI because default browser 
-                      rendering cannot be consistently styled across platforms. 
+                      rendering cannot be consistently styled across platforms.
                       We restrict the payload to either a TXT or JSON format via the 'accept' attribute.
                     -->
                     <input type="file" id="custom-file-input" accept=".json, .txt, .text, .doc, .docx" hidden>
                     
                     <!-- 
-                     PROXY TRIGGER
-                     The <label> element is programmatically linked to the hidden input via the 'for' attribute. 
-                     Clicking this styled label seamlessly delegates the click event to the native file browser.
+                      PROXY TRIGGER
+                      The <label> element is programmatically linked to the hidden input via the 'for' attribute. 
+                      Clicking this styled label seamlessly delegates the click event to the native file browser.
                     -->
                     <label for="custom-file-input" class="secondary-btn">Import Quizset</label>
                 </div>
                 
                 <!-- Dedicated output node for JS to inject the parsed file name, providing user feedback -->
                 <span id="file-name-display" class="file-status"></span>
-
-                <!-- 
-                  TXT INSTRUCTIONAL ACCORDION
-                  Provides non-technical users with plain-text formatting documentation
-                  and template access without cluttering the primary viewport.
-                -->
-                <details class="format-guide">
-                    <summary id="accordion_btn">How do I format my TXT?</summary>
-                    <div class="guide-content">
-                        <p>
-                            Easily build a quiz by typing your questions and answers as plain text. Use <strong>Q=</strong> for the Question, <strong>A=</strong> for the Correct Answer, and <strong>D=</strong> for a Distractor (wrong answer).
-                        </p>
-                        <ul style="margin-bottom: 16px; padding-left: 20px; line-height: 1.6;">
-                            <li><strong>Keep Groups Together:</strong> The lines for a single question must touch. Do not put blank lines inside a question block. Separate new questions with a blank line.</li>
-                            <li><strong>Required Lines:</strong> Each question group must have exactly one <strong>Q</strong>, exactly one <strong>A</strong>, and anywhere from 1 to 6 <strong>D</strong> lines.</li>
-                            <li><strong>Strict Order:</strong> The lines must always follow this exact sequence: Question, Answer, then Distractor(s).</li>
-                            <li><strong>Case Insensitive:</strong> You can use uppercase or lowercase prefixes (e.g., <code>Q=</code> or <code>q=</code>).</li>
-                            <li><strong>Indentation:</strong> Each line is trimmed so you may use whatever indentation you prefer.</li>
-                        </ul>
-                        
-                        <!-- Preformatted code block to preserve whitespace and formatting -->
-                        <pre><code>q=Your question here?
-a=Correct option
-d=Incorrect option
-
-                        
-Q=What is the default port for HTTPS?
-A=443
-D=80
-D=21
-D=22
-D=8080
-
-q=Which protocol is considered secure?
-  a=HTTPS
-    D=FTP
-    d=HTTP
-    D=TELNET
-</code></pre>
-                        
-                        <!-- Native download attribute forces the browser to download rather than navigate. -->
-                        <a href="template.txt" download class="download-link">Download Template</a>
-                    </div>
-                </details>
-
-                <!-- 
-                  JSON INSTRUCTIONAL ACCORDION
-                  A native, zero-JS collapsible node to provide formatting documentation
-                  and template access without cluttering the primary viewport.
-                  Provides explicit schema requirements to prevent ingestion parsing errors.
-                -->
-                <details class="format-guide">
-                    <summary id="accordion_btn">How do I format my JSON?</summary>
-                    <div class="guide-content">
-                        <p>
-                            Your custom file must be a valid JSON array containing individual question objects. Each object must strictly adhere to the following schema:
-                        </p>
-                        <ul style="margin-bottom: 16px; padding-left: 20px; line-height: 1.6;">
-                            <li><strong>Root Structure:</strong> The entire file must be wrapped in a single array <code>[ ]</code>.</li>
-                            <li><strong>Question Property:</strong> Each object requires a <code>"question"</code> key with a string value representing the prompt.</li>
-                            <li><strong>Answers Array:</strong> Each object requires an <code>"answers"</code> key containing an array of the available choices.</li>
-                            <li><strong>Answer Objects:</strong> Inside the answers array, each choice must contain a <code>"text"</code> key (the answer string) and a strict boolean <code>"correct"</code> key (<code>true</code> or <code>false</code> without quotes).</li>
-                        </ul>
-                        
-                        <!-- Preformatted code block to preserve whitespace and indentation -->
-                        <pre><code>[
-  {
-    "question": "Your question here?",
-    "answers": [
-      { "text": "Correct option", "correct": true },
-      { "text": "Incorrect option", "correct": false }
-    ]
-  },
-  {
-    "question": "What is the default port for HTTPS?",
-    "answers": [
-      { "text": "443", "correct": true },
-      { "text": "80", "correct": false },
-      { "text": "21", "correct": false },
-      { "text": "22", "correct": false },
-      { "text": "8080", "correct": false } 
-    ]
-  },
-  {
-    "question": "Which protocol is considered secure?",
-    "answers": [
-      { "text": "FTP", "correct": false },
-      { "text": "HTTP", "correct": false },
-      { "text": "HTTPS", "correct": true },
-      { "text": "TELNET", "correct": false }
-    ]
-  }
-</code></pre>
-                        
-                        <!-- Native download attribute forces the browser to download rather than navigate -->
-                        <a href="template.json" download class="download-link">Download Template</a>
-                    </div>
-                </details>
             </div>
         </div>
         
-        <!-- =================================== -->
-        <!-- STAGE 2: QUIZ SCREEN (ACTIVE STATE) -->
-        <!-- =================================== -->
+        <!-- =========================================== -->
+        <!-- --- STAGE 2: QUIZ SCREEN (ACTIVE STATE) --- -->
+        <!-- =========================================== -->
         <div class="screen" id="quiz-screen">
             
             <!-- QUIZ HEADER: Houses the dynamic question text and real-time metadata -->
             <div class="quiz-header">
                 <!-- Text node updated dynamically by QuizState progression -->
                 <h2 id="question-text">Question goes here...</h2>
-            
+                
                 <!-- Metadata container: Tracks chronological progress and current scoring -->
                 <div class="quiz-info">
                     <p>Question <span id="current-question">#</span> of <span id="totalQuestionsSpan">#</span></p>
@@ -206,9 +105,9 @@ q=Which protocol is considered secure?
             </div>
         </div>
 
-        <!-- ======================================== -->
-        <!-- STAGE 3: RESULTS SCREEN (TERMINAL STATE) -->
-        <!-- ======================================== -->
+        <!-- ================================================ -->
+        <!-- --- STAGE 3: RESULTS SCREEN (TERMINAL STATE) --- -->
+        <!-- ================================================ -->
         <div id="result-screen" class="screen">
             <h1>Quiz Results</h1>
             
@@ -233,21 +132,20 @@ q=Which protocol is considered secure?
                 <span id="result-file-status" class="file-status"></span>
                 
                 <!-- Navigation trigger to abort and return to the main menu -->
-                <button id="return-start-btn" class="secondary-btn" id="return-start-btn">Back to Start</button>
+                <button id="return-start-btn" class="secondary-btn">Back to Start</button>
             </div> 
         </div>
 
-        <!-- ======================================= -->
-        <!-- STAGE 4: CREATOR SCREEN (BUILDER STATE) -->
-        <!-- ======================================= -->
+        <!-- =============================================== -->
+        <!-- --- STAGE 4: CREATOR SCREEN (BUILDER STATE) --- -->
+        <!-- =============================================== -->
         <div id="creator-screen" class="screen">
             <h1>Quiz Builder</h1>
             <p id="creator-subtitle">Visually construct your assessment or utilize the bulk digester.</p>
             
             <!-- 
               ADVANCED INGESTION MODULE
-              Provides power users a frictionless method to paste QAD formatted text or raw JSON arrays, 
-              instantly hydrating the visual form fields below.
+              Defaults to a .collapsed state to guarantee the layout fits within the viewport bounds on initial load.
             -->
             <div id="bulk-import-panel" class="glass-panel collapsed">
                 <div class="card-header" id="bulk-import-header">
@@ -261,13 +159,99 @@ q=Which protocol is considered secure?
                         <button id="btn-template-json" class="template-btn">Insert JSON Template</button>
                         <button id="btn-template-txt" class="template-btn">Insert TXT Template</button>
                     </div>
-                    <textarea id="bulk-import-text" class="glass-input" rows="3" placeholder="Paste your QAD text or formatted JSON array here..."></textarea>
                     
+                    <textarea id="bulk-import-text" class="glass-input" rows="2" placeholder="Paste your QAD text or formatted JSON array here..."></textarea>
                     
-
                     <button id="btn-parse-bulk" class="secondary-btn">Parse Quizset Data</button>
                     <!-- Dedicated output node for JS to inject validation errors -->
                     <span id="bulk-import-status" class="file-status"></span>
+
+                    <!-- 
+                      INSTRUCTIONAL ACCORDIONS
+                      Migrated from the start screen to provide immediate format reference.
+                      Wrapped in an action-stack to preserve vertical flex centering.
+                    -->
+                    <div class="action-stack" style="margin-top: 16px;">
+                        <details class="format-guide">
+                            <summary id="accordion_btn">How do I format my TXT?</summary>
+                            <div class="guide-content">
+                                <p>
+                                    Easily build a quiz by typing your questions and answers as plain text. Use <strong>Q=</strong> for the Question, <strong>A=</strong> for the Correct Answer, and <strong>D=</strong> for a Distractor (wrong answer).
+                                </p>
+                                <ul style="margin-bottom: 16px; padding-left: 20px; line-height: 1.6;">
+                                    <li><strong>Keep Groups Together:</strong> The lines for a single question must touch. Do not put blank lines inside a question block. Separate new questions with a blank line.</li>
+                                    <li><strong>Required Lines:</strong> Each question group must have exactly one <strong>Q</strong>, exactly one <strong>A</strong>, and anywhere from 1 to 6 <strong>D</strong> lines.</li>
+                                    <li><strong>Strict Order:</strong> The lines must always follow this exact sequence: Question, Answer, then Distractor(s).</li>
+                                    <li><strong>Case Insensitive:</strong> You can use uppercase or lowercase prefixes (e.g., <code>Q=</code> or <code>q=</code>).</li>
+                                    <li><strong>Indentation:</strong> Each line is trimmed so you may use whatever indentation you prefer.</li>
+                                </ul>
+                                
+                                <pre><code>q=Your question here?
+a=Correct option
+d=Incorrect option
+
+Q=What is the default port for HTTPS?
+A=443
+D=80
+D=21
+D=22
+D=8080
+
+q=Which protocol is considered secure?
+  a=HTTPS
+    D=FTP
+    d=HTTP
+    D=TELNET
+</code></pre>
+                                <a href="template.txt" download class="download-link">Download Template</a>
+                            </div>
+                        </details>
+
+                        <details class="format-guide">
+                            <summary id="accordion_btn">How do I format my JSON?</summary>
+                            <div class="guide-content">
+                                <p>
+                                    Your custom file must be a valid JSON array containing individual question objects. Each object must strictly adhere to the following schema:
+                                </p>
+                                <ul style="margin-bottom: 16px; padding-left: 20px; line-height: 1.6;">
+                                    <li><strong>Root Structure:</strong> The entire file must be wrapped in a single array <code>[ ]</code>.</li>
+                                    <li><strong>Question Property:</strong> Each object requires a <code>"question"</code> key with a string value representing the prompt.</li>
+                                    <li><strong>Answers Array:</strong> Each object requires an <code>"answers"</code> key containing an array of the available choices.</li>
+                                    <li><strong>Answer Objects:</strong> Inside the answers array, each choice must contain a <code>"text"</code> key (the answer string) and a strict boolean <code>"correct"</code> key (<code>true</code> or <code>false</code> without quotes).</li>
+                                </ul>
+                                
+                                <pre><code>[
+  {
+    "question": "Your question here?",
+    "answers": [
+      { "text": "Correct option", "correct": true },
+      { "text": "Incorrect option", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the default port for HTTPS?",
+    "answers": [
+      { "text": "443", "correct": true },
+      { "text": "80", "correct": false },
+      { "text": "21", "correct": false },
+      { "text": "22", "correct": false },
+      { "text": "8080", "correct": false }
+     ]
+  },
+  {
+    "question": "Which protocol is considered secure?",
+    "answers": [
+      { "text": "FTP", "correct": false },
+      { "text": "HTTP", "correct": false },
+      { "text": "HTTPS", "correct": true },
+      { "text": "TELNET", "correct": false }
+    ]
+  }
+]</code></pre>
+                                <a href="template.json" download class="download-link">Download Template</a>
+                            </div>
+                        </details>
+                    </div>
                 </div>
             </div>
             
@@ -279,15 +263,14 @@ q=Which protocol is considered secure?
             <!-- Implements the action-stack class for consistent UI spacing -->
             <div id="creator-action-stack" class="action-stack">
                 <button id="btn-add-question" class="secondary-btn">+</button>
-                
-                <!-- Hard reset trigger utilizing localized danger styling -->
+                <button id="btn-run-builder-quiz">Start Quiz</button>
                 <button id="btn-clear-builder" class="secondary-btn btn-danger">Clear All</button>
-                
-                <button id="btn-export-quiz">Download JSON</button>
+                <button id="btn-export-quiz" class="secondary-btn">Download JSON</button>
                 <button id="btn-cancel-create" class="secondary-btn">Back to Start</button>
             </div>
         </div>
-    
+    </div>
+
     <!-- ============================== -->
     <!-- --- SCRIPT DEPENDENCY TREE --- -->
     <!-- ============================== -->
@@ -303,8 +286,8 @@ q=Which protocol is considered secure?
     -->
     <script src="QuizState.js"></script>
     <script src="QADParser.js"></script>
-    <script src="Utils.js"></script> 
-    <script src="QuizBuilderState.js"></script> 
+    <script src="Utils.js"></script>
+    <script src="QuizBuilderState.js"></script>
     <script src="QuizDataLoader.js"></script>
     <script src="UIController.js"></script>
     <script src="script.js"></script>

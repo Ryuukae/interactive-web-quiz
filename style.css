@@ -753,3 +753,19 @@ button:disabled {
     border: none;
     opacity: 0.7;
 }
+
+/* ========================================= */
+/* --- VALIDATION ERROR STATES           --- */
+/* ========================================= */
+
+/* Alters border and localized glow to signal a missing requirement */
+.glass-input.input-error {
+    border-color: rgba(244, 67, 54, 0.6) !important;
+    box-shadow: 0 0 8px rgba(244, 67, 54, 0.2) !important;
+}
+
+/* Modifies the placeholder typography to display red warning text */
+.glass-input.input-error::placeholder {
+    color: rgba(244, 67, 54, 0.8) !important;
+    font-style: italic;
+}

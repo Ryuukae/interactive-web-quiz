@@ -1,8 +1,12 @@
 /**
  * @class QuizDataLoader
- * @description Encapsulates the client-side file reading architecture. 
+ * @name QuizDataLoader
+ * @description 
+ * Architectural Responsibilities: Encapsulates the client-side file reading architecture. 
  * Responsible for intercepting local file uploads, parsing JSON payloads into memory via the native FileReader API, 
  * validating structural schema integrity, and handling synchronous UI state updates to reflect validation status.
+ * 
+ * Encapsulation Scope: Provides data parsing and schema validation rules across the application.
  */
 class QuizDataLoader {
     
@@ -11,9 +15,11 @@ class QuizDataLoader {
     // ======================
 
     /**
-     * Initializes the DataLoader and binds necessary DOM nodes.
+     * @name constructor
+     * @description Initializes the DataLoader and binds necessary DOM nodes.
      * @param {HTMLElement} input_element - The hidden native file input node.
      * @param {HTMLElement} file_status - The span node designated for file name output.
+     * @returns {void} - Does not return a value.
      */
     constructor(input_element, file_status) {
         // Cache DOM references to prevent repeated document queries during execution
@@ -32,7 +38,9 @@ class QuizDataLoader {
     // ========================
 
     /**
-     * Establishes the event delegation for the file input node.
+     * @name bindEvents
+     * @description Establishes the event delegation for the file input node.
+     * @returns {void} - Does not return a value.
      */
     bindEvents() {
         // Binds the 'change' event to trigger file processing.
@@ -46,9 +54,10 @@ class QuizDataLoader {
     // =============================
 
     /**
+     * @name processFile
      * @description Primary execution thread for file extraction, validation, and asynchronous parsing.
-     * 
      * @param {Event} event - The standard DOM change event object.
+     * @returns {void} - Does not return a value.
      */
     processFile(event) {
         // Extract the physical File object from the event's FileList array
@@ -118,29 +127,8 @@ class QuizDataLoader {
     }
 
     /**
-     * Processes raw text strings directly, bypassing the FileReader I/O layer.
-     * 
-     * @param {string} rawText - The unformatted string payload to digest.
-     * @returns {Array<Object>} - The fully validated assessment dataset.
-     * @throws {Error} Throws an explicit error if the text is invalid or malformed.
-     */
-    static processRawText(rawText) {
-        // Delegates the pure logic evaluation to the State/Model class.
-        const parsedData = QuizBuilderState.parseBulkPayload(rawText);
-
-        if (!parsedData || parsedData.length === 0) {
-            throw new Error("No valid QAD or JSON questions detected.");
-        }
-
-        // Utilizes the centralized schema validation engine to ensure structural integrity.
-        QuizDataLoader.validateSchema(parsedData);
-        
-        return parsedData;
-    }
-
-    /**
-     * Processes raw text strings directly, bypassing the FileReader I/O layer.
-     * 
+     * @name processRawText
+     * @description Processes raw text strings directly, bypassing the FileReader I/O layer.
      * @param {string} rawText - The unformatted string payload to digest.
      * @returns {Array<Object>} - The fully validated assessment dataset.
      * @throws {Error} Throws an explicit error if the text is invalid or malformed.
@@ -164,10 +152,10 @@ class QuizDataLoader {
     // =========================
 
     /**
-     * Validates the structural integrity of the ingested JSON dataset.
-     * Enforces bounds (1-7 answers total, exactly 1 correct answer per question).
-     * 
+     * @name validateSchema
+     * @description Validates the structural integrity of the ingested JSON dataset. Enforces bounds (1-7 answers total, exactly 1 correct answer per question).
      * @param {Array<Object>} data - The parsed JSON data to validate.
+     * @returns {void} - Does not return a value.
      * @throws {Error} Throws an explicit error if the schema does not match specifications.
      */
     static validateSchema(data) {
@@ -213,7 +201,8 @@ class QuizDataLoader {
     // =======================
 
     /**
-     * Accessor method for the hydrated JSON payload.
+     * @name getCustomData
+     * @description Accessor method for the hydrated JSON payload.
      * @returns {Array<Object>|null} The validated question dataset or null if uninitialized/failed.
      */
     getCustomData() {

@@ -1,10 +1,11 @@
-// ==========================================
+// ================================
 // --- QUIZ BUILDER STATE CLASS ---
-// ==========================================
+// ================================
 
 /**
- * QuizBuilderState
- * 
+ * @class QuizBuilderState
+ * @name QuizBuilderState
+ * @description 
  * Architectural Responsibilities: Encapsulates the business logic for dynamic quiz generation. 
  * Evaluates raw text payloads to determine schema formatting and routes digestion to the 
  * appropriate parsing engine.
@@ -15,8 +16,8 @@
 class QuizBuilderState {
 
     /**
-     * Evaluates raw input strings to determine structural formatting and extracts assessment data.
-     * 
+     * @name parseBulkPayload
+     * @description Evaluates raw input strings to determine structural formatting and extracts assessment data.
      * @param {string} rawText - The raw string payload pasted by the user.
      * @returns {Array<Object>} - The fully parsed and formatted assessment dataset.
      */
