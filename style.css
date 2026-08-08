@@ -1,6 +1,6 @@
-/* ========================================= */
-/* --- GLOBAL RESET & TYPOGRAPHY         --- */
-/* ========================================= */
+/* ================================= */
+/* --- GLOBAL RESET & TYPOGRAPHY --- */
+/* ================================= */
 
 * {
     margin: 0;
@@ -11,9 +11,9 @@
     box-sizing: border-box;
 }
 
-/* ========================================= */
-/* --- ROOT & VIEWPORT ARCHITECTURE      --- */
-/* ========================================= */
+/* ==================================== */
+/* --- ROOT & VIEWPORT ARCHITECTURE --- */
+/* ==================================== */
 
 html {
     max-width: 100vw;
@@ -41,9 +41,9 @@ body {
     z-index: 1;
 }
 
-/* ========================================= */
-/* --- PRIMARY UI GLASS CONTAINER        --- */
-/* ========================================= */
+/* ================================== */
+/* --- PRIMARY UI GLASS CONTAINER --- */
+/* ================================== */
 
 .container {
     width: 90%; 
@@ -70,9 +70,9 @@ body {
         inset 0 1px 0 rgba(255, 255, 255, 0.8); 
 }
 
-/* ========================================= */
-/* --- STATE MANAGEMENT & SCREENS        --- */
-/* ========================================= */
+/* ================================== */
+/* --- STATE MANAGEMENT & SCREENS --- */
+/* ================================== */
 
 .screen {
     display: none;
@@ -84,9 +84,9 @@ body {
     display: block;
 }
 
-/* ========================================= */
-/* --- START SCREEN COMPONENTS           --- */
-/* ========================================= */
+/* =============================== */
+/* --- START SCREEN COMPONENTS --- */
+/* =============================== */
 
 #start-screen h1, 
 #creator-screen h1 {
@@ -127,9 +127,9 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* ========================================= */
-/* --- ROOT BUTTON STYLING               --- */
-/* ========================================= */
+/* =========================== */
+/* --- ROOT BUTTON STYLING --- */
+/* =========================== */
 
 button {
     background: linear-gradient(135deg, #6366f1 0%, #d946ef 100%);
@@ -158,9 +158,9 @@ button:active {
     filter: brightness(0.95);
 }
 
-/* ========================================= */
-/* --- QUIZ SCREEN SPECIFICS             --- */
-/* ========================================= */
+/* ============================= */
+/* --- QUIZ SCREEN SPECIFICS --- */
+/* ============================= */
 
 .quiz-header {
     margin-bottom: 2.5rem;
@@ -222,9 +222,9 @@ button:active {
     color: #e02525;
 }
 
-/* ========================================= */
-/* --- PROGRESS BAR ANIMATIONS           --- */
-/* ========================================= */
+/* =============================== */
+/* --- PROGRESS BAR ANIMATIONS --- */
+/* =============================== */
 
 .progress-bar {
     background: rgba(255, 255, 255, 0.08);
@@ -263,9 +263,9 @@ button:active {
     }
 }
 
-/* ========================================= */
-/* --- RESULT SCREEN                     --- */
-/* ========================================= */
+/* ===================== */
+/* --- RESULT SCREEN --- */
+/* ===================== */
 
 #result-screen h1 {
     color: #ffffff;
@@ -310,9 +310,9 @@ button:active {
     background: #4338ca; 
 }
 
-/* ========================================= */
-/* --- ACCESSIBILITY & FOCUS STATES      --- */
-/* ========================================= */
+/* ==================================== */
+/* --- ACCESSIBILITY & FOCUS STATES --- */
+/* ==================================== */
 
 :where(button, input, select, textarea, [tabindex="0"]):focus-visible {
     outline: 3px solid #a7d5ff; 
@@ -320,9 +320,9 @@ button:active {
     border-radius: 0.5rem;
 }
 
-/* ========================================= */
-/* --- ACTION STACKS                     --- */
-/* ========================================= */
+/* ============================ */
+/* --- ACTION STACKS & ROWS --- */
+/* ============================ */
 
 .action-stack {
     display: flex;
@@ -333,12 +333,30 @@ button:active {
 }
 
 #creator-action-stack {
-    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+    width: 100%;
 }
 
-/* ========================================= */
-/* --- SECONDARY OUTLINE BUTTON          --- */
-/* ========================================= */
+.action-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.action-row button {
+    flex: 1;
+    margin: 0; 
+    padding: 12px 16px; 
+    font-size: 0.95rem; 
+}
+
+/* ================================ */
+/* --- SECONDARY OUTLINE BUTTON --- */
+/* ================================ */
 
 .secondary-btn {
     background: transparent;
@@ -349,36 +367,40 @@ button:active {
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
-    
-    /* Purges global <button> properties to perfectly match <label> rendering */
     box-shadow: none;
     filter: none;
-    
     transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
 }
 
 .secondary-btn:hover {
     background: rgba(167, 213, 255, 0.1);
     border-color: rgba(167, 213, 255, 0.6);
-    
-    /* Overrides the global <button> hover animations (glow and upward float) */
     box-shadow: none;
     filter: none;
     transform: none; 
 }
 
 .secondary-btn:active {
-    /* Executes the physical scale down micro-interaction */
     transform: scale(0.97);
-    
-    /* Keeps the global <button> active states purged */
     box-shadow: none;
     filter: none;
 }
 
-/* ========================================= */
-/* --- FILE STATUS TEXT                  --- */
-/* ========================================= */
+.dashed-btn {
+    width: 100%;
+    border-style: dashed;
+    border-width: 2px;
+    background: rgba(167, 213, 255, 0.05);
+}
+
+.dashed-btn:hover {
+    background: rgba(167, 213, 255, 0.15);
+    border-style: dashed; 
+}
+
+/* ======================== */
+/* --- FILE STATUS TEXT --- */
+/* ======================== */
 
 .file-status {
     color: #a7d5ff;
@@ -398,15 +420,12 @@ button:active {
     font-weight: 600;
 }
 
-/* Synthesizes the Start button gradient background and maps it strictly to the typographic fill */
 .file-status.success {
     background: linear-gradient(135deg, #6366f1 0%, #d946ef 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 700;
-    
-    /* Overrides the 0.8 opacity property from the parent .visible class to maximize vibrancy */
     opacity: 1; 
 }
 
@@ -416,9 +435,9 @@ button:active {
     margin-top: 8px;
 }
 
-/* ========================================= */
-/* --- FORMATTING ACCORDION              --- */
-/* ========================================= */
+/* ============================ */
+/* --- FORMATTING ACCORDION --- */
+/* ============================ */
 
 .format-guide {
     width: 100%;
@@ -512,12 +531,12 @@ button:active {
     font-family: sans-serif;
 }
 
-/* ========================================= */
-/* --- QUIZ BUILDER UI COMPONENTS        --- */
-/* ========================================= */
+/* ================================== */
+/* --- QUIZ BUILDER UI COMPONENTS --- */
+/* ================================== */
 
 #creator-subtitle {
-    margin-bottom: 16px; 
+    margin-bottom: 10px; 
 }
 
 .glass-panel {
@@ -526,14 +545,19 @@ button:active {
     background: rgba(167, 213, 255, 0.05);
     border: 1px solid rgba(167, 213, 255, 0.1);
     border-radius: 16px;
-    padding: 16px 20px;
-    margin: 0 auto 12px;
+    padding: 12px 16px; 
+    margin: 0 auto 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     text-align: left;
 }
 
 #bulk-import-panel {
     margin-bottom: 16px;
+}
+
+/* Hard-locks the raw text ingestion node to prevent user layout disruption */
+#bulk-import-text {
+    resize: none;
 }
 
 #btn-parse-bulk {
@@ -554,10 +578,11 @@ button:active {
     margin-bottom: 12px;
 }
 
-.btn-add-distractor {
+button.secondary-btn.btn-add-distractor {
     display: block;
-    padding: 6px 12px;
-    margin: 12px 0 0 auto;
+    width: max-content; 
+    padding: 4px 12px; 
+    margin: 6px 0 0 auto; 
     font-size: 0.75rem;
 }
 
@@ -582,12 +607,51 @@ input.glass-input.d-input {
     border-left: 4px solid #F44336 !important;
 }
 
+/* =================================== */
+/* --- BUILDER SCROLLING CONTAINER --- */
+/* =================================== */
+
+#builder-questions-container {
+    max-height: 55vh; 
+    
+    /* Forces a vertical scrollbar explicitly to guarantee identical internal content bounds */
+    overflow-y: scroll;
+    overflow-x: hidden;
+    
+    /* Compensates for the scrollbar track width by aggressively scaling out the right margin */
+    width: calc(100% + 8px);
+    margin-right: -8px;
+    padding-right: 2px;
+    margin-bottom: 12px;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(167, 213, 255, 0.3) transparent;
+}
+
+#builder-questions-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#builder-questions-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+}
+
+#builder-questions-container::-webkit-scrollbar-thumb {
+    background: rgba(167, 213, 255, 0.3);
+    border-radius: 8px;
+}
+
+#builder-questions-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(167, 213, 255, 0.5);
+}
+
 /* ========================================= */
 /* --- FORM BUILDER TYPOGRAPHY & SPACING --- */
 /* ========================================= */
 
 .input-group {
-    margin-bottom: 6px; /* Tightened from 12px to save screen space */
+    margin-bottom: 6px; 
 }
 
 .input-group:last-child {
@@ -601,19 +665,19 @@ input.glass-input.d-input {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin: 0 0 2px 4px; /* Reduced proximity to input fields */
+    margin: 0 0 2px 4px; 
 }
 
-/* ========================================= */
-/* --- COLLAPSIBLE CARD UI               --- */
-/* ========================================= */
+/* =========================== */
+/* --- COLLAPSIBLE CARD UI --- */
+/* =========================== */
 
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 12px;
-    margin-bottom: 16px;
+    padding-bottom: 8px; 
+    margin-bottom: 12px; 
     border-bottom: 1px solid rgba(167, 213, 255, 0.1);
     cursor: pointer;
     transition: padding 0.2s ease, margin 0.2s ease, border-color 0.2s ease;
@@ -623,28 +687,22 @@ input.glass-input.d-input {
     color: #a7d5ff;
     font-size: 0.95rem;
     font-weight: 600;
-    
-    /* Reduced from 90% to 80% to ensure layout stability with the newly added dual icons */
     max-width: 80%; 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* Groups the right-aligned action icons sequentially along the cross-axis */
 .header-actions {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-/* Localized minimalist styling for the header delete trigger */
 .delete-icon-btn {
     background: transparent;
     border: none;
     color: rgba(244, 67, 54, 0.6);
-    
-    /* Optically matched to the geometric weight of the 0.8rem toggle icon */
     font-size: 0.85rem; 
     cursor: pointer;
     padding: 0;
@@ -676,11 +734,10 @@ input.glass-input.d-input {
     transform: rotate(-90deg);
 }
 
-/* ========================================= */
-/* --- BUTTON DISABLED STATES            --- */
-/* ========================================= */
+/* ============================== */
+/* --- BUTTON DISABLED STATES --- */
+/* ============================== */
 
-/* Strips interactivity and color from the primary button when locked by the application state */
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -689,29 +746,9 @@ button:disabled {
     transform: none;
 }
 
-/* ========================================= */
-/* --- SECONDARY ACTION ROW              --- */
-/* ========================================= */
-
-/* Horizontally groups the secondary buttons with flex-wrap to prevent overflow on very small mobile screens */
-.secondary-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
-
-#btn-add-question {
-    padding: 3px 4px 3px 4px;
-    margin-bottom: 20px;
-
-}
-
-/* ========================================= */
-/* --- TEMPLATE & CARD ACTIONS           --- */
-/* ========================================= */
+/* =============================== */
+/* --- TEMPLATE & CARD ACTIONS --- */
+/* =============================== */
 
 .template-actions {
     display: flex;
@@ -754,17 +791,15 @@ button:disabled {
     opacity: 0.7;
 }
 
-/* ========================================= */
-/* --- VALIDATION ERROR STATES           --- */
-/* ========================================= */
+/* =============================== */
+/* --- VALIDATION ERROR STATES --- */
+/* =============================== */
 
-/* Alters border and localized glow to signal a missing requirement */
 .glass-input.input-error {
     border-color: rgba(244, 67, 54, 0.6) !important;
     box-shadow: 0 0 8px rgba(244, 67, 54, 0.2) !important;
 }
 
-/* Modifies the placeholder typography to display red warning text */
 .glass-input.input-error::placeholder {
     color: rgba(244, 67, 54, 0.8) !important;
     font-style: italic;

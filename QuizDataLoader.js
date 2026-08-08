@@ -10,10 +10,9 @@
  */
 class QuizDataLoader {
     
-    // ======================
+    // =======================
     // --- INITIALIZATION ---
-    // ======================
-
+    // =======================
     /**
      * @name constructor
      * @description Initializes the DataLoader and binds necessary DOM nodes.
@@ -36,7 +35,6 @@ class QuizDataLoader {
     // ========================
     // --- EVENT DELEGATION ---
     // ========================
-
     /**
      * @name bindEvents
      * @description Establishes the event delegation for the file input node.

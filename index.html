@@ -25,9 +25,9 @@
       and provides a stable backdrop for the glassmorphism rendering.
     -->
     <div class="container">
-        <!-- ============================================= -->
-        <!-- --- STAGE 1: START SCREEN (INITIAL STATE) --- -->
-        <!-- ============================================= -->
+        <!-- ============================================== -->
+        <!-- --- STAGE 1: START SCREEN (INITIAL STATE)  --- -->
+        <!-- ============================================== -->
         <!-- The 'active' class dictates visibility upon initial DOM load. -->
         <div class="screen active" id="start-screen">
             <h1>Quiz Time!</h1>
@@ -160,7 +160,7 @@
                         <button id="btn-template-txt" class="template-btn">Insert TXT Template</button>
                     </div>
                     
-                    <textarea id="bulk-import-text" class="glass-input" rows="2" placeholder="Paste your QAD text or formatted JSON array here..."></textarea>
+                    <textarea id="bulk-import-text" class="glass-input" rows="4" placeholder="Paste your QAD text or formatted JSON array here to load questions into the UI builder..."></textarea>
                     
                     <button id="btn-parse-bulk" class="secondary-btn">Parse Quizset Data</button>
                     <!-- Dedicated output node for JS to inject validation errors -->
@@ -261,12 +261,18 @@ q=Which protocol is considered secure?
             </div>
 
             <!-- Implements the action-stack class for consistent UI spacing -->
-            <div id="creator-action-stack" class="action-stack">
-                <button id="btn-add-question" class="secondary-btn">+</button>
-                <button id="btn-run-builder-quiz">Start Quiz</button>
-                <button id="btn-clear-builder" class="secondary-btn btn-danger">Clear All</button>
-                <button id="btn-export-quiz" class="secondary-btn">Download JSON</button>
-                <button id="btn-cancel-create" class="secondary-btn">Back to Start</button>
+            <div id="creator-action-stack">
+                <button id="btn-add-question" class="secondary-btn dashed-btn">+ Add Question</button>
+                
+                <div class="action-row">
+                    <button id="btn-run-builder-quiz">Start Quiz</button>
+                    <button id="btn-export-quiz">Download JSON</button>
+                </div>
+                
+                <div class="action-row">
+                    <button id="btn-clear-builder" class="secondary-btn btn-danger">Clear All</button>
+                    <button id="btn-cancel-create" class="secondary-btn">Back to Start</button>
+                </div>
             </div>
         </div>
     </div>

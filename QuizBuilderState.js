@@ -1,7 +1,3 @@
-// ================================
-// --- QUIZ BUILDER STATE CLASS ---
-// ================================
-
 /**
  * @class QuizBuilderState
  * @name QuizBuilderState

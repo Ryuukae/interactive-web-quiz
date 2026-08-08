@@ -82,7 +82,20 @@ class UIController {
         document.getElementById("btn-add-question").addEventListener("click", () => {
             // Evaluates existing DOM nodes for missing required data before appending a new card.
             if (this.validateBuilderCards()) {
+                
+                // Collapses all existing cards to preserve vertical screen space.
+                const cards = this.builderContainer.querySelectorAll(".question-card");
+                cards.forEach(c => c.classList.add("collapsed"));
+                
                 this.addBuilderQuestionCard();
+                
+                // Defers the scroll execution to ensure the DOM has painted the new card.
+                setTimeout(() => {
+                    this.builderContainer.scrollTo({
+                        top: this.builderContainer.scrollHeight,
+                        behavior: "smooth"
+                    });
+                }, 50);
             }
         });
         
@@ -319,6 +332,7 @@ class UIController {
                 qInput.classList.add("input-error");
                 qInput.placeholder = "Required: Please enter a question prompt";
                 isValid = false;
+                card.classList.remove("collapsed"); // Forces visibility on the warning
             }
 
             // 2. Validate Correct Answer
@@ -326,6 +340,7 @@ class UIController {
                 aInput.classList.add("input-error");
                 aInput.placeholder = "Required: Please enter the correct answer";
                 isValid = false;
+                card.classList.remove("collapsed"); // Forces visibility on the warning
             }
 
             // 3. Validate Distractors (Requires at least one populated field)
@@ -341,6 +356,7 @@ class UIController {
                 firstDistractor.classList.add("input-error");
                 firstDistractor.placeholder = "Required: Please enter at least one wrong answer";
                 isValid = false;
+                card.classList.remove("collapsed"); // Forces visibility on the warning
             }
         });
 

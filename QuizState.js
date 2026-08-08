@@ -42,7 +42,7 @@ class QuizState {
 
   /**
    * @name advanceQuestion
-   * @description Increments the internal state pointer to progress the quiz sequence.
+   * @description Increments the internal state pointer to progress the quiz sequence. Shifts the application state forward.
    * @returns {void} - Does not return a value.
    */
   advanceQuestion() {
