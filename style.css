@@ -398,6 +398,18 @@ button:active {
     font-weight: 600;
 }
 
+/* Synthesizes the Start button gradient background and maps it strictly to the typographic fill */
+.file-status.success {
+    background: linear-gradient(135deg, #6366f1 0%, #d946ef 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    
+    /* Overrides the 0.8 opacity property from the parent .visible class to maximize vibrancy */
+    opacity: 1; 
+}
+
 #bulk-import-status {
     display: block;
     text-align: center;
@@ -575,7 +587,7 @@ input.glass-input.d-input {
 /* ========================================= */
 
 .input-group {
-    margin-bottom: 12px;
+    margin-bottom: 6px; /* Tightened from 12px to save screen space */
 }
 
 .input-group:last-child {
@@ -589,7 +601,7 @@ input.glass-input.d-input {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin: 0 0 4px 4px;
+    margin: 0 0 2px 4px; /* Reduced proximity to input fields */
 }
 
 /* ========================================= */
@@ -611,10 +623,37 @@ input.glass-input.d-input {
     color: #a7d5ff;
     font-size: 0.95rem;
     font-weight: 600;
-    max-width: 90%;
+    
+    /* Reduced from 90% to 80% to ensure layout stability with the newly added dual icons */
+    max-width: 80%; 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* Groups the right-aligned action icons sequentially along the cross-axis */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Localized minimalist styling for the header delete trigger */
+.delete-icon-btn {
+    background: transparent;
+    border: none;
+    color: rgba(244, 67, 54, 0.6);
+    
+    /* Optically matched to the geometric weight of the 0.8rem toggle icon */
+    font-size: 0.85rem; 
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.delete-icon-btn:hover {
+    color: rgba(244, 67, 54, 1);
+    transform: scale(1.15);
 }
 
 .toggle-icon {
@@ -668,4 +707,49 @@ button:disabled {
     padding: 3px 4px 3px 4px;
     margin-bottom: 20px;
 
+}
+
+/* ========================================= */
+/* --- TEMPLATE & CARD ACTIONS           --- */
+/* ========================================= */
+
+.template-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    width: 100%;
+    padding: 0 4px;
+}
+
+.template-btn {
+    background: transparent;
+    color: rgb(168 170 174);
+    border: none;
+    padding: 0;
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+    box-shadow: none;
+}
+
+.template-btn:hover {
+    color: #a7d5ff;
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-danger {
+    border-color: rgba(244, 67, 54, 0.3);
+    color: #F44336;
+}
+
+.btn-danger:hover {
+    background: rgba(244, 67, 54, 0.1);
+    border-color: rgba(244, 67, 54, 0.6);
+}
+
+#return-start-btn {
+    border: none;
+    opacity: 0.7;
 }

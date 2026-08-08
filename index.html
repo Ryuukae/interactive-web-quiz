@@ -26,9 +26,9 @@
     -->
     <div class="container">
 
-        <!-- ========================================== -->
-        <!-- STAGE 1: START SCREEN (INITIAL STATE)      -->
-        <!-- ========================================== -->
+        <!-- ====================================== -->
+        <!-- STAGE 1: START SCREEN (INITIAL STATE)  -->
+        <!-- ====================================== -->
         <!-- The 'active' class dictates visibility upon initial DOM load. -->
         <div class="screen active" id="start-screen">
             <h1>Quiz Time!</h1>
@@ -170,9 +170,9 @@ q=Which protocol is considered secure?
             </div>
         </div>
         
-        <!-- ========================================== -->
-        <!-- STAGE 2: QUIZ SCREEN (ACTIVE STATE)        -->
-        <!-- ========================================== -->
+        <!-- =================================== -->
+        <!-- STAGE 2: QUIZ SCREEN (ACTIVE STATE) -->
+        <!-- =================================== -->
         <div class="screen" id="quiz-screen">
             
             <!-- QUIZ HEADER: Houses the dynamic question text and real-time metadata -->
@@ -206,9 +206,9 @@ q=Which protocol is considered secure?
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- STAGE 3: RESULTS SCREEN (TERMINAL STATE)   -->
-        <!-- ========================================== -->
+        <!-- ======================================== -->
+        <!-- STAGE 3: RESULTS SCREEN (TERMINAL STATE) -->
+        <!-- ======================================== -->
         <div id="result-screen" class="screen">
             <h1>Quiz Results</h1>
             
@@ -231,12 +231,15 @@ q=Which protocol is considered secure?
                 <input type="file" id="result-file-input" accept=".json, .txt, .text, .doc, .docx" hidden>
                 <label for="result-file-input" class="secondary-btn">Upload New Quizset</label>
                 <span id="result-file-status" class="file-status"></span>
+                
+                <!-- Navigation trigger to abort and return to the main menu -->
+                <button id="return-start-btn" class="secondary-btn" id="return-start-btn">Back to Start</button>
             </div> 
         </div>
 
-        <!-- ========================================== -->
-        <!-- STAGE 4: CREATOR SCREEN (BUILDER STATE)    -->
-        <!-- ========================================== -->
+        <!-- ======================================= -->
+        <!-- STAGE 4: CREATOR SCREEN (BUILDER STATE) -->
+        <!-- ======================================= -->
         <div id="creator-screen" class="screen">
             <h1>Quiz Builder</h1>
             <p id="creator-subtitle">Visually construct your assessment or utilize the bulk digester.</p>
@@ -246,24 +249,29 @@ q=Which protocol is considered secure?
               Provides power users a frictionless method to paste QAD formatted text or raw JSON arrays, 
               instantly hydrating the visual form fields below.
             -->
-            <div id="bulk-import-panel" class="glass-panel">
+            <div id="bulk-import-panel" class="glass-panel collapsed">
                 <div class="card-header" id="bulk-import-header">
                     <span class="glass-panel-heading" style="margin-bottom: 0;">Bulk Import (Advanced)</span>
                     <span class="toggle-icon">▼</span>
                 </div>
                 
                 <div class="card-body">
-                    <textarea id="bulk-import-text" class="glass-input" rows="2" placeholder="Paste your QAD text or formatted JSON array here..."></textarea>
+                    <!-- Template injection triggers horizontally docked to the edges -->
+                    <div class="template-actions">
+                        <button id="btn-template-json" class="template-btn">Insert JSON Template</button>
+                        <button id="btn-template-txt" class="template-btn">Insert TXT Template</button>
+                    </div>
+                    <textarea id="bulk-import-text" class="glass-input" rows="3" placeholder="Paste your QAD text or formatted JSON array here..."></textarea>
+                    
+                    
+
                     <button id="btn-parse-bulk" class="secondary-btn">Parse Quizset Data</button>
                     <!-- Dedicated output node for JS to inject validation errors -->
                     <span id="bulk-import-status" class="file-status"></span>
                 </div>
             </div>
-
-            <!-- 
-              DYNAMIC GUI CONTAINER
-              Acts as the injection target for QuizCreator.js to mount interactive question cards.
-            -->
+            
+            <!-- DYNAMIC GUI CONTAINER -->
             <div id="builder-questions-container">
                 <!-- Question cards injected via JS -->
             </div>
@@ -271,22 +279,31 @@ q=Which protocol is considered secure?
             <!-- Implements the action-stack class for consistent UI spacing -->
             <div id="creator-action-stack" class="action-stack">
                 <button id="btn-add-question" class="secondary-btn">+</button>
+                
+                <!-- Hard reset trigger utilizing localized danger styling -->
+                <button id="btn-clear-builder" class="secondary-btn btn-danger">Clear All</button>
+                
                 <button id="btn-export-quiz">Download JSON</button>
                 <button id="btn-cancel-create" class="secondary-btn">Back to Start</button>
             </div>
         </div>
     
+    <!-- ============================== -->
+    <!-- --- SCRIPT DEPENDENCY TREE --- -->
+    <!-- ============================== -->
     <!-- 
-      SCRIPT DEPENDENCY TREE
       Scripts must be loaded in strict sequential order to prevent reference errors.
       1. QuizState: Establishes the core data models and logic structures.
-      2. QuizDataLoader: Handles the intake and processing of custom quiz data.
-      3. UIController: Defines the view rendering and DOM manipulation methods.
-      4. Script: The main execution thread that binds state, UI, and event listeners.
+      2. QADParser: Handles raw string text translation into structured arrays.
+      3. Utils: Houses export utilities and template string generators.
+      4. QuizBuilderState: Manages validation and payload parsing routing.
+      5. QuizDataLoader: Ingests local files and executes schema validation.
+      6. UIController: Defines view rendering, DOM manipulation, and event delegation.
+      7. Script: The main execution root that initializes application dependencies.
     -->
     <script src="QuizState.js"></script>
     <script src="QADParser.js"></script>
-    <script src="FileExportUtil.js"></script> 
+    <script src="Utils.js"></script> 
     <script src="QuizBuilderState.js"></script> 
     <script src="QuizDataLoader.js"></script>
     <script src="UIController.js"></script>
