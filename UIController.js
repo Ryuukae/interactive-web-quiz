@@ -105,7 +105,14 @@ class UIController {
 
         // Toggles the advanced ingestion module panel.
         document.getElementById("bulk-import-header").addEventListener("click", () => {
-            this.bulkImportPanel.classList.toggle("collapsed");
+            // Evaluates the new state of the panel. Returns false if 'collapsed' was just removed (meaning it opened).
+            const isNowCollapsed = this.bulkImportPanel.classList.toggle("collapsed");
+            
+            // If the bulk import panel is opening, collapse all active question cards to preserve screen space.
+            if (!isNowCollapsed) {
+                const cards = this.builderContainer.querySelectorAll(".question-card");
+                cards.forEach(card => card.classList.add("collapsed"));
+            }
         });
 
         // Template Injections
