@@ -6,9 +6,9 @@
  */
 class QuizDataLoader {
     
-    // ==========================================
-    // --- INITIALIZATION                     ---
-    // ==========================================
+    // ======================
+    // --- INITIALIZATION ---
+    // ======================
 
     /**
      * Initializes the DataLoader and binds necessary DOM nodes.
@@ -27,9 +27,9 @@ class QuizDataLoader {
         this.bindEvents();
     }
 
-    // ==========================================
-    // --- EVENT DELEGATION                   ---
-    // ==========================================
+    // ========================
+    // --- EVENT DELEGATION ---
+    // ========================
 
     /**
      * Establishes the event delegation for the file input node.
@@ -41,12 +41,13 @@ class QuizDataLoader {
         this.input_element.addEventListener("change", (event) => this.processFile(event));
     }
 
-    // ==========================================
-    // --- FILE PROCESSING LOGIC              ---
-    // ==========================================
+    // =============================
+    // --- FILE PROCESSING LOGIC ---
+    // =============================
 
     /**
-     * Primary execution thread for file extraction, validation, and asynchronous parsing.
+     * @description Primary execution thread for file extraction, validation, and asynchronous parsing.
+     * 
      * @param {Event} event - The standard DOM change event object.
      */
     processFile(event) {
@@ -61,7 +62,8 @@ class QuizDataLoader {
         if (startBtn) startBtn.disabled = true; // Explicitly lock during analysis
         
         // --- UI STATE UPDATE ---
-        this.file_status.classList.remove("error");
+        // Strip out any previous status classes to ensure a clean repaint
+        this.file_status.classList.remove("error", "success");
         this.file_status.textContent = `Analyzing ${file.name}...`;
         this.file_status.classList.add("visible");
 
@@ -83,13 +85,14 @@ class QuizDataLoader {
                 }
                 
                 // Explicitly validate the dataset schema
-                this.validateSchema(parsedData);
+                QuizDataLoader.validateSchema(parsedData);
                 
                 // Hydrate internal memory once syntax and schema are both verified
                 this.customData = parsedData;
                 
-                // Provide positive visual feedback
+                // Provide positive visual feedback utilizing the new success hook
                 this.file_status.textContent = `${file.name} (Ready)`;
+                this.file_status.classList.add("success");
                 
                 // --- UNLOCK APPLICATION ---
                 // Permits the user to begin the assessment now that a valid payload is ready
@@ -100,6 +103,7 @@ class QuizDataLoader {
                 console.error("QuizDataLoader Error - Failed to parse payload:", error);
                 
                 // --- UI STATE UPDATE (ERROR) ---
+                this.file_status.classList.remove("success");
                 this.file_status.classList.add("error");
                 this.file_status.textContent = `Error: ${error.message || "Invalid format"}`;
                 
@@ -113,47 +117,100 @@ class QuizDataLoader {
         reader.readAsText(file);
     }
 
-    // ==========================================
-    // --- SCHEMA VALIDATION                  ---
-    // ==========================================
+    /**
+     * Processes raw text strings directly, bypassing the FileReader I/O layer.
+     * 
+     * @param {string} rawText - The unformatted string payload to digest.
+     * @returns {Array<Object>} - The fully validated assessment dataset.
+     * @throws {Error} Throws an explicit error if the text is invalid or malformed.
+     */
+    static processRawText(rawText) {
+        // Delegates the pure logic evaluation to the State/Model class.
+        const parsedData = QuizBuilderState.parseBulkPayload(rawText);
+
+        if (!parsedData || parsedData.length === 0) {
+            throw new Error("No valid QAD or JSON questions detected.");
+        }
+
+        // Utilizes the centralized schema validation engine to ensure structural integrity.
+        QuizDataLoader.validateSchema(parsedData);
+        
+        return parsedData;
+    }
+
+    /**
+     * Processes raw text strings directly, bypassing the FileReader I/O layer.
+     * 
+     * @param {string} rawText - The unformatted string payload to digest.
+     * @returns {Array<Object>} - The fully validated assessment dataset.
+     * @throws {Error} Throws an explicit error if the text is invalid or malformed.
+     */
+    static processRawText(rawText) {
+        // Delegates the pure logic evaluation to the State/Model class.
+        const parsedData = QuizBuilderState.parseBulkPayload(rawText);
+
+        if (!parsedData || parsedData.length === 0) {
+            throw new Error("No valid QAD or JSON questions detected.");
+        }
+
+        // Utilizes the centralized schema validation engine to ensure structural integrity.
+        QuizDataLoader.validateSchema(parsedData);
+        
+        return parsedData;
+    }
+
+    // =========================
+    // --- SCHEMA VALIDATION ---
+    // =========================
 
     /**
      * Validates the structural integrity of the ingested JSON dataset.
-     * Ensures the dataset is a non-empty array containing properly formatted question and answer objects.
+     * Enforces bounds (1-7 answers total, exactly 1 correct answer per question).
      * 
      * @param {Array<Object>} data - The parsed JSON data to validate.
      * @throws {Error} Throws an explicit error if the schema does not match specifications.
      */
-    validateSchema(data) {
-        // Enforce root type and non-empty bounds
+    static validateSchema(data) {
         if (!Array.isArray(data) || data.length === 0) {
             throw new Error("File must contain a non-empty array of questions.");
         }
 
-        // Iterate through each question object to inspect internal properties
         for (let index = 0; index < data.length; index++) {
             const item = data[index];
             
-            // Validate the parent question node
-            if (!item || typeof item.question !== "string" || !Array.isArray(item.answers) || item.answers.length === 0) {
+            if (!item || typeof item.question !== "string" || !Array.isArray(item.answers)) {
                 throw new Error(`Malformed question structure at entry #${index + 1}.`);
             }
 
-            // Validate nested answer objects
+            // Enforces the 1 to 7 answer bounds constraint.
+            if (item.answers.length < 1 || item.answers.length > 7) {
+                throw new Error(`Question #${index + 1} contains ${item.answers.length} answers. Must contain between 1 and 7 items.`);
+            }
+
+            let correctCount = 0;
+
             for (let ansIndex = 0; ansIndex < item.answers.length; ansIndex++) {
                 const answer = item.answers[ansIndex];
                 
-                // Ensure strictly typed properties required by the DOM rendering and scoring logic
                 if (!answer || typeof answer.text !== "string" || typeof answer.correct !== "boolean") {
                     throw new Error(`Malformed answer option at Q${index + 1}, Answer #${ansIndex + 1}.`);
                 }
+
+                if (answer.correct) {
+                    correctCount++;
+                }
+            }
+
+            // Enforces that exactly one answer in the array is designated as correct.
+            if (correctCount !== 1) {
+                throw new Error(`Question #${index + 1} must contain exactly one correct answer (found ${correctCount}).`);
             }
         }
     }
     
-    // ==========================================
-    // --- STATE ACCESSORS                    ---
-    // ==========================================
+    // =======================
+    // --- STATE ACCESSORS ---
+    // =======================
 
     /**
      * Accessor method for the hydrated JSON payload.
