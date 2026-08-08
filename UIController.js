@@ -1,6 +1,7 @@
 /**
- * UIController
- * 
+ * @class UIController
+ * @name UIController
+ * @description 
  * Architectural Responsibilities: Encapsulates all DOM element caching, event listener bindings, 
  * and UI rendering operations for both the interactive quiz and the form builder. Acts as the 
  * sole bridge between the visual View layer and the underlying State models.
@@ -11,14 +12,15 @@
  */
 class UIController {
     
-    // ==========================================
+    // ====================================
     // --- DOM CACHING & INITIALIZATION ---
-    // ==========================================
+    // ====================================
 
     /**
-     * Instantiates the controller, caches DOM references, and sets up event delegation.
-     * 
+     * @name constructor
+     * @description Instantiates the controller, caches DOM references, and sets up event delegation.
      * @param {QuizState} quizState - The active instance of the state manager.
+     * @returns {void} - Does not return a value.
      */
     constructor(quizState) {
         // Inject the state dependency so the UI controller can read from and write to the data layer.
@@ -62,13 +64,13 @@ class UIController {
         this.initializeEventListeners();
     }
 
-    // ==========================================
+    // =================================
     // --- EVENT LISTENER DELEGATION ---
-    // ==========================================
+    // =================================
 
     /**
-     * Binds static click events to the DOM to route user interactions.
-     * 
+     * @name initializeEventListeners
+     * @description Binds static click events to the DOM to route user interactions.
      * @returns {void} - Does not return a value.
      */
     initializeEventListeners() {
@@ -77,7 +79,27 @@ class UIController {
         this.restartButton.addEventListener("click", () => this.restartQuiz());
 
         // Builder Bindings
-        document.getElementById("btn-add-question").addEventListener("click", () => this.addBuilderQuestionCard());
+        document.getElementById("btn-add-question").addEventListener("click", () => {
+            // Evaluates existing DOM nodes for missing required data before appending a new card.
+            if (this.validateBuilderCards()) {
+                
+                // Collapses all existing cards to preserve vertical screen space.
+                const cards = this.builderContainer.querySelectorAll(".question-card");
+                cards.forEach(c => c.classList.add("collapsed"));
+                
+                this.addBuilderQuestionCard();
+                
+                // Defers the scroll execution to ensure the DOM has painted the new card.
+                setTimeout(() => {
+                    this.builderContainer.scrollTo({
+                        top: this.builderContainer.scrollHeight,
+                        behavior: "smooth"
+                    });
+                }, 50);
+            }
+        });
+        
+        document.getElementById("btn-run-builder-quiz").addEventListener("click", () => this.startBuilderQuiz());
         document.getElementById("btn-export-quiz").addEventListener("click", () => this.exportBuilderQuiz());
         document.getElementById("btn-parse-bulk").addEventListener("click", () => this.handleBulkImport());
 
@@ -85,15 +107,68 @@ class UIController {
         document.getElementById("bulk-import-header").addEventListener("click", () => {
             this.bulkImportPanel.classList.toggle("collapsed");
         });
+
+        // Template Injections
+        document.getElementById("btn-template-txt").addEventListener("click", () => {
+            // Checks if the textarea is populated before aggressively throwing a warning
+            if (this.bulkImportText.value.trim() !== "") {
+                if (!PromptUtil.confirmAction("Inserting this template will overwrite your current text. Do you wish to continue?")) return;
+            }
+            this.bulkImportText.value = TemplateUtil.getTxtTemplate();
+        });
+        
+        document.getElementById("btn-template-json").addEventListener("click", () => {
+            if (this.bulkImportText.value.trim() !== "") {
+                if (!PromptUtil.confirmAction("Inserting this template will overwrite your current text. Do you wish to continue?")) return;
+            }
+            this.bulkImportText.value = TemplateUtil.getJsonTemplate();
+        });
+
+        // Builder Clear All
+        document.getElementById("btn-clear-builder").addEventListener("click", () => {
+            // Bypasses the warning entirely if the builder is already empty
+            if (this.builderContainer.children.length === 0) return;
+            
+            if (PromptUtil.confirmAction("Are you sure you want to clear all questions? This action cannot be undone.")) {
+                this.builderContainer.innerHTML = "";
+            }
+        });
+
+        // Result Screen Navigation
+        document.getElementById("return-start-btn").addEventListener("click", () => {
+            this.resultScreen.classList.remove("active");
+            this.startScreen.classList.add("active");
+        });
     }
 
-    // ==========================================
+    /**
+     * @name extractAnswersFromDOM
+     * @description Helper method to serialize input elements into an array of answer objects.
+     * @param {string} correctText - Value from the correct answer input.
+     * @param {NodeList} distractorInputs - Collection of distractor input nodes.
+     * @returns {Array<Object>} - Formatted answer collection.
+     */
+    extractAnswersFromDOM(correctText, distractorInputs) {
+        const answers = [];
+        if (correctText) {
+            answers.push({ text: correctText, correct: true });
+        }
+        distractorInputs.forEach(input => {
+            const dText = input.value.trim();
+            if (dText) {
+                answers.push({ text: dText, correct: false });
+            }
+        });
+        return answers;
+    }
+
+    // ===================================
     // --- QUIZ FLOW & RENDERING LOGIC ---
-    // ==========================================
+    // ===================================
 
     /**
-     * Synchronizes static UI bounds with the loaded dataset length.
-     * 
+     * @name synchronizeBounds
+     * @description Synchronizes static UI bounds with the loaded dataset length.
      * @returns {void} - Does not return a value.
      */
     synchronizeBounds() {
@@ -103,8 +178,8 @@ class UIController {
     }
 
     /**
-     * Starts a new quiz session and reveals the active screen.
-     * 
+     * @name startQuiz
+     * @description Starts a new quiz session and reveals the active screen.
      * @returns {void} - Does not return a value.
      */
     startQuiz() {
@@ -125,8 +200,8 @@ class UIController {
     }
 
     /**
-     * Renders the current question and dynamically generates answer choices.
-     * 
+     * @name showQuestion
+     * @description Renders the current question and dynamically generates answer choices.
      * @returns {void} - Does not return a value.
      */
     showQuestion() {
@@ -152,13 +227,13 @@ class UIController {
         });
     }
 
-    // ==========================================
+    // ===================================
     // --- EVALUATION & STATE MUTATION ---
-    // ==========================================
+    // ===================================
 
     /**
-     * Handles user selection, applies visual feedback, and defers navigation.
-     * 
+     * @name selectAnswer
+     * @description Handles user selection, applies visual feedback, and defers navigation.
      * @param {Event} event - The button click event object.
      * @returns {void} - Does not return a value.
      */
@@ -186,13 +261,13 @@ class UIController {
         }, 3000);
     }
 
-    // ==========================================
+    // ===============================
     // --- TERMINAL STATE & RESETS ---
-    // ==========================================
+    // ===============================
 
     /**
-     * Reveals the results view and updates final performance metrics.
-     * 
+     * @name showResults
+     * @description Reveals the results view and updates final performance metrics.
      * @returns {void} - Does not return a value.
      */
     showResults() {
@@ -206,8 +281,8 @@ class UIController {
     }
 
     /**
-     * Resets screen routing and restarts the quiz session.
-     * 
+     * @name restartQuiz
+     * @description Resets screen routing and restarts the quiz session.
      * @returns {void} - Does not return a value.
      */
     restartQuiz() {
@@ -215,13 +290,13 @@ class UIController {
         this.startQuiz();
     }
 
-    // ==========================================
+    // ==================================
     // --- BUILDER UI & DOM INJECTION ---
-    // ==========================================
+    // ==================================
 
     /**
-     * Initializes the creator environment, clearing previous states and injecting a foundational card.
-     * 
+     * @name initializeBuilder
+     * @description Initializes the creator environment, clearing previous states and injecting a foundational card.
      * @returns {void} - Does not return a value.
      */
     initializeBuilder() {
@@ -233,8 +308,64 @@ class UIController {
     }
 
     /**
-     * Constructs and injects a new interactive question block into the Builder DOM.
-     * 
+     * @name validateBuilderCards
+     * @description Validates all rendered question cards to ensure strict schema requirements 
+     * (Q, A, and at least 1 Distractor) are met before allowing the generation of new nodes.
+     * @returns {boolean} - True if all cards are fully populated; false if validation fails.
+     */
+    validateBuilderCards() {
+        const cards = this.builderContainer.querySelectorAll(".question-card");
+        let isValid = true;
+
+        cards.forEach(card => {
+            const qInput = card.querySelector(".q-input");
+            const aInput = card.querySelector(".a-input");
+            const dInputs = card.querySelectorAll(".d-input");
+
+            // Resets previous error states before evaluating
+            qInput.classList.remove("input-error");
+            aInput.classList.remove("input-error");
+            dInputs.forEach(d => d.classList.remove("input-error"));
+
+            // 1. Validate Question Prompt
+            if (qInput.value.trim() === "") {
+                qInput.classList.add("input-error");
+                qInput.placeholder = "Required: Please enter a question prompt";
+                isValid = false;
+                card.classList.remove("collapsed"); // Forces visibility on the warning
+            }
+
+            // 2. Validate Correct Answer
+            if (aInput.value.trim() === "") {
+                aInput.classList.add("input-error");
+                aInput.placeholder = "Required: Please enter the correct answer";
+                isValid = false;
+                card.classList.remove("collapsed"); // Forces visibility on the warning
+            }
+
+            // 3. Validate Distractors (Requires at least one populated field)
+            let hasDistractor = false;
+            dInputs.forEach(d => {
+                if (d.value.trim() !== "") {
+                    hasDistractor = true;
+                }
+            });
+
+            if (!hasDistractor && dInputs.length > 0) {
+                const firstDistractor = dInputs[0];
+                firstDistractor.classList.add("input-error");
+                firstDistractor.placeholder = "Required: Please enter at least one wrong answer";
+                isValid = false;
+                card.classList.remove("collapsed"); // Forces visibility on the warning
+            }
+        });
+
+        return isValid;
+    }
+
+    /**
+     * @name addBuilderQuestionCard
+     * @description Constructs and injects a new interactive question block into the Builder DOM.
      * @param {Object} prefillData - Optional data payload for populating the inputs.
      * @returns {void} - Does not return a value.
      */
@@ -265,7 +396,12 @@ class UIController {
         card.innerHTML = `
             <div class="card-header">
                 <span class="card-title">${headerTitle}</span>
-                <span class="toggle-icon">▼</span>
+                
+                <!-- Structural wrapper to dock the right-side icons together -->
+                <div class="header-actions">
+                    <button class="delete-icon-btn" title="Delete Question">&#10006;</button>
+                    <span class="toggle-icon">▼</span>
+                </div>
             </div>
             
             <div class="card-body">
@@ -290,7 +426,20 @@ class UIController {
             </div>
         `;
 
+        // Binds an event delegation listener to the card body to clear validation errors upon user input.
+        card.querySelector(".card-body").addEventListener("input", (e) => {
+            if (e.target.classList.contains("glass-input")) {
+                e.target.classList.remove("input-error");
+                
+                // Restores the original placeholders based on the specific input tier
+                if (e.target.classList.contains("q-input")) e.target.placeholder = "e.g., What is the default port for HTTPS?";
+                if (e.target.classList.contains("a-input")) e.target.placeholder = "e.g., 443";
+                if (e.target.classList.contains("d-input")) e.target.placeholder = "e.g., 80";
+            }
+        });
+
         const addBtn = card.querySelector(".btn-add-distractor");
+        const deleteBtn = card.querySelector(".delete-icon-btn");
         const dContainer = card.querySelector(".distractors-container");
         const cardHeader = card.querySelector(".card-header");
         const qInput = card.querySelector(".q-input");
@@ -298,6 +447,17 @@ class UIController {
 
         /* Binds local DOM events to govern card collapsibility, live text updates, and distractor limitations. */
         // ----------------------------------------------------------------------
+        // Purges the entire card node from the DOM when triggered.
+        deleteBtn.addEventListener("click", (event) => {
+            // Terminates the event bubble phase to prevent the parent card header toggle from firing.
+            event.stopPropagation();
+            
+            if (PromptUtil.confirmAction("Are you sure you want to delete this question?")) {
+                card.remove();
+            }
+        });
+        // ----------------------------------------------------------------------
+
         if (distractorVals.length >= 6) {
             addBtn.style.display = "none";
         }
@@ -335,8 +495,8 @@ class UIController {
     }
 
     /**
-     * Intercepts raw text, delegates logic parsing to the Builder State, and renders the UI changes.
-     * 
+     * @name handleBulkImport
+     * @description Intercepts raw text, delegates logic parsing to the DataLoader, and renders the UI changes.
      * @returns {void} - Does not return a value.
      */
     handleBulkImport() {
@@ -350,14 +510,9 @@ class UIController {
         this.bulkImportStatus.textContent = "";
 
         try {
-            // Delegates the pure logic evaluation to the State/Model class.
-            const parsedData = QuizBuilderState.parseBulkPayload(rawText);
+            // Delegates the pure logic evaluation and validation to the DataLoader class.
+            const parsedData = QuizDataLoader.processRawText(rawText);
 
-            if (!parsedData || parsedData.length === 0) {
-                throw new Error("No valid QAD or JSON questions detected.");
-            }
-
-            this.builderContainer.innerHTML = "";
             parsedData.forEach(q => this.addBuilderQuestionCard(q));
             this.bulkImportText.value = "";
             
@@ -369,8 +524,8 @@ class UIController {
     }
 
     /**
-     * Scrapes the Builder DOM to serialize the visual form into a valid schema.
-     * 
+     * @name serializeBuilderForm
+     * @description Scrapes the Builder DOM to serialize the visual form into a valid schema.
      * @returns {Array<Object>} - The compiled assessment dataset.
      */
     serializeBuilderForm() {
@@ -411,8 +566,41 @@ class UIController {
     }
 
     /**
-     * Extracts the view data and delegates the file generation to the export utility.
-     * 
+     * @name startBuilderQuiz
+     * @description Validates the builder form, extracts the payload, and transitions directly into an active quiz session without downloading.
+     * @returns {void} - Does not return a value.
+     */
+    startBuilderQuiz() {
+        if (this.builderContainer.children.length === 0) {
+            alert("Please add at least one question before starting the quiz.");
+            return;
+        }
+
+        if (!this.validateBuilderCards()) {
+            return;
+        }
+
+        const payload = this.serializeBuilderForm();
+        
+        if (payload.length === 0) {
+            alert("Please complete at least one question before starting.");
+            return;
+        }
+
+        this.quizState = new QuizState(payload);
+        this.synchronizeBounds();
+        this.quizState.resetQuiz();
+        this.scoreSpan.textContent = this.quizState.score;
+
+        document.getElementById("creator-screen").classList.remove("active");
+        this.quizScreen.classList.add("active");
+
+        this.showQuestion();
+    }
+
+    /**
+     * @name exportBuilderQuiz
+     * @description Extracts the view data and delegates the file generation to the export utility.
      * @returns {void} - Does not return a value.
      */
     exportBuilderQuiz() {

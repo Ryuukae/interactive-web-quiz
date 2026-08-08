@@ -1,89 +1,117 @@
-// ==========================================
-// --- QAD PARSER CLASS ---
-// ==========================================
-
 /**
- * QADParser
- * 
+ * @class QADParser
+ * @name QADParser
+ * @description 
  * Architectural Responsibilities: Responsible for ingesting raw QAD formatted 
  * text strings, normalizing line endings, and executing parsing loops to assemble 
- * valid question objects. Acts as a strict translation layer between human-readable 
- * text files and the application's required JSON state structure.
+ * valid question objects. Enforces strict schema rules (1 Question, 1 Answer, 1-6 Distractors).
  * 
  * Encapsulation Scope: Strictly isolated to data formatting. It does not interact 
- * with the DOM, nor does it mutate the global QuizState directly. It purely receives 
- * a string and returns a formatted array.
+ * with the DOM, nor does it mutate global states.
  */
 class QADParser {
 
     /**
-     * Parses custom QAD text files into a standardized JSON array for the application.
-     * 
-     * Normalizes line endings across different operating systems, iterates through 
-     * the payload to isolate question blocks, and constructs state-ready objects.
-     *
-     * @param {string} rawText - The raw text payload from the uploaded file.
-     * @returns {Array} - Formatted question objects ready for state ingestion.
+     * @name parseQADFormat
+     * @description Parses custom QAD text files into a standardized JSON array for the application.
+     * @param {string} rawText - The raw text payload from the uploaded file or textarea.
+     * @returns {Array<Object>} - Formatted question objects ready for state ingestion.
+     * @throws {Error} Throws an explicit error if structural formatting rules are violated.
      */
     static parseQADFormat(rawText) {
-
         // Normalizes line endings globally to ensure predictable array splitting.
         const normalizedText = rawText.replace(/\r\n/g, '\n').trim();
-        const quizsetData = normalizedText.split('\n');
-
+        const lines = normalizedText.split('\n');
+        
         const questions = [];
         let currentQuestion = null;
+        let answerCount = 0;
+        let distractorCount = 0;
 
-        /* Iterates sequentially through the text lines to assemble discrete question objects based on prefix markers. */
+        /* Iterates sequentially through text lines to assemble discrete, validated question blocks. */
         // ----------------------------------------------------------------------
-        for (let line of quizsetData) {
+        for (let line of lines) {
             
             // Strips leading and trailing whitespace to prevent invisible character bugs.
             const cleanLine = line.trim();
             
             // Bypasses completely empty lines to allow users to format with generous vertical spacing.
-            if (!cleanLine) {
-                continue;
-            }
-        
-            // Identifies a new question block and initializes the required object architecture.
-            if (cleanLine.toLowerCase().startsWith("q=")) {
-                
-                // Pushes the previously assembled question into the main array before initializing a new memory block.
+            if (!cleanLine) continue;
+
+            const lowerLine = cleanLine.toLowerCase();
+
+            if (lowerLine.startsWith("q=")) {
+                // Validates the preceding block before initializing a new one.
                 if (currentQuestion !== null) {
+                    QADParser.validateBlock(currentQuestion, answerCount, distractorCount);
                     questions.push(currentQuestion);
                 }
-                
-                // Reassigns currentQuestion to a brand new object containing the question text and an empty answers array.
+
                 currentQuestion = {
                     question: cleanLine.substring(2).trim(),
                     answers: []
                 };
-            }
-
-            // Identifies an answer or distractor line and appends it to the active question block.
-            if (cleanLine.toLowerCase().startsWith("a=") || cleanLine.toLowerCase().startsWith("d=")) {
                 
-                // Safeguards against orphaned answers if a user forgets to start with a Q line.
-                if (currentQuestion !== null) {
-                    
-                    // Evaluates the prefix to strictly assign the boolean correct state.
-                    const isCorrect = cleanLine.toLowerCase().startsWith("a=");
-                    
-                    currentQuestion.answers.push({
-                        text: cleanLine.substring(2).trim(),
-                        correct: isCorrect
-                    });
+                answerCount = 0;
+                distractorCount = 0;
+            } else if (lowerLine.startsWith("a=")) {
+                if (currentQuestion === null) {
+                    throw new Error("Orphaned answer detected. Every block must start with 'q='.");
                 }
+                if (answerCount >= 1) {
+                    throw new Error("Malformed block: Each question group can only have exactly one 'a=' line.");
+                }
+
+                currentQuestion.answers.push({
+                    text: cleanLine.substring(2).trim(),
+                    correct: true
+                });
+                answerCount++;
+            } else if (lowerLine.startsWith("d=")) {
+                if (currentQuestion === null) {
+                    throw new Error("Orphaned distractor detected. Every block must start with 'q='.");
+                }
+
+                currentQuestion.answers.push({
+                    text: cleanLine.substring(2).trim(),
+                    correct: false
+                });
+                distractorCount++;
             }
         }
         // ----------------------------------------------------------------------
 
-        // Captures the final question block in the file since the iteration loop will terminate before it is pushed.
+        // Validates and captures the final question block in the file since the iteration loop will terminate before it is pushed.
         if (currentQuestion !== null) {
+            QADParser.validateBlock(currentQuestion, answerCount, distractorCount);
             questions.push(currentQuestion);
         }
 
+        if (questions.length === 0) {
+            throw new Error("No valid question blocks detected.");
+        }
+
         return questions;
+    }
+
+    /**
+     * @name validateBlock
+     * @description Helper method to validate that a parsed QAD block meets strict structural requirements.
+     * @param {Object} block - The question object being assembled.
+     * @param {number} answers - Count of correct answers found.
+     * @param {number} distractors - Count of distractors found.
+     * @returns {void} - Does not return a value.
+     * @throws {Error} Throws an explicit error if counts fall outside acceptable parameters.
+     */
+    static validateBlock(block, answers, distractors) {
+        if (!block.question) {
+            throw new Error("Question block is missing prompt text.");
+        }
+        if (answers !== 1) {
+            throw new Error(`Question "${block.question}" must have exactly one 'a=' correct answer line.`);
+        }
+        if (distractors < 1 || distractors > 6) {
+            throw new Error(`Question "${block.question}" must have between 1 and 6 'd=' distractor lines (found ${distractors}).`);
+        }
     }
 }
