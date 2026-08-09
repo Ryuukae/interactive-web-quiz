@@ -16,6 +16,12 @@
 !Utils.js
 !QuizState.js
 !QuizBuilderState.js
-!UIController.js
+!QuizUIController.js
+!AppNavigationController.js
+!BuilderCardComponent.js
+!BuilderUIController.js
 !QuizDataLoader.js
+!QuizBuilderState
+!BuilderState.js
 !QADParser.js
+
