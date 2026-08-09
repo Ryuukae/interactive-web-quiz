@@ -13,7 +13,7 @@
  * 
  * Encapsulation Scope: Isolated execution state strictly for a single active form builder session.
  */
-class BuilderState {
+export default class BuilderState {
     
     /**
      * @name constructor

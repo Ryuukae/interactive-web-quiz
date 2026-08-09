@@ -13,7 +13,7 @@
  * 
  * Encapsulation Scope: Isolated execution state for a single active assessment.
  */
-class QuizState {
+export default class QuizState {
     
     /**
      * @name constructor

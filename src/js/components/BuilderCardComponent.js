@@ -1,6 +1,7 @@
 // ====================================
 // --- BUILDER CARD COMPONENT CLASS ---
 // ====================================
+import { confirmAction } from '../utils/prompts.js';
 
 /**
  * @class BuilderCardComponent
@@ -13,7 +14,7 @@
  * 
  * Encapsulation Scope: Extremely confined logic strictly tied to one specific question entry block.
  */
-class BuilderCardComponent {
+export default class BuilderCardComponent {
 
     /**
      * @name constructor
@@ -21,10 +22,12 @@ class BuilderCardComponent {
      * @description Initializes the component, constructs the underlying DOM node, handles prefill data, and binds structural listeners.
      * @param {Object|null} prefillData - Optional question data to natively populate the inputs.
      * @param {Function} onDeleteCallback - The explicit action to fire when the local delete button is triggered.
+     * @param {Function} [onExpandCallback] - Optional callback triggered to enforce external layout constraints natively.
      * @returns {void} - Does not return a value.
      */
-    constructor(prefillData, onDeleteCallback) {
+    constructor(prefillData, onDeleteCallback, onExpandCallback = null) {
         this.onDeleteCallback = onDeleteCallback;
+        this.onExpandCallback = onExpandCallback;
         
         this.node = document.createElement("div");
         this.node.className = "glass-panel question-card";
@@ -124,8 +127,13 @@ class BuilderCardComponent {
             }
         });
 
+        // Monitors the local state and triggers external layout adjustments if newly uncollapsed.
         cardHeader.addEventListener("click", () => {
-            this.node.classList.toggle("collapsed");
+            const isNowCollapsed = this.node.classList.toggle("collapsed");
+            
+            if (!isNowCollapsed && this.onExpandCallback) {
+                this.onExpandCallback(this);
+            }
         });
 
         // Mutates the active title state text as the user inputs raw string payloads.

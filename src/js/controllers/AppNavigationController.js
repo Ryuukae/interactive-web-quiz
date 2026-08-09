@@ -13,7 +13,7 @@
  * 
  * Encapsulation Scope: Strictly isolated purely to global SPA transitions explicitly.
  */
-class AppNavigationController {
+export default class AppNavigationController {
 
     /**
      * @name constructor

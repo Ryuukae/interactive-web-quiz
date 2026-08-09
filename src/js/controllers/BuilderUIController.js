@@ -1,6 +1,11 @@
 // =============================
 // --- BUILDER UI CONTROLLER ---
 // =============================
+import { getTxtTemplate, getJsonTemplate } from '../utils/templates.js';
+import { confirmAction, alertAction } from '../utils/prompts.js';
+import { exportJSON } from '../utils/fileIO.js';
+import { parseAndValidateRawText } from '../utils/schemaValidator.js';
+import BuilderCardComponent from '../components/BuilderCardComponent.js';
 
 /**
  * @class BuilderUIController
@@ -13,7 +18,7 @@
  * 
  * Encapsulation Scope: Modulates `#creator-screen` capabilities comprehensively.
  */
-class BuilderUIController {
+export default class BuilderUIController {
 
     /**
      * @name constructor
@@ -94,6 +99,18 @@ class BuilderUIController {
     }
 
     /**
+     * @name collapseBulkImport
+     * @public
+     * @description Safely forces the bulk import panel into a constrained CSS visibility state.
+     * @returns {void} - Does not return a value.
+     */
+    collapseBulkImport() {
+        if (!this.bulkImportPanel.classList.contains("collapsed")) {
+            this.bulkImportPanel.classList.add("collapsed");
+        }
+    }
+
+    /**
      * @name initializeBuilder
      * @public
      * @description Purges legacy artifacts completely, explicitly triggering primary baseline construction capabilities to guarantee a fresh logical execution state.
@@ -102,7 +119,11 @@ class BuilderUIController {
     initializeBuilder() {
         this.builderState.clearAll();
         
-        const newCard = new BuilderCardComponent(null, (card) => this.builderState.removeCard(card));
+        const newCard = new BuilderCardComponent(
+            null, 
+            (card) => this.builderState.removeCard(card),
+            () => this.collapseBulkImport()
+        );
         this.builderState.addCard(newCard);
         this.builderContainer.appendChild(newCard.node);
     }
@@ -119,7 +140,11 @@ class BuilderUIController {
         if (this.builderState.validateAllCards()) {
             this.builderState.collapseAllCards();
             
-            const newCard = new BuilderCardComponent(null, (card) => this.builderState.removeCard(card));
+            const newCard = new BuilderCardComponent(
+                null, 
+                (card) => this.builderState.removeCard(card),
+                () => this.collapseBulkImport()
+            );
             this.builderState.addCard(newCard);
             this.builderContainer.appendChild(newCard.node);
             
@@ -153,7 +178,11 @@ class BuilderUIController {
             const parsedData = parseAndValidateRawText(rawText);
             
             parsedData.forEach(q => {
-                const newCard = new BuilderCardComponent(q, (card) => this.builderState.removeCard(card));
+                const newCard = new BuilderCardComponent(
+                    q, 
+                    (card) => this.builderState.removeCard(card),
+                    () => this.collapseBulkImport()
+                );
                 this.builderState.addCard(newCard);
                 this.builderContainer.appendChild(newCard.node);
             });

@@ -2,6 +2,10 @@
 // --- QUIZ UI CONTROLLER ---
 // ==========================
 
+import { readFile } from '../utils/fileIO.js';
+import { parseAndValidateRawText } from '../utils/schemaValidator.js';
+import QuizState from '../models/QuizState.js';
+
 /**
  * @class QuizUIController
  * @name QuizUIController
@@ -13,7 +17,7 @@
  * 
  * Encapsulation Scope: Strictly isolated to active test session DOM manipulation.
  */
-class QuizUIController {
+export default class QuizUIController {
     
     /**
      * @name constructor
