@@ -35,6 +35,3 @@ export function alertAction(message) {
     window.alert(message);
 }
 
-// Binds to global scope for standard script execution tags
-window.confirmAction = confirmAction;
-window.alertAction = alertAction;

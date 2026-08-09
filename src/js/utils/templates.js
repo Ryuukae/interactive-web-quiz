@@ -29,5 +29,3 @@ export function getTxtTemplate() {
     return `q=Your question here?\na=Correct option\nd=Wrong option\nd=Another wrong option`;
 }
 
-window.getJsonTemplate = getJsonTemplate;
-window.getTxtTemplate = getTxtTemplate;

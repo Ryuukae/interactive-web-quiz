@@ -9,6 +9,8 @@
  * Encapsulation Scope: Strictly isolated to pure mathematical array evaluation globally.
  */
 
+import {parseQADFormat} from '/src/js/utils/qadParser.js';
+
 /**
  * @name parseAndValidateRawText
  * @public
@@ -37,7 +39,7 @@ export function parseAndValidateRawText(rawText) {
     // ----------------------------------------------------------------------
 
     if (!parsedData) {
-        parsedData = QADParser.parseQADFormat(cleanText);
+        parsedData = parseQADFormat(cleanText);
     }
 
     if (!parsedData || parsedData.length === 0) {
@@ -96,5 +98,3 @@ export function validateQuizSchema(data) {
     // ----------------------------------------------------------------------
 }
 
-window.parseAndValidateRawText = parseAndValidateRawText;
-window.validateQuizSchema = validateQuizSchema;

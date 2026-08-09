@@ -21,7 +21,7 @@
  * @returns {Array<Object>} - Formatted question objects sequentially ready for state ingestion globally.
  * @throws {Error} - Throws an explicit string error conclusively if structural formatting bounds are violated natively.
  */
-function parseQADFormat(rawText) {
+export function parseQADFormat(rawText) {
     const normalizedText = rawText.replace(/\r\n/g, '\n').trim();
     const lines = normalizedText.split('\n');
     
@@ -116,3 +116,4 @@ function validateBlock(block, answers, distractors) {
         throw new Error(`Question "${block.question}" must have between 1 and 6 'd=' distractor lines (found ${distractors}).`);
     }
 }
+

@@ -64,6 +64,3 @@ export function readFile(file) {
         reader.readAsText(file);
     });
 }
-
-window.exportJSON = exportJSON;
-window.readFile = readFile;
