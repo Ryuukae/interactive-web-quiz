@@ -15,13 +15,14 @@
 !script.js
 !Utils.js
 !QuizState.js
-!QuizBuilderState.js
 !QuizUIController.js
 !AppNavigationController.js
 !BuilderCardComponent.js
 !BuilderUIController.js
-!QuizDataLoader.js
-!QuizBuilderState
 !BuilderState.js
 !QADParser.js
 
+!fileIO.js
+!prompts.js
+!schemaValidator.js
+!templates.js
