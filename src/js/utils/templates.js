@@ -28,4 +28,3 @@ export function getJsonTemplate() {
 export function getTxtTemplate() {
     return `q=Your question here?\na=Correct option\nd=Wrong option\nd=Another wrong option`;
 }
-

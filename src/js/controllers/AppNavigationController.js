@@ -1,7 +1,3 @@
-// =================================
-// --- APP NAVIGATION CONTROLLER ---
-// =================================
-
 /**
  * @class AppNavigationController
  * @name AppNavigationController

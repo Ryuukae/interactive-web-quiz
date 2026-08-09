@@ -1,6 +1,3 @@
-// =============================
-// --- BUILDER UI CONTROLLER ---
-// =============================
 import { getTxtTemplate, getJsonTemplate } from '../utils/templates.js';
 import { confirmAction, alertAction } from '../utils/prompts.js';
 import { exportJSON } from '../utils/fileIO.js';
@@ -111,6 +108,24 @@ export default class BuilderUIController {
     }
 
     /**
+     * @name scrollToFirstError
+     * @public
+     * @description Locates the first validation error within the builder container and scrolls it smoothly into the viewport.
+     * @returns {void} - Does not return a value.
+     */
+    scrollToFirstError() {
+        /* Defers execution briefly to ensure DOM paint mapping is completed prior to scroll interception natively. */
+        // ----------------------------------------------------------------------
+        setTimeout(() => {
+            const firstError = this.builderContainer.querySelector('.input-error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 50);
+        // ----------------------------------------------------------------------
+    }
+
+    /**
      * @name initializeBuilder
      * @public
      * @description Purges legacy artifacts completely, explicitly triggering primary baseline construction capabilities to guarantee a fresh logical execution state.
@@ -137,24 +152,28 @@ export default class BuilderUIController {
     handleAddQuestion() {
         /* Encapsulates the execution chain to strictly block execution mapping errors while preserving physical viewport alignment properties dynamically. */
         // ----------------------------------------------------------------------
-        if (this.builderState.validateAllCards()) {
-            this.builderState.collapseAllCards();
-            
-            const newCard = new BuilderCardComponent(
-                null, 
-                (card) => this.builderState.removeCard(card),
-                () => this.collapseBulkImport()
-            );
-            this.builderState.addCard(newCard);
-            this.builderContainer.appendChild(newCard.node);
-            
-            setTimeout(() => {
-                this.builderContainer.scrollTo({
-                    top: this.builderContainer.scrollHeight,
-                    behavior: "smooth"
-                });
-            }, 50);
+        if (!this.builderState.validateAllCards()) {
+            this.scrollToFirstError();
+            return;
         }
+
+        this.collapseBulkImport();
+        this.builderState.collapseAllCards();
+        
+        const newCard = new BuilderCardComponent(
+            null, 
+            (card) => this.builderState.removeCard(card),
+            () => this.collapseBulkImport()
+        );
+        this.builderState.addCard(newCard);
+        this.builderContainer.appendChild(newCard.node);
+        
+        setTimeout(() => {
+            this.builderContainer.scrollTo({
+                top: this.builderContainer.scrollHeight,
+                behavior: "smooth"
+            });
+        }, 50);
         // ----------------------------------------------------------------------
     }
 
@@ -217,6 +236,7 @@ export default class BuilderUIController {
         }
 
         if (!this.builderState.validateAllCards()) {
+            this.scrollToFirstError();
             return;
         }
 
@@ -237,6 +257,16 @@ export default class BuilderUIController {
      * @returns {void} - Does not return a value.
      */
     exportBuilderQuiz() {
+        if (this.builderState.cards.length === 0) {
+            alertAction("Please add at least one question before exporting.");
+            return;
+        }
+
+        if (!this.builderState.validateAllCards()) {
+            this.scrollToFirstError();
+            return;
+        }
+
         const payload = this.builderState.getSerializedPayload();
         exportJSON(payload, "custom_quizset.json");
     }

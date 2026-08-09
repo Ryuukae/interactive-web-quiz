@@ -1,6 +1,5 @@
 /**
  * @module fileIO
- * @name fileIO
  * @version 1.0.0
  * @author Adam Ross DeStafeno
  * @since 2026-08-08

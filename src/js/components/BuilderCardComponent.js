@@ -1,6 +1,3 @@
-// ====================================
-// --- BUILDER CARD COMPONENT CLASS ---
-// ====================================
 import { confirmAction } from '../utils/prompts.js';
 
 /**
@@ -102,7 +99,6 @@ export default class BuilderCardComponent {
         this.dContainer = this.node.querySelector(".distractors-container");
         this.addBtn = this.node.querySelector(".btn-add-distractor");
         
-        // Dynamically forces the addition button to hide if the maximum structural bounds have been hit.
         if (distractorVals.length >= 6) {
             this.addBtn.style.display = "none";
         }
@@ -119,7 +115,6 @@ export default class BuilderCardComponent {
         const cardHeader = this.node.querySelector(".card-header");
         const cardTitle = this.node.querySelector(".card-title");
 
-        // Evaluates the event phase to sever the bubbling effect to the parent container.
         deleteBtn.addEventListener("click", (event) => {
             event.stopPropagation();
             if (confirmAction("Are you sure you want to delete this question?")) {
@@ -127,7 +122,6 @@ export default class BuilderCardComponent {
             }
         });
 
-        // Monitors the local state and triggers external layout adjustments if newly uncollapsed.
         cardHeader.addEventListener("click", () => {
             const isNowCollapsed = this.node.classList.toggle("collapsed");
             
@@ -136,7 +130,6 @@ export default class BuilderCardComponent {
             }
         });
 
-        // Mutates the active title state text as the user inputs raw string payloads.
         this.qInput.addEventListener("input", (e) => {
             cardTitle.textContent = e.target.value || "New Question...";
         });
@@ -156,12 +149,10 @@ export default class BuilderCardComponent {
             }
         });
 
-        // Binds event delegation specifically targeting internal inputs to clear active validation alerts.
         this.node.querySelector(".card-body").addEventListener("input", (e) => {
             if (e.target.classList.contains("glass-input")) {
                 e.target.classList.remove("input-error");
                 
-                // Restores standard prompt terminology.
                 if (e.target.classList.contains("q-input")) e.target.placeholder = "e.g., What is the default port for HTTPS?";
                 if (e.target.classList.contains("a-input")) e.target.placeholder = "e.g., 443";
                 if (e.target.classList.contains("d-input")) e.target.placeholder = "e.g., 80";
@@ -199,7 +190,6 @@ export default class BuilderCardComponent {
         let isValid = true;
         const dInputs = this.node.querySelectorAll(".d-input");
 
-        // Evaluates the question prompt field for required text.
         if (this.qInput.value.trim() === "") {
             this.qInput.classList.add("input-error");
             this.qInput.placeholder = "Required: Please enter a question prompt";
@@ -207,7 +197,6 @@ export default class BuilderCardComponent {
             this.node.classList.remove("collapsed");
         }
 
-        // Evaluates the correct answer field for required text.
         if (this.aInput.value.trim() === "") {
             this.aInput.classList.add("input-error");
             this.aInput.placeholder = "Required: Please enter the correct answer";
@@ -215,7 +204,6 @@ export default class BuilderCardComponent {
             this.node.classList.remove("collapsed");
         }
 
-        // Evaluates the distractor inputs to guarantee at least one entry exists.
         let hasDistractor = false;
         dInputs.forEach(d => {
             if (d.value.trim() !== "") {

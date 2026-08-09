@@ -1,7 +1,3 @@
-// ======================
-// --- PROMPTS MODULE ---
-// ======================
-
 /**
  * @module prompts
  * @version 1.0.0
@@ -34,4 +30,3 @@ export function confirmAction(message) {
 export function alertAction(message) {
     window.alert(message);
 }
-

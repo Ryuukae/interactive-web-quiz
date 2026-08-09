@@ -1,3 +1,5 @@
+import {parseQADFormat} from '/src/js/utils/qadParser.js';
+
 /**
  * @module schemaValidator
  * @version 1.0.0
@@ -8,8 +10,6 @@
  * 
  * Encapsulation Scope: Strictly isolated to pure mathematical array evaluation globally.
  */
-
-import {parseQADFormat} from '/src/js/utils/qadParser.js';
 
 /**
  * @name parseAndValidateRawText

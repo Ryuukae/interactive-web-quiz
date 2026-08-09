@@ -1,7 +1,3 @@
-// ==========================
-// --- QUIZ UI CONTROLLER ---
-// ==========================
-
 import { readFile } from '../utils/fileIO.js';
 import { parseAndValidateRawText } from '../utils/schemaValidator.js';
 import QuizState from '../models/QuizState.js';
