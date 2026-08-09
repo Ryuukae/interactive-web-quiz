@@ -1,4 +1,4 @@
-import {parseQADFormat} from '/src/js/utils/qadParser.js';
+import { parseQADFormat } from './qadParser.js';
 
 /**
  * @module schemaValidator
