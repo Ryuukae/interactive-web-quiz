@@ -5,6 +5,9 @@
 * {
     margin: 0;
     padding: 0;
+    
+    /* Enforces a uniform box model across all elements, incorporating padding and borders 
+       into the computed dimensions to prevent layout recalculation errors. */
     box-sizing: border-box;
 }
 
@@ -14,18 +17,25 @@
 
 html {
     max-width: 100vw;
-    overflow-x: hidden;
+    overflow-x: hidden; /* Viewport Stabilization */
 }
 
 body {
+    /* Establishes a deep midnight base layer to eliminate stark contrast and render a premium, low-light environment. */
     background: #0f172a;
     color: #1e293b;
+    
+    /* Utilizes a flexible box model on the viewport root to orchestrate absolute center alignment for the main application container. */
     display: flex;
     justify-content: center; 
     align-items: center;  
+    
+    /* Binds the viewport bounds to guarantee sufficient axis space for accurate flexbox centering calculations. */
     max-width: 100vw;
     min-height: 100vh;
     padding: 1rem;
+    
+    /* Suppresses horizontal overflow rendering, preventing viewport scrolling caused by off-axis decorative ambient elements. */
     overflow-x: hidden; 
     position: relative;
     z-index: 1;
@@ -42,11 +52,19 @@ body {
     text-align: center;
     position: relative;
     overflow: hidden;
+
+    /* Establishes the primary glassmorphism canvas using a 40% smoked glass fill. */
     background: rgba(20, 20, 20, 0.4);
+
+    /* Applies hardware-accelerated backdrop filtering to heavily blur the underlying ambient pseudo-elements, synthesizing frosted glass. */
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+
+    /* Constructs a high-opacity specular edge border to simulate directional lighting catching the physical rim of the glass pane. */
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 1rem; 
+
+    /* Synthesizes a composite 3D shadow system to separate the UI layer from the background environment. */
     box-shadow: 
         0 24px 40px rgba(0, 0, 0, 0.15), 
         inset 0 1px 0 rgba(255, 255, 255, 0.8); 
@@ -320,7 +338,9 @@ button:active {
     gap: 12px;
     margin-top: 8px;
     width: 100%;
-    flex-shrink: 0;
+    
+    /* Prevents the button stack from crushing when the question cards container expands */
+    flex-shrink: 0; 
 }
 
 .action-row {
@@ -518,14 +538,16 @@ button:active {
 /* --- QUIZ BUILDER UI COMPONENTS --- */
 /* ================================== */
 
+/* Forces the Creator Screen into a rigid flex column to respect the viewport boundary */
 #creator-screen.active {
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - 6rem); 
 }
 
-#creator-screen > h1,
-#creator-screen > p,
+/* Prevents fixed header elements from collapsing under flex pressure */
+#creator-screen > h1, 
+#creator-screen > p, 
 #bulk-import-panel {
     flex-shrink: 0;
 }
@@ -550,8 +572,21 @@ button:active {
     margin-bottom: 16px;
 }
 
+/* Enables internal scrolling within the bulk import panel so that large textareas or expanded accordions do not push the rest of the app off-screen. */
+#bulk-import-panel .card-body {
+    max-height: 45vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(167, 213, 255, 0.3) transparent;
+}
+
+/* Enables vertical expansion with strict bounding constraints to prevent layout breakage. */
 #bulk-import-text {
-    resize: none;
+    resize: vertical;
+    min-height: 100px;
+    max-height: 900px;
 }
 
 #btn-parse-bulk {
@@ -609,12 +644,17 @@ input.glass-input.d-input {
     flex-grow: 1;
     flex-shrink: 1;
     min-height: 0; 
+    
+    /* Forces an internal vertical scrollbar explicitly to guarantee identical internal content bounds */
     overflow-y: scroll;
     overflow-x: hidden;
+    
+    /* Compensates for the scrollbar track width by aggressively scaling out the right margin */
     width: calc(100% + 8px);
     margin-right: -8px;
     padding-right: 2px;
     margin-bottom: 12px;
+
     scrollbar-width: thin;
     scrollbar-color: rgba(167, 213, 255, 0.3) transparent;
 }

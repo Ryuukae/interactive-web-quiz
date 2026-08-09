@@ -2,6 +2,12 @@
 // --- APPLICATION ENTRY POINT ---
 // ===============================
 
+import AppNavigationController from './controllers/AppNavigationController.js';
+import QuizState from './models/QuizState.js';
+import BuilderState from './models/BuilderState.js';
+import QuizUIController from './controllers/QuizUIController.js';
+import BuilderUIController from './controllers/BuilderUIController.js';
+
 /**
  * @module script
  * @version 1.0.0
