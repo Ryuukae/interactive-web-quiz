@@ -20,7 +20,7 @@
  * @param {string} message - The custom warning text to display physically.
  * @returns {boolean} - True if the user confirms explicitly, false if they cancel inherently.
  */
-function confirmAction(message) {
+export function confirmAction(message) {
     return window.confirm(message);
 }
 
@@ -31,6 +31,10 @@ function confirmAction(message) {
  * @param {string} message - The custom alert text to display seamlessly.
  * @returns {void} - Does not return a value.
  */
-function alertAction(message) {
+export function alertAction(message) {
     window.alert(message);
 }
+
+// Binds to global scope for standard script execution tags
+window.confirmAction = confirmAction;
+window.alertAction = alertAction;

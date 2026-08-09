@@ -1,27 +1,48 @@
-# Ignore all
+# Ignore all by default
 *
+
+# Only allow certain Folders
+!public/
+!src/
+!src/css/
+!src/js/
+!src/js/components/
+!src/js/controllers/
+!src/js/models/
+!src/js/utils/
 
 # Only allow certain files
 !.gitignore
 
-!questions.json
-!template.json
-!template.txt
 
+# HTML
 !index.html
-!style.css
-!responsive.css
 
-!script.js
-!QuizState.js
-!QuizUIController.js
-!AppNavigationController.js
-!BuilderCardComponent.js
-!BuilderUIController.js
-!BuilderState.js
-!QADParser.js
+# JSON
+!public/questions.json
+!public/template.json
+!public/questions2.json
 
-!fileIO.js
-!prompts.js
-!schemaValidator.js
-!templates.js
+# TXT
+!public/template.txt
+
+# CSS
+!src/css/style.css
+!src/css/responsive.css
+
+# JS
+!src/js/script.js
+
+!src/js/components/BuilderCardComponent.js
+!src/js/controllers/AppNavigationController.js
+!src/js/controllers/BuilderUIController.js
+!src/js/controllers/QuizUIController.js
+!src/js/models/BuilderState.js
+!src/js/models/QuizState.js
+!src/js/utils/fileIO.js
+!src/js/utils/prompts.js
+!src/js/utils/qadParser.js
+!src/js/utils/schemaValidator.js
+!src/js/utils/templates.js
+
+

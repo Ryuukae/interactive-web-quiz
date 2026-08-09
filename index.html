@@ -15,8 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <!-- External stylesheet linkage (CSSOM rendering pipeline) -->
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/responsive.css">
 </head>
 <body>
     <!-- 
@@ -203,7 +203,7 @@ q=Which protocol is considered secure?
     d=HTTP
     D=TELNET
 </code></pre>
-                                <a href="template.txt" download class="download-link">Download Template</a>
+                                <a href="public/template.txt" download class="download-link">Download Template</a>
                             </div>
                         </details>
 
@@ -248,7 +248,7 @@ q=Which protocol is considered secure?
     ]
   }
 ]</code></pre>
-                                <a href="template.json" download class="download-link">Download Template</a>
+                                <a href="public/template.json" download class="download-link">Download Template</a>
                             </div>
                         </details>
                     </div>
@@ -284,17 +284,17 @@ q=Which protocol is considered secure?
       Scripts must be loaded in strict sequential order to prevent reference errors.
       The Dependency Schema enforces execution constraints natively and logically.
     -->
-    <script src="QuizState.js"></script>
-    <script src="BuilderState.js"></script>
-    <script src="QADParser.js"></script>
-    <script src="schemaValidator.js"></script>
-    <script src="fileIO.js"></script>
-    <script src="prompts.js"></script>
-    <script src="templates.js"></script>
-    <script src="BuilderCardComponent.js"></script>
-    <script src="AppNavigationController.js"></script>
-    <script src="QuizUIController.js"></script>
-    <script src="BuilderUIController.js"></script>
-    <script src="script.js"></script>
+    <script src="src/js/models/QuizState.js"></script>
+    <script src="src/js/models/BuilderState.js"></script>
+    <script src="src/js/utils/qadParser.js"></script>
+    <script src="src/js/utils/schemaValidator.js"></script>
+    <script src="src/js/utils/fileIO.js"></script>
+    <script src="src/js/utils/prompts.js"></script>
+    <script src="src/js/utils/templates.js"></script>
+    <script src="src/js/components/BuilderCardComponent.js"></script>
+    <script src="src/js/controllers/AppNavigationController.js"></script>
+    <script src="src/js/controllers/QuizUIController.js"></script>
+    <script src="src/js/controllers/BuilderUIController.js"></script>
+    <script src="src/js/script.js"></script>
 </body>
 </html>

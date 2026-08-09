@@ -8,13 +8,11 @@
  * @author Adam Ross DeStafeno
  * @since 2026-08-09
  * @description 
- * Architectural Responsibilities: Application Entry Point. Orchestrates dataset retrieval, state instantiation, and controller initialization.
+ * Architectural Responsibilities: Application Entry Point. Orchestrates state instantiation and controller initialization.
  * 
  * Encapsulation Scope: Serves as the composition root where dependencies are physically wired together correctly.
  */
 
-// Declared at the module scope to maintain persistent references to the root instances. 
-// This prevents aggressive memory garbage collection and allows for runtime inspection in the browser console.
 let appNavController;
 let quizState;
 let builderState;
@@ -22,20 +20,9 @@ let quizUIController;
 let builderUIController;
 
 /**
- * @name fetchQuizContent
- * @public
- * @description Isolates the network I/O boundary securely natively.
- * @returns {Promise<Array<Object>>} - A promise that resolves to the parsed JSON payload natively.
- */
-async function fetchQuizContent() {
-    const response = await fetch('questions.json');
-    return response.json();
-}
-
-/**
  * @name initializeApp
  * @public
- * @description Orchestrates the asynchronous bootstrap sequence systematically. Enforces a strict initialization pipeline natively: Network -> State Models -> Controllers sequentially.
+ * @description Orchestrates the asynchronous bootstrap sequence systematically. Enforces a strict initialization pipeline natively: State Models -> Controllers sequentially.
  * @returns {void} - Does not return a value.
  */
 async function initializeApp() {
@@ -44,9 +31,8 @@ async function initializeApp() {
         // ----------------------------------------------------------------------
         appNavController = new AppNavigationController();
         
-        const questionData = await fetchQuizContent();
-        
-        quizState = new QuizState(questionData);
+        // Initializes the state machine with an empty baseline array pending user import or creation.
+        quizState = new QuizState([]);
         builderState = new BuilderState();
         
         quizUIController = new QuizUIController(quizState, appNavController);
