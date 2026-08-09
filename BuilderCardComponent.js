@@ -1,6 +1,6 @@
-// ========================================
-// --- BUILDER CARD COMPONENT CLASS     ---
-// ========================================
+// ====================================
+// --- BUILDER CARD COMPONENT CLASS ---
+// ====================================
 
 /**
  * @class BuilderCardComponent
@@ -17,6 +17,7 @@ class BuilderCardComponent {
 
     /**
      * @name constructor
+     * @public
      * @description Initializes the component, constructs the underlying DOM node, handles prefill data, and binds structural listeners.
      * @param {Object|null} prefillData - Optional question data to natively populate the inputs.
      * @param {Function} onDeleteCallback - The explicit action to fire when the local delete button is triggered.
@@ -38,6 +39,7 @@ class BuilderCardComponent {
 
     /**
      * @name render
+     * @public
      * @description Processes internal string injection to structurally construct the component's interactive UI.
      * @param {Object|null} prefillData - Sourced data mapped directly into input values.
      * @returns {void} - Does not return a value.
@@ -97,6 +99,7 @@ class BuilderCardComponent {
         this.dContainer = this.node.querySelector(".distractors-container");
         this.addBtn = this.node.querySelector(".btn-add-distractor");
         
+        // Dynamically forces the addition button to hide if the maximum structural bounds have been hit.
         if (distractorVals.length >= 6) {
             this.addBtn.style.display = "none";
         }
@@ -104,6 +107,7 @@ class BuilderCardComponent {
 
     /**
      * @name bindLocalListeners
+     * @public
      * @description Attaches highly scoped physical DOM listeners to govern internal functionality seamlessly.
      * @returns {void} - Does not return a value.
      */
@@ -112,9 +116,10 @@ class BuilderCardComponent {
         const cardHeader = this.node.querySelector(".card-header");
         const cardTitle = this.node.querySelector(".card-title");
 
+        // Evaluates the event phase to sever the bubbling effect to the parent container.
         deleteBtn.addEventListener("click", (event) => {
             event.stopPropagation();
-            if (PromptUtil.confirmAction("Are you sure you want to delete this question?")) {
+            if (confirmAction("Are you sure you want to delete this question?")) {
                 this.onDeleteCallback(this);
             }
         });
@@ -123,6 +128,7 @@ class BuilderCardComponent {
             this.node.classList.toggle("collapsed");
         });
 
+        // Mutates the active title state text as the user inputs raw string payloads.
         this.qInput.addEventListener("input", (e) => {
             cardTitle.textContent = e.target.value || "New Question...";
         });
@@ -142,10 +148,12 @@ class BuilderCardComponent {
             }
         });
 
+        // Binds event delegation specifically targeting internal inputs to clear active validation alerts.
         this.node.querySelector(".card-body").addEventListener("input", (e) => {
             if (e.target.classList.contains("glass-input")) {
                 e.target.classList.remove("input-error");
                 
+                // Restores standard prompt terminology.
                 if (e.target.classList.contains("q-input")) e.target.placeholder = "e.g., What is the default port for HTTPS?";
                 if (e.target.classList.contains("a-input")) e.target.placeholder = "e.g., 443";
                 if (e.target.classList.contains("d-input")) e.target.placeholder = "e.g., 80";
@@ -155,6 +163,7 @@ class BuilderCardComponent {
 
     /**
      * @name collapse
+     * @public
      * @description Safely forces the DOM node into a constrained CSS visibility state.
      * @returns {void} - Does not return a value.
      */
@@ -164,6 +173,7 @@ class BuilderCardComponent {
 
     /**
      * @name destroy
+     * @public
      * @description Physically purges the internal template structure from the master DOM.
      * @returns {void} - Does not return a value.
      */
@@ -173,13 +183,15 @@ class BuilderCardComponent {
 
     /**
      * @name validate
-     * @description Evaluates local input integrity to ensure required bounds (Q, A, and 1 Distractor) are satisfied.
+     * @public
+     * @description Evaluates local input integrity to ensure required bounds are satisfied.
      * @returns {boolean} - True if populated properly; otherwise forces visibility uncollapse, renders red warnings, and returns false.
      */
     validate() {
         let isValid = true;
         const dInputs = this.node.querySelectorAll(".d-input");
 
+        // Evaluates the question prompt field for required text.
         if (this.qInput.value.trim() === "") {
             this.qInput.classList.add("input-error");
             this.qInput.placeholder = "Required: Please enter a question prompt";
@@ -187,6 +199,7 @@ class BuilderCardComponent {
             this.node.classList.remove("collapsed");
         }
 
+        // Evaluates the correct answer field for required text.
         if (this.aInput.value.trim() === "") {
             this.aInput.classList.add("input-error");
             this.aInput.placeholder = "Required: Please enter the correct answer";
@@ -194,6 +207,7 @@ class BuilderCardComponent {
             this.node.classList.remove("collapsed");
         }
 
+        // Evaluates the distractor inputs to guarantee at least one entry exists.
         let hasDistractor = false;
         dInputs.forEach(d => {
             if (d.value.trim() !== "") {
@@ -214,6 +228,7 @@ class BuilderCardComponent {
 
     /**
      * @name getCardData
+     * @public
      * @description Scrapes localized text inputs, discards empty references, and packages structural assessment objects.
      * @returns {Object|null} - Clean payload containing a single question structure, or null if the prompt was ignored.
      */

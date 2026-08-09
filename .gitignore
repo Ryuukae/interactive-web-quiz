@@ -13,7 +13,6 @@
 !responsive.css
 
 !script.js
-!Utils.js
 !QuizState.js
 !QuizUIController.js
 !AppNavigationController.js

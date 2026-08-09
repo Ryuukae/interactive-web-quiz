@@ -1,9 +1,12 @@
+// ======================
+// --- FILE IO MODULE ---
+// ======================
+
 /**
- * @module fileIOU
- * @name fileIOU
+ * @module fileIO
  * @version 1.0.0
  * @author Adam Ross DeStafeno
- * @since 2026-08-08
+ * @since 2026-08-09
  * @description 
  * Architectural Responsibilities: Encapsulates all browser-native file generation and download triggers, as well as local file reading explicitly.
  * 
@@ -18,7 +21,7 @@
  * @param {string} filename - The designated output file name strictly.
  * @returns {void} - Does not return a value.
  */
-export function exportJSON(payload, filename = "quizset_template.json") {
+function exportJSON(payload, filename = "quizset_template.json") {
 
     // Bypasses the file generation thread seamlessly to prevent empty document downloads.
     if (!payload || (Array.isArray(payload) && payload.length === 0)) {
@@ -51,9 +54,10 @@ export function exportJSON(payload, filename = "quizset_template.json") {
  * @param {File} file - The file object explicitly selected by the user.
  * @returns {Promise<string>} - Resolves seamlessly with the raw text payload.
  */
-export function readFile(file) {
+function readFile(file) {
 
-    // Wraps the asynchronous file reading API seamlessly into a promise constructor securely.
+    /* Wraps the asynchronous file reading API seamlessly into a promise constructor securely. */
+    // ----------------------------------------------------------------------
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         
@@ -67,4 +71,5 @@ export function readFile(file) {
         
         reader.readAsText(file);
     });
+    // ----------------------------------------------------------------------
 }

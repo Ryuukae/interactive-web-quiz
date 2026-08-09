@@ -3,78 +3,63 @@
 // ===============================
 
 /**
- * Application Entry Point
- * Orchestrates dataset retrieval, state instantiation, and controller initialization.
- * Serves as the composition root where the application's dependencies are wired together.
+ * @module script
+ * @version 1.0.0
+ * @author Adam Ross DeStafeno
+ * @since 2026-08-09
+ * @description 
+ * Architectural Responsibilities: Application Entry Point. Orchestrates dataset retrieval, state instantiation, and controller initialization.
+ * 
+ * Encapsulation Scope: Serves as the composition root where dependencies are physically wired together correctly.
  */
 
 // Declared at the module scope to maintain persistent references to the root instances. 
 // This prevents aggressive memory garbage collection and allows for runtime inspection in the browser console.
+let appNavController;
 let quizState;
-let uiController;
+let builderState;
+let quizUIController;
+let builderUIController;
 
 /**
  * @name fetchQuizContent
- * @description Isolates the network I/O boundary.
- * @returns {Promise<Array<Object>>} A promise that resolves to the parsed JSON payload.
+ * @public
+ * @description Isolates the network I/O boundary securely natively.
+ * @returns {Promise<Array<Object>>} - A promise that resolves to the parsed JSON payload natively.
  */
 async function fetchQuizContent() {
-    // Suspend execution until the network request resolves. 
-    // This strict await pattern prevents asynchronous race conditions where the application 
-    // might attempt to render the View layer before the underlying Data layer actually exists.
     const response = await fetch('questions.json');
-    
-    // Parse the raw stream and return it as native JavaScript object structures
     return response.json();
 }
 
 /**
  * @name initializeApp
- * @description Orchestrates the asynchronous bootstrap sequence. Enforces a strict initialization pipeline: Network -> Data Model -> View Controller.
+ * @public
+ * @description Orchestrates the asynchronous bootstrap sequence systematically. Enforces a strict initialization pipeline natively: Network -> State Models -> Controllers sequentially.
  * @returns {void} - Does not return a value.
  */
 async function initializeApp() {
     try {
-        // Fetch Phase: Await the raw dataset from the external environment
-        const questionData = await fetchQuizContent();
-
-        // State Hydration Phase: Instantiate the Model
-        // The state machine must be initialized first to establish the application's definitive source of truth.
-        quizState = new QuizState(questionData);
-
-        // View Initialization Phase: Instantiate the Controller
-        // We utilize Dependency Injection here by passing the hydrated QuizState directly into the UIController.
-        // This allows the View layer to read and mutate the data without relying on hardcoded global couplings.
-        uiController = new UIController(quizState);
+        /* Orchestrates the root instantiation chain strictly, enforcing dependency injection natively and cleanly. */
+        // ----------------------------------------------------------------------
+        appNavController = new AppNavigationController();
         
-        // Synchronization Phase: Align the UI with the Model
-        // Ensure static DOM elements reflect the mathematical bounds of the newly loaded dataset 
-        // before the user is allowed to begin interacting with the application.
-        uiController.synchronizeBounds();
+        const questionData = await fetchQuizContent();
+        
+        quizState = new QuizState(questionData);
+        builderState = new BuilderState();
+        
+        quizUIController = new QuizUIController(quizState, appNavController);
+        builderUIController = new BuilderUIController(builderState, quizUIController, appNavController);
+        
+        quizUIController.synchronizeBounds();
+        // ----------------------------------------------------------------------
 
-        console.log("App successfully initialized.");
+        console.log("App successfully initialized via strict MVC protocols.");
 
     } catch (error) {
-        // Graceful failsafe to handle network timeouts, missing local files, or malformed JSON payloads.
-        // In a mature production environment, this catch block would actively mount a fallback error UI.
-        console.error("Failed to initialize the application data layer:", error);
+        console.error("Failed to initialize the application logic tier:", error);
     }
 }
 
-// Trigger the asynchronous bootstrap lifecycle immediately upon script evaluation
 initializeApp();
-
-// Binds the screen transition from the Start menu to the visual GUI Builder.
-document.getElementById("create-quizset-btn").addEventListener("click", () => {
-    document.getElementById("start-screen").classList.remove("active");
-    document.getElementById("creator-screen").classList.add("active");
-    
-    // Triggers the view controller to construct the builder environment.
-    uiController.initializeBuilder();
-});
-
-// Resets the view and returns the user to the initial Start screen.
-document.getElementById("btn-cancel-create").addEventListener("click", () => {
-    document.getElementById("creator-screen").classList.remove("active");
-    document.getElementById("start-screen").classList.add("active");
-});

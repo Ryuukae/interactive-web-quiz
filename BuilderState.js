@@ -17,6 +17,7 @@ class BuilderState {
     
     /**
      * @name constructor
+     * @public
      * @description Initializes an empty internal array to track active builder components.
      * @returns {void} - Does not return a value.
      */
@@ -26,6 +27,7 @@ class BuilderState {
 
     /**
      * @name addCard
+     * @public
      * @description Appends a new BuilderCardComponent instance to the active tracking array.
      * @param {BuilderCardComponent} card - The initialized component instance.
      * @returns {void} - Does not return a value.
@@ -36,6 +38,7 @@ class BuilderState {
 
     /**
      * @name removeCard
+     * @public
      * @description Evaluates the internal array to locate and purge the specific component instance, triggering its physical DOM destruction.
      * @param {BuilderCardComponent} card - The specific component instance to purge.
      * @returns {void} - Does not return a value.
@@ -47,6 +50,7 @@ class BuilderState {
 
     /**
      * @name clearAll
+     * @public
      * @description Forces the destruction of all tracked components and resets the internal tracking array to its baseline.
      * @returns {void} - Does not return a value.
      */
@@ -57,6 +61,7 @@ class BuilderState {
 
     /**
      * @name collapseAllCards
+     * @public
      * @description Loops through all tracked components and forces them into a collapsed visual state to conserve viewport real estate.
      * @returns {void} - Does not return a value.
      */
@@ -66,6 +71,7 @@ class BuilderState {
 
     /**
      * @name validateAllCards
+     * @public
      * @description Evaluates every active component to guarantee all structural requirements are met.
      * @returns {boolean} - True if all components report a valid state; otherwise false.
      */
@@ -86,6 +92,7 @@ class BuilderState {
 
     /**
      * @name getSerializedPayload
+     * @public
      * @description Iterates across the entire memory stack, commanding each component to scrape its local data into a unified array object.
      * @returns {Array<Object>} - The fully assembled assessment JSON.
      */

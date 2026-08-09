@@ -1,25 +1,29 @@
+// ========================
+// --- QAD PARSER CLASS ---
+// ========================
+
 /**
  * @class QADParser
  * @name QADParser
+ * @version 1.0.0
+ * @author Adam Ross DeStafeno
+ * @since 2026-08-09
  * @description 
- * Architectural Responsibilities: Responsible for ingesting raw QAD formatted 
- * text strings, normalizing line endings, and executing parsing loops to assemble 
- * valid question objects. Enforces strict schema rules (1 Question, 1 Answer, 1-6 Distractors).
+ * Architectural Responsibilities: Responsible for ingesting raw QAD formatted text strings, normalizing line endings, and executing parsing loops to assemble valid question objects. Enforces strict schema rules (1 Question, 1 Answer, 1-6 Distractors).
  * 
- * Encapsulation Scope: Strictly isolated to data formatting. It does not interact 
- * with the DOM, nor does it mutate global states.
+ * Encapsulation Scope: Strictly isolated to data formatting. It does not interact with the DOM, nor does it mutate global states.
  */
 class QADParser {
 
     /**
      * @name parseQADFormat
-     * @description Parses custom QAD text files into a standardized JSON array for the application.
-     * @param {string} rawText - The raw text payload from the uploaded file or textarea.
-     * @returns {Array<Object>} - Formatted question objects ready for state ingestion.
-     * @throws {Error} Throws an explicit error if structural formatting rules are violated.
+     * @public
+     * @description Parses custom QAD text files exclusively into a standardized JSON array optimally for the application natively.
+     * @param {string} rawText - The raw text payload string from the optimally uploaded file or physically typed textarea.
+     * @returns {Array<Object>} - Formatted question objects sequentially ready for state ingestion globally.
+     * @throws {Error} - Throws an explicit string error conclusively if structural formatting bounds are violated natively.
      */
     static parseQADFormat(rawText) {
-        // Normalizes line endings globally to ensure predictable array splitting.
         const normalizedText = rawText.replace(/\r\n/g, '\n').trim();
         const lines = normalizedText.split('\n');
         
@@ -28,20 +32,17 @@ class QADParser {
         let answerCount = 0;
         let distractorCount = 0;
 
-        /* Iterates sequentially through text lines to assemble discrete, validated question blocks. */
+        /* Iterates sequentially physically through generic text lines exclusively to assemble discrete organically validated question blocks. */
         // ----------------------------------------------------------------------
         for (let line of lines) {
             
-            // Strips leading and trailing whitespace to prevent invisible character bugs.
             const cleanLine = line.trim();
             
-            // Bypasses completely empty lines to allow users to format with generous vertical spacing.
             if (!cleanLine) continue;
 
             const lowerLine = cleanLine.toLowerCase();
 
             if (lowerLine.startsWith("q=")) {
-                // Validates the preceding block before initializing a new one.
                 if (currentQuestion !== null) {
                     QADParser.validateBlock(currentQuestion, answerCount, distractorCount);
                     questions.push(currentQuestion);
@@ -54,10 +55,12 @@ class QADParser {
                 
                 answerCount = 0;
                 distractorCount = 0;
+
             } else if (lowerLine.startsWith("a=")) {
                 if (currentQuestion === null) {
                     throw new Error("Orphaned answer detected. Every block must start with 'q='.");
                 }
+                
                 if (answerCount >= 1) {
                     throw new Error("Malformed block: Each question group can only have exactly one 'a=' line.");
                 }
@@ -67,6 +70,7 @@ class QADParser {
                     correct: true
                 });
                 answerCount++;
+
             } else if (lowerLine.startsWith("d=")) {
                 if (currentQuestion === null) {
                     throw new Error("Orphaned distractor detected. Every block must start with 'q='.");
@@ -81,7 +85,6 @@ class QADParser {
         }
         // ----------------------------------------------------------------------
 
-        // Validates and captures the final question block in the file since the iteration loop will terminate before it is pushed.
         if (currentQuestion !== null) {
             QADParser.validateBlock(currentQuestion, answerCount, distractorCount);
             questions.push(currentQuestion);
@@ -96,12 +99,13 @@ class QADParser {
 
     /**
      * @name validateBlock
+     * @public
      * @description Helper method to validate that a parsed QAD block meets strict structural requirements.
      * @param {Object} block - The question object being assembled.
      * @param {number} answers - Count of correct answers found.
      * @param {number} distractors - Count of distractors found.
      * @returns {void} - Does not return a value.
-     * @throws {Error} Throws an explicit error if counts fall outside acceptable parameters.
+     * @throws {Error} - Throws an explicit error if counts fall outside acceptable parameters.
      */
     static validateBlock(block, answers, distractors) {
         if (!block.question) {

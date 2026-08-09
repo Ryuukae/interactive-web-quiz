@@ -1,13 +1,12 @@
-// ==============================
-// --- PROMPT UTILITY MODULE ---
-// ==============================
+// ======================
+// --- PROMPTS MODULE ---
+// ======================
 
 /**
- * @module promptUtil
- * @name promptUtil
+ * @module prompts
  * @version 1.0.0
  * @author Adam Ross DeStafeno
- * @since 2026-08-08
+ * @since 2026-08-09
  * @description 
  * Architectural Responsibilities: Encapsulates user confirmation interactions securely, providing a unified interface for protective warnings before destructive actions globally.
  * 
@@ -21,7 +20,7 @@
  * @param {string} message - The custom warning text to display physically.
  * @returns {boolean} - True if the user confirms explicitly, false if they cancel inherently.
  */
-export function confirmAction(message) {
+function confirmAction(message) {
     return window.confirm(message);
 }
 
@@ -32,6 +31,6 @@ export function confirmAction(message) {
  * @param {string} message - The custom alert text to display seamlessly.
  * @returns {void} - Does not return a value.
  */
-export function alertAction(message) {
+function alertAction(message) {
     window.alert(message);
 }

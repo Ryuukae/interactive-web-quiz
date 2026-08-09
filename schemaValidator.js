@@ -1,8 +1,12 @@
+// ===============================
+// --- SCHEMA VALIDATOR MODULE ---
+// ===============================
+
 /**
  * @module schemaValidator
  * @version 1.0.0
  * @author Adam Ross DeStafeno
- * @since 2026-08-08
+ * @since 2026-08-09
  * @description 
  * Architectural Responsibilities: Responsible for enforcing the structural bounds of quiz assessment arrays. Validates proper JSON shapes.
  * 
@@ -15,9 +19,9 @@
  * @description Evaluates raw input strings to determine structural formatting, delegates extraction naturally, and verifies the final output.
  * @param {string} rawText - The unformatted string payload to digest explicitly.
  * @returns {Array<Object>} - The fully validated assessment dataset safely.
- * @throws {Error} Throws an explicit error if the text is definitively invalid or malformed structurally.
+ * @throws {Error} - Throws an explicit error if the text is definitively invalid or malformed structurally.
  */
-export function parseAndValidateRawText(rawText) {
+function parseAndValidateRawText(rawText) {
 
     // Sanitizes the raw input to prevent whitespace-triggered parsing errors explicitly.
     const cleanText = rawText.trim();
@@ -63,9 +67,9 @@ export function parseAndValidateRawText(rawText) {
  * @description Validates the structural integrity of the ingested JSON dataset logically. Enforces bounds (1-7 answers total, exactly 1 correct answer per question).
  * @param {Array<Object>} data - The parsed JSON data to validate natively.
  * @returns {void} - Does not return a value.
- * @throws {Error} Throws an explicit error if the schema dynamically violates specifications.
+ * @throws {Error} - Throws an explicit error if the schema dynamically violates specifications.
  */
-export function validateQuizSchema(data) {
+function validateQuizSchema(data) {
 
     // Evaluates the base container type logically.
     if (!Array.isArray(data) || data.length === 0) {
