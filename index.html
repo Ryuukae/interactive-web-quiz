@@ -15,8 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <!-- External stylesheet linkage (CSSOM rendering pipeline) -->
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/responsive.css">
 </head>
 <body>
     <!-- 
@@ -25,9 +25,9 @@
       and provides a stable backdrop for the glassmorphism rendering.
     -->
     <div class="container">
-        <!-- ============================================== -->
-        <!-- --- STAGE 1: START SCREEN (INITIAL STATE)  --- -->
-        <!-- ============================================== -->
+        <!-- ============================================= -->
+        <!-- --- STAGE 1: START SCREEN (INITIAL STATE) --- -->
+        <!-- ============================================= -->
         <!-- The 'active' class dictates visibility upon initial DOM load. -->
         <div class="screen active" id="start-screen">
             <h1>Quiz Time!</h1>
@@ -88,7 +88,7 @@
 
             <!-- 
               ANSWERS CONTAINER
-              Acts as an empty DOM injection target. UIController.js will dynamically 
+              Acts as an empty DOM injection target. QuizUIController.js will dynamically 
               construct and append interactive <button> elements here based on the JSON payload.
             -->
             <div id="answers-container" class="answers-container">
@@ -98,7 +98,7 @@
             <!-- 
               PROGRESS BAR
               Visual indicator of quiz completion. The inner '.progress' div's width is 
-              manipulated via inline CSS transitions handled in script.js.
+              manipulated via inline CSS transitions handled in the controller.
             -->
             <div class="progress-bar">
                 <div id="progress" class="progress"></div>
@@ -203,7 +203,7 @@ q=Which protocol is considered secure?
     d=HTTP
     D=TELNET
 </code></pre>
-                                <a href="template.txt" download class="download-link">Download Template</a>
+                                <a href="public/template.txt" download class="download-link">Download Template</a>
                             </div>
                         </details>
 
@@ -248,7 +248,7 @@ q=Which protocol is considered secure?
     ]
   }
 ]</code></pre>
-                                <a href="template.json" download class="download-link">Download Template</a>
+                                <a href="public/template.json" download class="download-link">Download Template</a>
                             </div>
                         </details>
                     </div>
@@ -257,7 +257,7 @@ q=Which protocol is considered secure?
             
             <!-- DYNAMIC GUI CONTAINER -->
             <div id="builder-questions-container">
-                <!-- Question cards injected via JS -->
+                <!-- Question cards injected via JS Components -->
             </div>
 
             <!-- Implements the action-stack class for consistent UI spacing -->
@@ -282,20 +282,8 @@ q=Which protocol is considered secure?
     <!-- ============================== -->
     <!-- 
       Scripts must be loaded in strict sequential order to prevent reference errors.
-      1. QuizState: Establishes the core data models and logic structures.
-      2. QADParser: Handles raw string text translation into structured arrays.
-      3. Utils: Houses export utilities and template string generators.
-      4. QuizBuilderState: Manages validation and payload parsing routing.
-      5. QuizDataLoader: Ingests local files and executes schema validation.
-      6. UIController: Defines view rendering, DOM manipulation, and event delegation.
-      7. Script: The main execution root that initializes application dependencies.
+      The Dependency Schema enforces execution constraints natively and logically.
     -->
-    <script src="QuizState.js"></script>
-    <script src="QADParser.js"></script>
-    <script src="Utils.js"></script>
-    <script src="QuizBuilderState.js"></script>
-    <script src="QuizDataLoader.js"></script>
-    <script src="UIController.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="src/js/script.js"></script>
 </body>
 </html>
