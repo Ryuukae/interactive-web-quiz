@@ -1,4 +1,5 @@
 import { confirmAction } from '../utils/prompts.js';
+import { createLogger } from '../utils/logger.js';
 
 /**
  * @class BuilderCardComponent
@@ -23,11 +24,17 @@ export default class BuilderCardComponent {
      * @returns {void} - Does not return a value.
      */
     constructor(prefillData, onDeleteCallback, onExpandCallback = null) {
+        this.logger = createLogger("BuilderCardComponent");
+        this.logger.info("constructor called", { prefillData, onDeleteCallback, onExpandCallback });
         this.onDeleteCallback = onDeleteCallback;
         this.onExpandCallback = onExpandCallback;
         
         this.node = document.createElement("div");
         this.node.className = "glass-panel question-card";
+
+        this.logger.info("Builder card created", {
+            hasPrefillData: Boolean(prefillData)
+        });
 
         this.render(prefillData);
         this.bindLocalListeners();
@@ -45,6 +52,11 @@ export default class BuilderCardComponent {
      * @returns {void} - Does not return a value.
      */
     render(prefillData) {
+        this.logger.info("render called", { prefillData });
+        this.logger.debug("Rendering builder card", {
+            hasPrefillData: Boolean(prefillData)
+        });
+
         const questionVal = prefillData ? prefillData.question : "";
         let correctVal = "";
         let distractorVals = [""];
@@ -52,12 +64,21 @@ export default class BuilderCardComponent {
         /* Evaluates the prefill data to map raw strings into their correct tiered values explicitly. */
         // ----------------------------------------------------------------------
         if (prefillData && prefillData.answers) {
-            const correctAns = prefillData.answers.find(a => a.correct);
+            const correctAns = prefillData.answers.find(a => {
+                this.logger.trace("render: findCorrectAnswerCallback", { a });
+                return a.correct;
+            });
             if (correctAns) correctVal = correctAns.text;
 
-            const distractors = prefillData.answers.filter(a => !a.correct);
+            const distractors = prefillData.answers.filter(a => {
+                this.logger.trace("render: filterDistractorsCallback", { a });
+                return !a.correct;
+            });
             if (distractors.length > 0) {
-                distractorVals = distractors.map(d => d.text).slice(0, 6);
+                distractorVals = distractors.map(d => {
+                    this.logger.trace("render: mapDistractorsCallback", { d });
+                    return d.text;
+                }).slice(0, 6);
             }
         }
         // ----------------------------------------------------------------------
@@ -87,7 +108,10 @@ export default class BuilderCardComponent {
                 <div class="input-group">
                     <label class="input-label distractor-label">Distractors (Max 6)</label>
                     <div class="distractors-container">
-                        ${distractorVals.map(val => `<input type="text" class="glass-input d-input" placeholder="e.g., 80" value="${val}">`).join('')}
+                        ${distractorVals.map(val => {
+                            this.logger.trace("render: mapDistractorHTMLCallback", { val });
+                            return `<input type="text" class="glass-input d-input" placeholder="e.g., 80" value="${val}">`;
+                        }).join('')}
                     </div>
                     <button class="secondary-btn btn-add-distractor">+ Add Distractor</button>
                 </div>
@@ -102,6 +126,11 @@ export default class BuilderCardComponent {
         if (distractorVals.length >= 6) {
             this.addBtn.style.display = "none";
         }
+
+        this.logger.info("Builder card rendered", {
+            questionText: questionVal || "New Question...",
+            distractorCount: distractorVals.length
+        });
     }
 
     /**
@@ -111,19 +140,29 @@ export default class BuilderCardComponent {
      * @returns {void} - Does not return a value.
      */
     bindLocalListeners() {
+        this.logger.info("bindLocalListeners called");
         const deleteBtn = this.node.querySelector(".delete-icon-btn");
         const cardHeader = this.node.querySelector(".card-header");
         const cardTitle = this.node.querySelector(".card-title");
 
         deleteBtn.addEventListener("click", (event) => {
+            this.logger.info("bindLocalListeners: onDeleteClick event", { event, title: cardTitle.textContent });
             event.stopPropagation();
+            this.logger.info("Delete requested for builder card", {
+                title: cardTitle.textContent
+            });
             if (confirmAction("Are you sure you want to delete this question?")) {
                 this.onDeleteCallback(this);
             }
         });
 
         cardHeader.addEventListener("click", () => {
+            this.logger.info("bindLocalListeners: onHeaderClick event", { title: cardTitle.textContent });
             const isNowCollapsed = this.node.classList.toggle("collapsed");
+            this.logger.debug("Builder card toggle requested", {
+                collapsed: isNowCollapsed,
+                title: cardTitle.textContent
+            });
             
             if (!isNowCollapsed && this.onExpandCallback) {
                 this.onExpandCallback(this);
@@ -131,10 +170,15 @@ export default class BuilderCardComponent {
         });
 
         this.qInput.addEventListener("input", (e) => {
+            this.logger.trace("bindLocalListeners: onQuestionInput event", { value: e.target.value });
             cardTitle.textContent = e.target.value || "New Question...";
+            this.logger.trace("Question text updated", {
+                title: cardTitle.textContent
+            });
         });
 
         this.addBtn.addEventListener("click", () => {
+            this.logger.info("bindLocalListeners: onAddDistractorClick event");
             const currentCount = this.dContainer.querySelectorAll(".d-input").length;
             if (currentCount < 6) {
                 const input = document.createElement("input");
@@ -143,6 +187,11 @@ export default class BuilderCardComponent {
                 input.placeholder = "e.g., 8080";
                 this.dContainer.appendChild(input);
 
+                this.logger.info("Distractor input added", {
+                    title: cardTitle.textContent,
+                    distractorCount: currentCount + 1
+                });
+
                 if (currentCount + 1 >= 6) {
                     this.addBtn.style.display = "none";
                 }
@@ -150,12 +199,17 @@ export default class BuilderCardComponent {
         });
 
         this.node.querySelector(".card-body").addEventListener("input", (e) => {
+            this.logger.trace("bindLocalListeners: onCardBodyInput event", { target: e.target });
             if (e.target.classList.contains("glass-input")) {
                 e.target.classList.remove("input-error");
                 
                 if (e.target.classList.contains("q-input")) e.target.placeholder = "e.g., What is the default port for HTTPS?";
                 if (e.target.classList.contains("a-input")) e.target.placeholder = "e.g., 443";
                 if (e.target.classList.contains("d-input")) e.target.placeholder = "e.g., 80";
+
+                this.logger.trace("Builder card input changed", {
+                    fieldClass: Array.from(e.target.classList)
+                });
             }
         });
     }
@@ -167,7 +221,9 @@ export default class BuilderCardComponent {
      * @returns {void} - Does not return a value.
      */
     collapse() {
+        this.logger.info("collapse called");
         this.node.classList.add("collapsed");
+        this.logger.debug("Builder card collapsed");
     }
 
     /**
@@ -177,7 +233,9 @@ export default class BuilderCardComponent {
      * @returns {void} - Does not return a value.
      */
     destroy() {
+        this.logger.info("destroy called");
         this.node.remove();
+        this.logger.info("Builder card destroyed");
     }
 
     /**
@@ -187,10 +245,13 @@ export default class BuilderCardComponent {
      * @returns {boolean} - True if populated properly; otherwise forces visibility uncollapse, renders red warnings, and returns false.
      */
     validate() {
+        this.logger.info("validate called");
+        this.logger.debug("Validating builder card");
         let isValid = true;
         const dInputs = this.node.querySelectorAll(".d-input");
 
         if (this.qInput.value.trim() === "") {
+            this.logger.warn("Validation error: Question prompt is empty");
             this.qInput.classList.add("input-error");
             this.qInput.placeholder = "Required: Please enter a question prompt";
             isValid = false;
@@ -198,6 +259,7 @@ export default class BuilderCardComponent {
         }
 
         if (this.aInput.value.trim() === "") {
+            this.logger.warn("Validation error: Correct answer is empty");
             this.aInput.classList.add("input-error");
             this.aInput.placeholder = "Required: Please enter the correct answer";
             isValid = false;
@@ -206,12 +268,14 @@ export default class BuilderCardComponent {
 
         let hasDistractor = false;
         dInputs.forEach(d => {
+            this.logger.trace("validate: distractorCheckCallback", { value: d.value });
             if (d.value.trim() !== "") {
                 hasDistractor = true;
             }
         });
 
         if (!hasDistractor && dInputs.length > 0) {
+            this.logger.warn("Validation error: No distractor text provided");
             const firstDistractor = dInputs[0];
             firstDistractor.classList.add("input-error");
             firstDistractor.placeholder = "Required: Please enter at least one wrong answer";
@@ -219,6 +283,7 @@ export default class BuilderCardComponent {
             this.node.classList.remove("collapsed");
         }
 
+        this.logger.info("Builder card validation complete", { isValid });
         return isValid;
     }
 
@@ -229,11 +294,16 @@ export default class BuilderCardComponent {
      * @returns {Object|null} - Clean payload containing a single question structure, or null if the prompt was ignored.
      */
     getCardData() {
+        this.logger.info("getCardData called");
+        this.logger.trace("Serializing builder card data");
         const qText = this.qInput.value.trim();
         const aText = this.aInput.value.trim();
         const dInputs = this.node.querySelectorAll(".d-input");
 
-        if (!qText) return null;
+        if (!qText) {
+            this.logger.warn("Builder card skipped during serialization because question text is empty");
+            return null;
+        }
 
         const answers = [];
 
@@ -242,12 +312,14 @@ export default class BuilderCardComponent {
         }
 
         dInputs.forEach(input => {
+            this.logger.trace("getCardData: distractorSerializeCallback", { value: input.value });
             const dText = input.value.trim();
             if (dText) {
                 answers.push({ text: dText, correct: false });
             }
         });
 
+        this.logger.debug("Card data serialized successfully", { question: qText, answerCount: answers.length });
         return {
             question: qText,
             answers: answers

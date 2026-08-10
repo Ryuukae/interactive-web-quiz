@@ -1,3 +1,5 @@
+import { createLogger } from './logger.js';
+
 /**
  * @module fileIO
  * @version 1.0.0
@@ -18,10 +20,18 @@
  * @returns {void} - Does not return a value.
  */
 export function exportJSON(payload, filename = "quizset_template.json") {
+    const logger = createLogger("fileIO.exportJSON");
+    logger.info("exportJSON called", { payload, filename });
+
     if (!payload || (Array.isArray(payload) && payload.length === 0)) {
-        console.warn("Export aborted: Payload is empty.");
+        logger.warn("Export aborted because payload is empty", { filename });
         return;
     }
+
+    logger.info("Export started", {
+        filename,
+        itemCount: Array.isArray(payload) ? payload.length : 1
+    });
 
     /* Transforms the raw data into a transient Blob object and executes a hidden DOM click to force the OS download dialogue securely. */
     // ----------------------------------------------------------------------
@@ -33,12 +43,15 @@ export function exportJSON(payload, filename = "quizset_template.json") {
     anchor.href = url;
     anchor.download = filename;
     
+    logger.debug("Triggering browser download via temporary anchor", { filename, url });
     document.body.appendChild(anchor);
     anchor.click();
     
     document.body.removeChild(anchor);
     URL.revokeObjectURL(url);
     // ----------------------------------------------------------------------
+
+    logger.info("Export completed successfully", { filename });
 }
 
 /**
@@ -49,17 +62,25 @@ export function exportJSON(payload, filename = "quizset_template.json") {
  * @returns {Promise<string>} - Resolves seamlessly with the raw text payload.
  */
 export function readFile(file) {
+    const logger = createLogger("fileIO.readFile");
+    logger.info("readFile called", { file, fileName: file ? file.name : null, size: file ? file.size : null });
+
     return new Promise((resolve, reject) => {
+        logger.debug("readFile: PromiseExecutor initializing FileReader", { fileName: file.name });
         const reader = new FileReader();
         
         reader.onload = (loadEvent) => {
+            logger.info("readFile: onload completed successfully", { fileName: file.name, size: file.size, bytesLoaded: loadEvent.loaded });
             resolve(loadEvent.target.result);
         };
         
         reader.onerror = () => {
-            reject(new Error("Failed to read the provided file."));
+            const error = new Error("Failed to read the provided file.");
+            logger.error("readFile: onerror failed reading file", { fileName: file.name, error });
+            reject(error);
         };
         
+        logger.debug("readFile: starting readAsText execution", { fileName: file.name });
         reader.readAsText(file);
     });
 }

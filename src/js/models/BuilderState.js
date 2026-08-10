@@ -2,6 +2,8 @@
 // --- BUILDER STATE MODEL ---
 // ===========================
 
+import { createLogger } from '../utils/logger.js';
+
 /**
  * @class BuilderState
  * @name BuilderState
@@ -22,7 +24,10 @@ export default class BuilderState {
      * @returns {void} - Does not return a value.
      */
     constructor() {
+        this.logger = createLogger("BuilderState");
+        this.logger.info("constructor called");
         this.cards = [];
+        this.logger.info("Builder state initialized", { cardCount: this.cards.length });
     }
 
     /**
@@ -33,7 +38,10 @@ export default class BuilderState {
      * @returns {void} - Does not return a value.
      */
     addCard(card) {
+        this.logger.info("addCard called", { card });
+        this.logger.debug("Adding builder card", { existingCardCount: this.cards.length });
         this.cards.push(card);
+        this.logger.info("Builder card added", { cardCount: this.cards.length });
     }
 
     /**
@@ -44,8 +52,14 @@ export default class BuilderState {
      * @returns {void} - Does not return a value.
      */
     removeCard(card) {
-        this.cards = this.cards.filter(c => c !== card);
+        this.logger.info("removeCard called", { card });
+        this.logger.debug("Removing builder card", { existingCardCount: this.cards.length });
+        this.cards = this.cards.filter(c => {
+            this.logger.trace("removeCard: filterCallback", { c, matchesTarget: c === card });
+            return c !== card;
+        });
         card.destroy();
+        this.logger.info("Builder card removed", { cardCount: this.cards.length });
     }
 
     /**
@@ -55,7 +69,12 @@ export default class BuilderState {
      * @returns {void} - Does not return a value.
      */
     clearAll() {
-        this.cards.forEach(card => card.destroy());
+        this.logger.info("clearAll called", { existingCardCount: this.cards.length });
+        this.logger.info("Clearing all builder cards", { cardCount: this.cards.length });
+        this.cards.forEach(card => {
+            this.logger.trace("clearAll: destroyCallback", { card });
+            card.destroy();
+        });
         this.cards = [];
     }
 
@@ -66,7 +85,12 @@ export default class BuilderState {
      * @returns {void} - Does not return a value.
      */
     collapseAllCards() {
-        this.cards.forEach(card => card.collapse());
+        this.logger.info("collapseAllCards called", { cardCount: this.cards.length });
+        this.logger.debug("Collapsing all builder cards", { cardCount: this.cards.length });
+        this.cards.forEach(card => {
+            this.logger.trace("collapseAllCards: collapseCallback", { card });
+            card.collapse();
+        });
     }
 
     /**
@@ -76,16 +100,21 @@ export default class BuilderState {
      * @returns {boolean} - True if all components report a valid state; otherwise false.
      */
     validateAllCards() {
+        this.logger.info("validateAllCards called", { cardCount: this.cards.length });
+        this.logger.debug("Validating all builder cards", { cardCount: this.cards.length });
         let isValid = true;
         
         /* Iterates across the memory stack to explicitly command each component to run its own localized validation checks. */
         // ----------------------------------------------------------------------
         this.cards.forEach(card => {
+            this.logger.trace("validateAllCards: validateCallback", { card });
             if (!card.validate()) {
+                this.logger.warn("Validation failed for card component", { card });
                 isValid = false;
             }
         });
         // ----------------------------------------------------------------------
+        this.logger.info("Builder card validation completed", { isValid });
         
         return isValid;
     }
@@ -97,17 +126,22 @@ export default class BuilderState {
      * @returns {Array<Object>} - The fully assembled assessment JSON.
      */
     getSerializedPayload() {
+        this.logger.info("getSerializedPayload called", { cardCount: this.cards.length });
+        this.logger.debug("Serializing builder payload", { cardCount: this.cards.length });
         const payload = [];
         
         /* Iterates sequentially to trigger localized data extraction and assemble the overarching payload for the router or export utility. */
         // ----------------------------------------------------------------------
         this.cards.forEach(card => {
+            this.logger.trace("getSerializedPayload: serializeCallback", { card });
             const data = card.getCardData();
             if (data) {
                 payload.push(data);
             }
         });
         // ----------------------------------------------------------------------
+
+        this.logger.info("Builder payload serialized", { questionCount: payload.length });
         
         return payload;
     }

@@ -2,6 +2,8 @@
 // --- QUIZ STATE MODEL ---
 // ========================
 
+import { createLogger } from '../utils/logger.js';
+
 /**
  * @class QuizState
  * @name QuizState
@@ -23,12 +25,15 @@ export default class QuizState {
      * @returns {void} - Does not return a value.
      */
     constructor(questionData) {
+        this.logger = createLogger("QuizState");
+        this.logger.info("constructor called", { questionData, questionCount: Array.isArray(questionData) ? questionData.length : 0 });
         this.questionData = this.randomizeDeck(questionData);
         
         this.score = 0;
         this.index = 0;
         
         this.disabled = false;
+        this.logger.info("Quiz state initialized", { questionCount: this.questionData.length });
     }
 
     /**
@@ -38,6 +43,8 @@ export default class QuizState {
      * @returns {Object} - The active question object containing the text and associated answers array.
      */
     getCurrentQuestion() {
+        this.logger.info("getCurrentQuestion called", { activeIndex: this.index });
+        this.logger.trace("Reading current question", { index: this.index });
         return this.questionData[this.index];
     }
 
@@ -48,7 +55,10 @@ export default class QuizState {
      * @returns {void} - Does not return a value.
      */
     advanceQuestion() {
+        this.logger.info("advanceQuestion called", { currentIndex: this.index });
+        this.logger.debug("Advancing question index", { previousIndex: this.index });
         this.index++;
+        this.logger.debug("Question index advanced", { newIndex: this.index });
     }
 
     /**
@@ -58,6 +68,8 @@ export default class QuizState {
      * @returns {number} - The progression metric represented as a percentage (0-100).
      */
     getProgressPercentage() {
+        this.logger.info("getProgressPercentage called", { index: this.index, total: this.questionData.length });
+        this.logger.trace("Calculating progress percentage", { index: this.index, total: this.questionData.length });
         return ((this.index + 1) / this.questionData.length) * 100;
     }
 
@@ -68,6 +80,8 @@ export default class QuizState {
      * @returns {number} - The grade metric represented as a percentage (0-100).
      */
     getGradePercentage() {
+        this.logger.info("getGradePercentage called", { score: this.score, total: this.questionData.length });
+        this.logger.trace("Calculating grade percentage", { score: this.score, total: this.questionData.length });
         return Math.round((this.score / this.questionData.length) * 100);
     }
 
@@ -79,13 +93,22 @@ export default class QuizState {
      * @returns {void} - Does not return a value.
      */
     evaluateAnswer(isCorrect) {
-        if (this.disabled) return;
+        this.logger.info("evaluateAnswer called", { isCorrect, currentScore: this.score, isLocked: this.disabled });
+        if (this.disabled) {
+            this.logger.warn("Answer evaluation skipped because click lock is active");
+            return;
+        }
         
         this.disabled = true;
         
         if (isCorrect) {
             this.score++;
+            this.logger.info("Correct answer registered. Incremented score", { newScore: this.score });
+        } else {
+            this.logger.info("Incorrect answer registered. Score remains unchanged", { currentScore: this.score });
         }
+
+        this.logger.info("Answer evaluated", { isCorrect, score: this.score, disabled: this.disabled });
     }
 
     /**
@@ -95,7 +118,9 @@ export default class QuizState {
      * @returns {void} - Does not return a value.
      */
     resetClickLock() {
+        this.logger.info("resetClickLock called");
         this.disabled = false;
+        this.logger.debug("Click lock reset");
     }
 
     /**
@@ -105,10 +130,13 @@ export default class QuizState {
      * @returns {void} - Does not return a value.
      */
     resetQuiz() {
+        this.logger.info("resetQuiz called", { currentScore: this.score, currentIndex: this.index });
+        this.logger.info("Resetting quiz state", { score: this.score, index: this.index });
         this.score = 0;
         this.index = 0;
         this.disabled = false;
         this.questionData = this.randomizeDeck(this.questionData);
+        this.logger.info("Quiz state reset complete", { questionCount: this.questionData.length });
     }
 
     /**
@@ -118,7 +146,10 @@ export default class QuizState {
      * @returns {boolean} - True if the pointer has reached or exceeded the dataset length.
      */
     isQuizOver() {
-        return this.index >= this.questionData.length;
+        this.logger.info("isQuizOver called", { index: this.index, total: this.questionData.length });
+        const isOver = this.index >= this.questionData.length;
+        this.logger.trace("Checking quiz completion", { index: this.index, total: this.questionData.length, isOver });
+        return isOver;
     }
 
     /**
@@ -129,6 +160,8 @@ export default class QuizState {
      * @returns {Array} - A reference to the mutated array to allow method chaining.
      */
     shuffleQuizData(array) {
+        this.logger.info("shuffleQuizData called", { array, length: Array.isArray(array) ? array.length : null });
+        this.logger.trace("Shuffling array", { length: array.length });
         /* Loops sequentially backward to swap array elements in place, preventing redundant memory allocation. */
         // ----------------------------------------------------------------------
         for (let i = array.length - 1; i > 0; i--) {
@@ -136,6 +169,7 @@ export default class QuizState {
             [array[i], array[j]] = [array[j], array[i]];
         }
         // ----------------------------------------------------------------------
+        this.logger.trace("Shuffle complete", { length: array.length });
         return array;
     }
 
@@ -147,14 +181,18 @@ export default class QuizState {
      * @returns {Array<Object>} - A reference to the fully randomized matrix.
      */
     randomizeDeck(deck) {
+        this.logger.info("randomizeDeck called", { deck, deckLength: Array.isArray(deck) ? deck.length : null });
+        this.logger.debug("Randomizing quiz deck", { questionCount: deck.length });
         // Shuffles the outer container array representing the question sequence.
         const shuffledDeck = this.shuffleQuizData(deck);
         
         // Traverses the newly shuffled array to shuffle the inner answer sequences.
         shuffledDeck.forEach(question => {
+            this.logger.trace("randomizeDeck: questionAnswerShuffleCallback", { questionText: question.question });
             question.answers = this.shuffleQuizData(question.answers);
         });
 
+        this.logger.info("Quiz deck randomized", { questionCount: shuffledDeck.length });
         return shuffledDeck;
     }
 }

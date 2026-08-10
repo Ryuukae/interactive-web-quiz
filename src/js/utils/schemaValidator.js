@@ -1,4 +1,7 @@
 import { parseQADFormat } from './qadParser.js';
+import { createLogger } from './logger.js';
+
+const logger = createLogger("schemaValidator");
 
 /**
  * @module schemaValidator
@@ -20,34 +23,43 @@ import { parseQADFormat } from './qadParser.js';
  * @throws {Error} Throws an explicit error if the text is definitively invalid or malformed structurally.
  */
 export function parseAndValidateRawText(rawText) {
+    logger.info("parseAndValidateRawText called", { rawText, characterCount: rawText ? rawText.trim().length : 0 });
     const cleanText = rawText.trim();
     let parsedData = null;
 
     /* Attempts native JSON parsing first, failing over to custom QAD formatting on syntax errors or invalid schemas logically. */
     // ----------------------------------------------------------------------
     if (cleanText.startsWith("[")) {
+        logger.debug("Attempting JSON parse on array syntax", { length: cleanText.length });
         try {
             parsedData = JSON.parse(cleanText);
             
             if (!Array.isArray(parsedData)) {
+                logger.error("JSON parse failure: Root payload is not an array");
                 throw new Error("JSON payload must be wrapped in a root array.");
             }
+
+            logger.info("JSON parsing succeeded", { questionCount: parsedData.length });
         } catch (jsonError) {
-            console.warn("JSON parsing failed, falling back to QAD digestion.", jsonError);
+            logger.warn("JSON parsing failed, falling back to QAD digestion", { error: jsonError.message });
         }
     }
     // ----------------------------------------------------------------------
 
     if (!parsedData) {
+        logger.info("Falling back to parseQADFormat digestion");
         parsedData = parseQADFormat(cleanText);
     }
 
     if (!parsedData || parsedData.length === 0) {
+        logger.error("parseAndValidateRawText failure: No question structures parsed");
         throw new Error("No valid QAD or JSON questions detected.");
     }
 
+    logger.debug("Validating parsed dataset schema", { questionCount: parsedData.length });
     validateQuizSchema(parsedData);
     
+    logger.info("Raw text parsing and validation completed successfully", { questionCount: parsedData.length });
     return parsedData;
 }
 
@@ -60,9 +72,14 @@ export function parseAndValidateRawText(rawText) {
  * @throws {Error} Throws an explicit error if the schema dynamically violates specifications.
  */
 export function validateQuizSchema(data) {
+    logger.info("validateQuizSchema called", { data, itemCount: Array.isArray(data) ? data.length : null });
+
     if (!Array.isArray(data) || data.length === 0) {
+        logger.error("validateQuizSchema error: Dataset is not a non-empty array", { data });
         throw new Error("File must contain a non-empty array of questions.");
     }
+
+    logger.debug("Validating individual question items", { questionCount: data.length });
 
     /* Iterates across every parsed question object strictly to guarantee formatting constraints are met globally. */
     // ----------------------------------------------------------------------
@@ -70,10 +87,12 @@ export function validateQuizSchema(data) {
         const item = data[index];
         
         if (!item || typeof item.question !== "string" || !Array.isArray(item.answers)) {
+            logger.error("validateQuizSchema error: Malformed question object", { index, item });
             throw new Error(`Malformed question structure at entry #${index + 1}.`);
         }
 
         if (item.answers.length < 1 || item.answers.length > 7) {
+            logger.error("validateQuizSchema error: Answer options out of bounds (1-7 allowed)", { index, count: item.answers.length });
             throw new Error(`Question #${index + 1} contains ${item.answers.length} answers. Must contain between 1 and 7 items.`);
         }
 
@@ -83,6 +102,7 @@ export function validateQuizSchema(data) {
             const answer = item.answers[ansIndex];
             
             if (!answer || typeof answer.text !== "string" || typeof answer.correct !== "boolean") {
+                logger.error("validateQuizSchema error: Malformed answer option", { index, ansIndex, answer });
                 throw new Error(`Malformed answer option at Q${index + 1}, Answer #${ansIndex + 1}.`);
             }
 
@@ -92,9 +112,14 @@ export function validateQuizSchema(data) {
         }
 
         if (correctCount !== 1) {
+            logger.error("validateQuizSchema error: Question missing single correct answer", { index, correctCount });
             throw new Error(`Question #${index + 1} must contain exactly one correct answer (found ${correctCount}).`);
         }
+
+        logger.trace("Question item passed schema check", { index: index + 1, answerCount: item.answers.length, correctCount });
     }
     // ----------------------------------------------------------------------
+
+    logger.info("Quiz schema validation completed successfully", { questionCount: data.length });
 }
 

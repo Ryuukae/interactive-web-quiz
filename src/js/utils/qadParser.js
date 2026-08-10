@@ -1,3 +1,5 @@
+import { createLogger } from './logger.js';
+
 /**
  * @module qadParser
  * @version 1.0.0
@@ -18,8 +20,12 @@
  * @throws {Error} - Throws an explicit string error conclusively if structural formatting bounds are violated natively.
  */
 export function parseQADFormat(rawText) {
+    const logger = createLogger("qadParser.parseQADFormat");
+    logger.info("parseQADFormat called", { rawText, characterCount: rawText ? rawText.length : 0 });
+
     const normalizedText = rawText.replace(/\r\n/g, '\n').trim();
     const lines = normalizedText.split('\n');
+    logger.debug("Normalized raw text into lines", { lineCount: lines.length });
     
     const questions = [];
     let currentQuestion = null;
@@ -38,6 +44,7 @@ export function parseQADFormat(rawText) {
 
         if (lowerLine.startsWith("q=")) {
             if (currentQuestion !== null) {
+                logger.debug("Finalizing previous question block", { question: currentQuestion.question });
                 validateBlock(currentQuestion, answerCount, distractorCount);
                 questions.push(currentQuestion);
             }
@@ -46,16 +53,19 @@ export function parseQADFormat(rawText) {
                 question: cleanLine.substring(2).trim(),
                 answers: []
             };
+            logger.debug("Parsed question header", { question: currentQuestion.question });
             
             answerCount = 0;
             distractorCount = 0;
 
         } else if (lowerLine.startsWith("a=")) {
             if (currentQuestion === null) {
+                logger.error("QAD parse error: Orphaned answer detected");
                 throw new Error("Orphaned answer detected. Every block must start with 'q='.");
             }
             
             if (answerCount >= 1) {
+                logger.error("QAD parse error: Multiple correct answers detected in block", { question: currentQuestion.question });
                 throw new Error("Malformed block: Each question group can only have exactly one 'a=' line.");
             }
 
@@ -64,9 +74,11 @@ export function parseQADFormat(rawText) {
                 correct: true
             });
             answerCount++;
+            logger.trace("Parsed correct answer", { question: currentQuestion.question, answerCount });
 
         } else if (lowerLine.startsWith("d=")) {
             if (currentQuestion === null) {
+                logger.error("QAD parse error: Orphaned distractor detected");
                 throw new Error("Orphaned distractor detected. Every block must start with 'q='.");
             }
 
@@ -75,19 +87,23 @@ export function parseQADFormat(rawText) {
                 correct: false
             });
             distractorCount++;
+            logger.trace("Parsed distractor", { question: currentQuestion.question, distractorCount });
         }
     }
     // ----------------------------------------------------------------------
 
     if (currentQuestion !== null) {
+        logger.debug("Finalizing trailing question block", { question: currentQuestion.question });
         validateBlock(currentQuestion, answerCount, distractorCount);
         questions.push(currentQuestion);
     }
 
     if (questions.length === 0) {
+        logger.error("QAD parse error: No question blocks found");
         throw new Error("No valid question blocks detected.");
     }
 
+    logger.info("QAD parsing completed successfully", { questionCount: questions.length });
     return questions;
 }
 
@@ -102,14 +118,26 @@ export function parseQADFormat(rawText) {
  * @throws {Error} - Throws an explicit error if counts fall outside acceptable parameters.
  */
 function validateBlock(block, answers, distractors) {
+    const logger = createLogger("qadParser.validateBlock");
+    logger.info("validateBlock called", { block, answers, distractors });
+
     if (!block.question) {
+        logger.error("validateBlock error: Missing question text", { block });
         throw new Error("Question block is missing prompt text.");
     }
     if (answers !== 1) {
+        logger.error("validateBlock error: Invalid correct answer count", { answers, question: block.question });
         throw new Error(`Question "${block.question}" must have exactly one 'a=' correct answer line.`);
     }
     if (distractors < 1 || distractors > 6) {
+        logger.error("validateBlock error: Distractor count out of bounds", { distractors, question: block.question });
         throw new Error(`Question "${block.question}" must have between 1 and 6 'd=' distractor lines (found ${distractors}).`);
     }
+
+    logger.debug("Validated QAD block successfully", {
+        question: block.question,
+        answers,
+        distractors
+    });
 }
 
