@@ -20,7 +20,7 @@ import { createLogger } from './logger.js';
 export function getJsonTemplate() {
     const logger = createLogger("templates.getJsonTemplate");
     logger.info("getJsonTemplate called");
-    const template = `[\n  {\n    "question": "Your question here?",\n    "answers": [\n      { "text": "Correct option", "correct": true },\n      { "text": "Wrong option", "correct": false }\n    ]\n  }\n]`;
+    const template = `[\n  {\n    "question": "   ",\n    "answers": [\n      { "text": "   ", "correct": true },\n      { "text": "   ", "correct": false }\n    ]\n  }\n]`;
     logger.debug("Returning JSON template string", { length: template.length });
     return template;
 }
@@ -34,7 +34,7 @@ export function getJsonTemplate() {
 export function getTxtTemplate() {
     const logger = createLogger("templates.getTxtTemplate");
     logger.info("getTxtTemplate called");
-    const template = `q=Your question here?\na=Correct option\nd=Wrong option\nd=Another wrong option`;
+    const template = `q=\na=\nd=\n`;
     logger.debug("Returning TXT QAD template string", { length: template.length });
     return template;
 }

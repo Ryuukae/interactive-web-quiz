@@ -76,6 +76,10 @@ export default class BuilderUIController {
             this.exportBuilderQuiz();
         });
 
+        this.bulkImportText.addEventListener("input", () => {
+            this.adjustBulkImportTextareaHeight();
+        });
+
         document.getElementById("btn-parse-bulk").addEventListener("click", () => {
             this.logger.info("initializeEventListeners: onParseBulkClick event");
             this.logger.info("Bulk import parse requested");
@@ -88,6 +92,7 @@ export default class BuilderUIController {
             this.logger.debug("Bulk import panel toggled", { collapsed: isNowCollapsed });
             if (!isNowCollapsed) {
                 this.builderState.collapseAllCards();
+                requestAnimationFrame(() => this.adjustBulkImportTextareaHeight());
             }
         });
 
@@ -98,6 +103,7 @@ export default class BuilderUIController {
             }
             this.logger.info("Text template inserted into bulk import field");
             this.bulkImportText.value = getTxtTemplate();
+            this.adjustBulkImportTextareaHeight();
         });
         
         document.getElementById("btn-template-json").addEventListener("click", () => {
@@ -107,6 +113,7 @@ export default class BuilderUIController {
             }
             this.logger.info("JSON template inserted into bulk import field");
             this.bulkImportText.value = getJsonTemplate();
+            this.adjustBulkImportTextareaHeight();
         });
 
         document.getElementById("btn-clear-builder").addEventListener("click", () => {
@@ -131,6 +138,20 @@ export default class BuilderUIController {
             this.bulkImportPanel.classList.add("collapsed");
             this.logger.debug("Bulk import panel collapsed");
         }
+    }
+
+    /**
+     * @name adjustBulkImportTextareaHeight
+     * @public
+     * @description Dynamically recalculates and applies the required height for the bulk import text area to ensure all content is fully visible without internal scrollbars.
+     * @returns {void} - Does not return a value.
+     */
+    adjustBulkImportTextareaHeight() {
+        if (!this.bulkImportText) return;
+        this.bulkImportText.style.height = "auto";
+        const contentHeight = Math.max(100, this.bulkImportText.scrollHeight);
+        this.bulkImportText.style.height = `${contentHeight}px`;
+        this.logger.trace("adjustBulkImportTextareaHeight executed", { newHeight: contentHeight });
     }
 
     /**
@@ -272,6 +293,7 @@ export default class BuilderUIController {
             // ----------------------------------------------------------------------
             
             this.bulkImportText.value = "";
+            this.adjustBulkImportTextareaHeight();
             this.logger.info("Bulk import cards appended", { cardCount: this.builderState.cards.length });
             
             setTimeout(() => {

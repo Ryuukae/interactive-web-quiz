@@ -582,11 +582,14 @@ button:active {
     scrollbar-color: rgba(167, 213, 255, 0.3) transparent;
 }
 
-/* Enables vertical expansion with strict bounding constraints to prevent layout breakage. */
+/* Enables vertical auto-expansion while preserving theme harmony and removing inner scrollbars. */
 #bulk-import-text {
+    field-sizing: content;
     resize: vertical;
     min-height: 100px;
-    max-height: 900px;
+    max-height: none;
+    overflow-y: hidden;
+    transition: height 0.12s ease-out;
 }
 
 #btn-parse-bulk {
