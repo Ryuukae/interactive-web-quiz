@@ -27,8 +27,7 @@
 !public/template.txt
 
 # CSS
-!src/css/style.css
-!src/css/responsive.css
+!src/css/*.css
 
 # JS
 !src/js/script.js
