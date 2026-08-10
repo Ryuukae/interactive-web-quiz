@@ -7,6 +7,7 @@ import QuizState from './models/QuizState.js';
 import BuilderState from './models/BuilderState.js';
 import QuizUIController from './controllers/QuizUIController.js';
 import BuilderUIController from './controllers/BuilderUIController.js';
+import { createLogger } from './utils/logger.js';
 
 /**
  * @module script
@@ -25,6 +26,8 @@ let builderState;
 let quizUIController;
 let builderUIController;
 
+const logger = createLogger("AppBootstrap");
+
 /**
  * @name initializeApp
  * @public
@@ -32,25 +35,38 @@ let builderUIController;
  * @returns {void} - Does not return a value.
  */
 async function initializeApp() {
+    logger.info("initializeApp called");
     try {
+        logger.info("Application bootstrap started");
+
         /* Orchestrates the root instantiation chain strictly, enforcing dependency injection natively and cleanly. */
         // ----------------------------------------------------------------------
+        logger.debug("Instantiating AppNavigationController");
         appNavController = new AppNavigationController();
         
         // Initializes the state machine with an empty baseline array pending user import or creation.
+        logger.debug("Instantiating QuizState and BuilderState models");
         quizState = new QuizState([]);
         builderState = new BuilderState();
         
+        logger.debug("Instantiating QuizUIController and BuilderUIController controllers");
         quizUIController = new QuizUIController(quizState, appNavController);
         builderUIController = new BuilderUIController(builderState, quizUIController, appNavController);
         
+        logger.debug("Synchronizing initial quiz UI bounds");
         quizUIController.synchronizeBounds();
         // ----------------------------------------------------------------------
 
-        console.log("App successfully initialized via strict MVC protocols.");
+        logger.debug("Application services instantiated successfully", {
+            screens: ["start", "quiz", "result", "creator"],
+            questionCount: quizState.questionData.length,
+            builderCardCount: builderState.cards.length
+        });
+
+        logger.info("Application bootstrap completed successfully");
 
     } catch (error) {
-        console.error("Failed to initialize the application logic tier:", error);
+        logger.error("Application bootstrap failed", error);
     }
 }
 

@@ -1,3 +1,5 @@
+import { createLogger } from './logger.js';
+
 /**
  * @module templates
  * @version 1.0.0
@@ -16,7 +18,11 @@
  * @returns {string} - The formatted JSON blueprint natively.
  */
 export function getJsonTemplate() {
-    return `[\n  {\n    "question": "Your question here?",\n    "answers": [\n      { "text": "Correct option", "correct": true },\n      { "text": "Wrong option", "correct": false }\n    ]\n  }\n]`;
+    const logger = createLogger("templates.getJsonTemplate");
+    logger.info("getJsonTemplate called");
+    const template = `[\n  {\n    "question": "Your question here?",\n    "answers": [\n      { "text": "Correct option", "correct": true },\n      { "text": "Wrong option", "correct": false }\n    ]\n  }\n]`;
+    logger.debug("Returning JSON template string", { length: template.length });
+    return template;
 }
 
 /**
@@ -26,5 +32,9 @@ export function getJsonTemplate() {
  * @returns {string} - The formatted TXT blueprint natively.
  */
 export function getTxtTemplate() {
-    return `q=Your question here?\na=Correct option\nd=Wrong option\nd=Another wrong option`;
+    const logger = createLogger("templates.getTxtTemplate");
+    logger.info("getTxtTemplate called");
+    const template = `q=Your question here?\na=Correct option\nd=Wrong option\nd=Another wrong option`;
+    logger.debug("Returning TXT QAD template string", { length: template.length });
+    return template;
 }

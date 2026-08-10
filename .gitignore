@@ -40,6 +40,7 @@
 !src/js/models/BuilderState.js
 !src/js/models/QuizState.js
 !src/js/utils/fileIO.js
+!src/js/utils/logger.js
 !src/js/utils/prompts.js
 !src/js/utils/qadParser.js
 !src/js/utils/schemaValidator.js
