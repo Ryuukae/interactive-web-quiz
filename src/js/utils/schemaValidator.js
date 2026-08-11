@@ -86,34 +86,42 @@ export function validateQuizSchema(data) {
     for (let index = 0; index < data.length; index++) {
         const item = data[index];
         
-        if (!item || typeof item.question !== "string" || !Array.isArray(item.answers)) {
-            logger.error("validateQuizSchema error: Malformed question object", { index, item });
-            throw new Error(`Malformed question structure at entry #${index + 1}.`);
+        if (!item || typeof item.question !== "string" || item.question.trim() === "" || !Array.isArray(item.answers)) {
+            logger.error("validateQuizSchema error: Malformed question object or empty prompt", { index, item });
+            throw new Error(`Question #${index + 1} prompt text cannot be empty or whitespace-only.`);
         }
 
-        if (item.answers.length < 1 || item.answers.length > 7) {
-            logger.error("validateQuizSchema error: Answer options out of bounds (1-7 allowed)", { index, count: item.answers.length });
-            throw new Error(`Question #${index + 1} contains ${item.answers.length} answers. Must contain between 1 and 7 items.`);
+        if (item.answers.length < 2 || item.answers.length > 7) {
+            logger.error("validateQuizSchema error: Answer options out of bounds (2-7 allowed)", { index, count: item.answers.length });
+            throw new Error(`Question #${index + 1} contains ${item.answers.length} answers. Must contain between 2 and 7 items (at least 1 correct answer and 1 wrong answer).`);
         }
 
         let correctCount = 0;
+        let wrongCount = 0;
 
         for (let ansIndex = 0; ansIndex < item.answers.length; ansIndex++) {
             const answer = item.answers[ansIndex];
             
-            if (!answer || typeof answer.text !== "string" || typeof answer.correct !== "boolean") {
-                logger.error("validateQuizSchema error: Malformed answer option", { index, ansIndex, answer });
-                throw new Error(`Malformed answer option at Q${index + 1}, Answer #${ansIndex + 1}.`);
+            if (!answer || typeof answer.text !== "string" || answer.text.trim() === "" || typeof answer.correct !== "boolean") {
+                logger.error("validateQuizSchema error: Malformed answer option or empty text", { index, ansIndex, answer });
+                throw new Error(`Answer #${ansIndex + 1} at Question #${index + 1} text cannot be empty or whitespace-only, and must include a boolean 'correct' property.`);
             }
 
-            if (answer.correct) {
+            if (answer.correct === true) {
                 correctCount++;
+            } else if (answer.correct === false) {
+                wrongCount++;
             }
         }
 
         if (correctCount !== 1) {
             logger.error("validateQuizSchema error: Question missing single correct answer", { index, correctCount });
-            throw new Error(`Question #${index + 1} must contain exactly one correct answer (found ${correctCount}).`);
+            throw new Error(`Question #${index + 1} must contain exactly ONE correct answer with 'correct: true' (found ${correctCount}).`);
+        }
+
+        if (wrongCount < 1) {
+            logger.error("validateQuizSchema error: Question missing wrong answer option", { index, wrongCount });
+            throw new Error(`Question #${index + 1} must contain at least ONE wrong answer option with 'correct: false'.`);
         }
 
         logger.trace("Question item passed schema check", { index: index + 1, answerCount: item.answers.length, correctCount });
