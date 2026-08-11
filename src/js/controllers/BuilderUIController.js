@@ -1,9 +1,9 @@
-import { getTxtTemplate, getJsonTemplate } from '../utils/templates.js';
-import { confirmAction, alertAction } from '../utils/prompts.js';
-import { exportJSON } from '../utils/fileIO.js';
-import { parseAndValidateRawText } from '../utils/schemaValidator.js';
-import BuilderCardComponent from '../components/BuilderCardComponent.js';
-import { createLogger } from '../utils/logger.js';
+import { getTxtTemplate, getJsonTemplate } from "../utils/templates.js";
+import { confirmAction, alertAction } from "../utils/prompts.js";
+import { exportJSON } from "../utils/fileIO.js";
+import { parseAndValidateRawText } from "../utils/schemaValidator.js";
+import BuilderCardComponent from "../components/BuilderCardComponent.js";
+import { createLogger } from "../utils/logger.js";
 
 /**
  * @class BuilderUIController
@@ -11,13 +11,12 @@ import { createLogger } from '../utils/logger.js';
  * @version 1.0.0
  * @author Adam Ross DeStafeno
  * @since 2026-08-09
- * @description 
+ * @description
  * Architectural Responsibilities: Solely coordinates the Form Builder GUI. Maps UI actions (Add, Bulk Parse, Clear All) strictly to physical Component actions or logical Model mutations.
- * 
+ *
  * Encapsulation Scope: Modulates `#creator-screen` capabilities comprehensively.
  */
 export default class BuilderUIController {
-
     /**
      * @name constructor
      * @public
@@ -29,12 +28,18 @@ export default class BuilderUIController {
      */
     constructor(builderState, quizUIController, appNavController) {
         this.logger = createLogger("BuilderUIController");
-        this.logger.info("constructor called", { builderState, quizUIController, appNavController });
+        this.logger.info("constructor called", {
+            builderState,
+            quizUIController,
+            appNavController
+        });
         this.builderState = builderState;
         this.quizUIController = quizUIController;
         this.appNavController = appNavController;
 
-        this.builderContainer = document.getElementById("builder-questions-container");
+        this.builderContainer = document.getElementById(
+            "builder-questions-container"
+        );
         this.bulkImportPanel = document.getElementById("bulk-import-panel");
         this.bulkImportText = document.getElementById("bulk-import-text");
         this.bulkImportStatus = document.getElementById("bulk-import-status");
@@ -52,78 +57,141 @@ export default class BuilderUIController {
      */
     initializeEventListeners() {
         this.logger.info("initializeEventListeners called");
-        document.getElementById("create-quizset-btn").addEventListener("click", () => {
-            this.logger.info("initializeEventListeners: onCreateQuizsetClick event");
-            this.logger.info("Create quiz set requested from builder UI");
-            this.initializeBuilder();
-        });
+        document
+            .getElementById("create-quizset-btn")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "initializeEventListeners: onCreateQuizsetClick event"
+                );
+                this.logger.info("Create quiz set requested from builder UI");
+                this.initializeBuilder();
+            });
 
-        document.getElementById("btn-add-question").addEventListener("click", () => {
-            this.logger.info("initializeEventListeners: onAddQuestionClick event");
-            this.logger.info("Add question requested");
-            this.handleAddQuestion();
-        });
-        
-        document.getElementById("btn-run-builder-quiz").addEventListener("click", () => {
-            this.logger.info("initializeEventListeners: onRunBuilderQuizClick event");
-            this.logger.info("Run builder quiz requested");
-            this.startBuilderQuiz();
-        });
+        document
+            .getElementById("btn-add-question")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "initializeEventListeners: onAddQuestionClick event"
+                );
+                this.logger.info("Add question requested");
+                this.handleAddQuestion();
+            });
 
-        document.getElementById("btn-export-quiz").addEventListener("click", () => {
-            this.logger.info("initializeEventListeners: onExportQuizClick event");
-            this.logger.info("Export builder quiz requested");
-            this.exportBuilderQuiz();
-        });
+        document
+            .getElementById("btn-run-builder-quiz")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "initializeEventListeners: onRunBuilderQuizClick event"
+                );
+                this.logger.info("Run builder quiz requested");
+                this.startBuilderQuiz();
+            });
+
+        document
+            .getElementById("btn-export-quiz")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "initializeEventListeners: onExportQuizClick event"
+                );
+                this.logger.info("Export builder quiz requested");
+                this.exportBuilderQuiz();
+            });
 
         this.bulkImportText.addEventListener("input", () => {
             this.adjustBulkImportTextareaHeight();
         });
 
-        document.getElementById("btn-parse-bulk").addEventListener("click", () => {
-            this.logger.info("initializeEventListeners: onParseBulkClick event");
-            this.logger.info("Bulk import parse requested");
-            this.handleBulkImport();
-        });
+        document
+            .getElementById("btn-parse-bulk")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "initializeEventListeners: onParseBulkClick event"
+                );
+                this.logger.info("Bulk import parse requested");
+                this.handleBulkImport();
+            });
 
-        document.getElementById("bulk-import-header").addEventListener("click", () => {
-            this.logger.info("initializeEventListeners: onBulkImportHeaderClick event");
-            const isNowCollapsed = this.bulkImportPanel.classList.toggle("collapsed");
-            this.logger.debug("Bulk import panel toggled", { collapsed: isNowCollapsed });
-            if (!isNowCollapsed) {
-                this.builderState.collapseAllCards();
-                requestAnimationFrame(() => this.adjustBulkImportTextareaHeight());
-            }
-        });
+        document
+            .getElementById("bulk-import-header")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "initializeEventListeners: onBulkImportHeaderClick event"
+                );
+                const isNowCollapsed =
+                    this.bulkImportPanel.classList.toggle("collapsed");
+                this.logger.debug("Bulk import panel toggled", {
+                    collapsed: isNowCollapsed
+                });
+                if (!isNowCollapsed) {
+                    this.builderState.collapseAllCards();
+                    requestAnimationFrame(() =>
+                        this.adjustBulkImportTextareaHeight()
+                    );
+                }
+            });
 
-        document.getElementById("btn-template-txt").addEventListener("click", () => {
-            this.logger.info("initializeEventListeners: onTemplateTxtClick event");
-            if (this.bulkImportText.value.trim() !== "") {
-                if (!confirmAction("Inserting this template will overwrite your current text. Do you wish to continue?")) return;
-            }
-            this.logger.info("Text template inserted into bulk import field");
-            this.bulkImportText.value = getTxtTemplate();
-            this.adjustBulkImportTextareaHeight();
-        });
-        
-        document.getElementById("btn-template-json").addEventListener("click", () => {
-            this.logger.info("initializeEventListeners: onTemplateJsonClick event");
-            if (this.bulkImportText.value.trim() !== "") {
-                if (!confirmAction("Inserting this template will overwrite your current text. Do you wish to continue?")) return;
-            }
-            this.logger.info("JSON template inserted into bulk import field");
-            this.bulkImportText.value = getJsonTemplate();
-            this.adjustBulkImportTextareaHeight();
-        });
+        document
+            .getElementById("btn-template-txt")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "initializeEventListeners: onTemplateTxtClick event"
+                );
+                if (this.bulkImportText.value.trim() !== "") {
+                    if (
+                        !confirmAction(
+                            "Inserting this template will overwrite your current text. Do you wish to continue?"
+                        )
+                    ) {
+                        return;
+                    }
+                }
+                this.logger.info(
+                    "Text template inserted into bulk import field"
+                );
+                this.bulkImportText.value = getTxtTemplate();
+                this.adjustBulkImportTextareaHeight();
+            });
 
-        document.getElementById("btn-clear-builder").addEventListener("click", () => {
-            this.logger.info("initializeEventListeners: onClearBuilderClick event");
-            this.logger.info("Clear builder requested", { cardCount: this.builderState.cards.length });
-            if (this.builderState.cards.length === 0) return;
-            if (confirmAction("Are you sure you want to clear all questions? This action cannot be undone.")) {
-                this.builderState.clearAll();
-            }
-        });
+        document
+            .getElementById("btn-template-json")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "initializeEventListeners: onTemplateJsonClick event"
+                );
+                if (this.bulkImportText.value.trim() !== "") {
+                    if (
+                        !confirmAction(
+                            "Inserting this template will overwrite your current text. Do you wish to continue?"
+                        )
+                    ) {
+                        return;
+                    }
+                }
+                this.logger.info(
+                    "JSON template inserted into bulk import field"
+                );
+                this.bulkImportText.value = getJsonTemplate();
+                this.adjustBulkImportTextareaHeight();
+            });
+
+        document
+            .getElementById("btn-clear-builder")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "initializeEventListeners: onClearBuilderClick event"
+                );
+                this.logger.info("Clear builder requested", {
+                    cardCount: this.builderState.cards.length
+                });
+                if (this.builderState.cards.length === 0) return;
+                if (
+                    confirmAction(
+                        "Are you sure you want to clear all questions? This action cannot be undone."
+                    )
+                ) {
+                    this.builderState.clearAll();
+                }
+            });
     }
 
     /**
@@ -151,7 +219,9 @@ export default class BuilderUIController {
         this.bulkImportText.style.height = "auto";
         const contentHeight = Math.max(100, this.bulkImportText.scrollHeight);
         this.bulkImportText.style.height = `${contentHeight}px`;
-        this.logger.trace("adjustBulkImportTextareaHeight executed", { newHeight: contentHeight });
+        this.logger.trace("adjustBulkImportTextareaHeight executed", {
+            newHeight: contentHeight
+        });
     }
 
     /**
@@ -166,10 +236,16 @@ export default class BuilderUIController {
         /* Defers execution briefly to ensure DOM paint mapping is completed prior to scroll interception natively. */
         // ----------------------------------------------------------------------
         setTimeout(() => {
-            this.logger.info("scrollToFirstError: scrollTimeoutCallback executed");
-            const firstError = this.builderContainer.querySelector('.input-error');
+            this.logger.info(
+                "scrollToFirstError: scrollTimeoutCallback executed"
+            );
+            const firstError =
+                this.builderContainer.querySelector(".input-error");
             if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstError.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
                 this.logger.info("Scrolled to first builder validation error");
             }
         }, 50);
@@ -186,11 +262,13 @@ export default class BuilderUIController {
         this.logger.info("initializeBuilder called");
         this.logger.info("Initializing builder workspace");
         this.builderState.clearAll();
-        
+
         const newCard = new BuilderCardComponent(
-            null, 
+            null,
             (card) => {
-                this.logger.info("initializeBuilder: removeCardCallback", { card });
+                this.logger.info("initializeBuilder: removeCardCallback", {
+                    card
+                });
                 this.builderState.removeCard(card);
             },
             () => {
@@ -200,7 +278,9 @@ export default class BuilderUIController {
         );
         this.builderState.addCard(newCard);
         this.builderContainer.appendChild(newCard.node);
-        this.logger.info("Builder workspace initialized", { cardCount: this.builderState.cards.length });
+        this.logger.info("Builder workspace initialized", {
+            cardCount: this.builderState.cards.length
+        });
     }
 
     /**
@@ -222,11 +302,13 @@ export default class BuilderUIController {
 
         this.collapseBulkImport();
         this.builderState.collapseAllCards();
-        
+
         const newCard = new BuilderCardComponent(
-            null, 
+            null,
             (card) => {
-                this.logger.info("handleAddQuestion: removeCardCallback", { card });
+                this.logger.info("handleAddQuestion: removeCardCallback", {
+                    card
+                });
                 this.builderState.removeCard(card);
             },
             () => {
@@ -236,14 +318,18 @@ export default class BuilderUIController {
         );
         this.builderState.addCard(newCard);
         this.builderContainer.appendChild(newCard.node);
-        
+
         setTimeout(() => {
-            this.logger.info("handleAddQuestion: scrollTimeoutCallback executed");
+            this.logger.info(
+                "handleAddQuestion: scrollTimeoutCallback executed"
+            );
             this.builderContainer.scrollTo({
                 top: this.builderContainer.scrollHeight,
                 behavior: "smooth"
             });
-            this.logger.info("Builder scrolled to newest question", { cardCount: this.builderState.cards.length });
+            this.logger.info("Builder scrolled to newest question", {
+                cardCount: this.builderState.cards.length
+            });
         }, 50);
         // ----------------------------------------------------------------------
     }
@@ -266,20 +352,29 @@ export default class BuilderUIController {
         this.bulkImportStatus.classList.remove("error", "visible");
         this.bulkImportStatus.textContent = "";
 
-        this.logger.info("Bulk import parse started", { characterCount: rawText.length });
+        this.logger.info("Bulk import parse started", {
+            characterCount: rawText.length
+        });
 
         try {
             /* Parses and validates the raw text string to construct formatted question payloads seamlessly. */
             // ----------------------------------------------------------------------
             const parsedData = parseAndValidateRawText(rawText);
-            this.logger.info("Bulk import parsed successfully", { questionCount: parsedData.length });
-            
-            parsedData.forEach(q => {
-                this.logger.trace("handleBulkImport: appendCardCallback", { question: q.question });
+            this.logger.info("Bulk import parsed successfully", {
+                questionCount: parsedData.length
+            });
+
+            parsedData.forEach((q) => {
+                this.logger.trace("handleBulkImport: appendCardCallback", {
+                    question: q.question
+                });
                 const newCard = new BuilderCardComponent(
-                    q, 
+                    q,
                     (card) => {
-                        this.logger.info("handleBulkImport: removeCardCallback", { card });
+                        this.logger.info(
+                            "handleBulkImport: removeCardCallback",
+                            { card }
+                        );
                         this.builderState.removeCard(card);
                     },
                     () => {
@@ -291,20 +386,25 @@ export default class BuilderUIController {
                 this.builderContainer.appendChild(newCard.node);
             });
             // ----------------------------------------------------------------------
-            
+
             this.bulkImportText.value = "";
             this.adjustBulkImportTextareaHeight();
-            this.logger.info("Bulk import cards appended", { cardCount: this.builderState.cards.length });
-            
+            this.logger.info("Bulk import cards appended", {
+                cardCount: this.builderState.cards.length
+            });
+
             setTimeout(() => {
-                this.logger.info("handleBulkImport: scrollTimeoutCallback executed");
+                this.logger.info(
+                    "handleBulkImport: scrollTimeoutCallback executed"
+                );
                 this.builderContainer.scrollTo({
                     top: this.builderContainer.scrollHeight,
                     behavior: "smooth"
                 });
-                this.logger.debug("Builder container scrolled after bulk import");
+                this.logger.debug(
+                    "Builder container scrolled after bulk import"
+                );
             }, 50);
-            
         } catch (error) {
             this.logger.error("Bulk parsing failed", error);
             this.bulkImportStatus.textContent = `Error: ${error.message}`;
@@ -322,27 +422,39 @@ export default class BuilderUIController {
         this.logger.info("startBuilderQuiz called");
         this.logger.info("Starting builder quiz preview");
         if (this.builderState.cards.length === 0) {
-            this.logger.warn("Builder quiz start blocked because there are no questions");
-            alertAction("Please add at least one question before starting the quiz.");
+            this.logger.warn(
+                "Builder quiz start blocked because there are no questions"
+            );
+            alertAction(
+                "Please add at least one question before starting the quiz."
+            );
             return;
         }
 
         if (!this.builderState.validateAllCards()) {
-            this.logger.warn("Builder quiz start blocked by validation failure");
+            this.logger.warn(
+                "Builder quiz start blocked by validation failure"
+            );
             this.collapseBulkImport();
             this.scrollToFirstError();
             return;
         }
 
         const payload = this.builderState.getSerializedPayload();
-        
+
         if (payload.length === 0) {
-            this.logger.warn("Builder quiz start blocked because serialized payload is empty");
-            alertAction("Please complete at least one question before starting.");
+            this.logger.warn(
+                "Builder quiz start blocked because serialized payload is empty"
+            );
+            alertAction(
+                "Please complete at least one question before starting."
+            );
             return;
         }
 
-        this.logger.info("Builder quiz payload ready", { questionCount: payload.length });
+        this.logger.info("Builder quiz payload ready", {
+            questionCount: payload.length
+        });
         this.quizUIController.loadCustomQuiz(payload);
     }
 
@@ -356,7 +468,9 @@ export default class BuilderUIController {
         this.logger.info("exportBuilderQuiz called");
         this.logger.info("Exporting builder quiz");
         if (this.builderState.cards.length === 0) {
-            this.logger.warn("Builder export blocked because there are no questions");
+            this.logger.warn(
+                "Builder export blocked because there are no questions"
+            );
             alertAction("Please add at least one question before exporting.");
             return;
         }
@@ -370,6 +484,8 @@ export default class BuilderUIController {
 
         const payload = this.builderState.getSerializedPayload();
         exportJSON(payload, "custom_quizset.json");
-        this.logger.info("Builder quiz export completed", { questionCount: payload.length });
+        this.logger.info("Builder quiz export completed", {
+            questionCount: payload.length
+        });
     }
 }

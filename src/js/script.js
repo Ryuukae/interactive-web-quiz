@@ -2,21 +2,21 @@
 // --- APPLICATION ENTRY POINT ---
 // ===============================
 
-import AppNavigationController from './controllers/AppNavigationController.js';
-import QuizState from './models/QuizState.js';
-import BuilderState from './models/BuilderState.js';
-import QuizUIController from './controllers/QuizUIController.js';
-import BuilderUIController from './controllers/BuilderUIController.js';
-import { createLogger } from './utils/logger.js';
+import AppNavigationController from "./controllers/AppNavigationController.js";
+import QuizState from "./models/QuizState.js";
+import BuilderState from "./models/BuilderState.js";
+import QuizUIController from "./controllers/QuizUIController.js";
+import BuilderUIController from "./controllers/BuilderUIController.js";
+import { createLogger } from "./utils/logger.js";
 
 /**
  * @module script
  * @version 1.0.0
  * @author Adam Ross DeStafeno
  * @since 2026-08-09
- * @description 
+ * @description
  * Architectural Responsibilities: Application Entry Point. Orchestrates state instantiation and controller initialization.
- * 
+ *
  * Encapsulation Scope: Serves as the composition root where dependencies are physically wired together correctly.
  */
 
@@ -24,7 +24,6 @@ let appNavController;
 let quizState;
 let builderState;
 let quizUIController;
-let builderUIController;
 
 const logger = createLogger("AppBootstrap");
 
@@ -43,16 +42,22 @@ async function initializeApp() {
         // ----------------------------------------------------------------------
         logger.debug("Instantiating AppNavigationController");
         appNavController = new AppNavigationController();
-        
+
         // Initializes the state machine with an empty baseline array pending user import or creation.
         logger.debug("Instantiating QuizState and BuilderState models");
         quizState = new QuizState([]);
         builderState = new BuilderState();
-        
-        logger.debug("Instantiating QuizUIController and BuilderUIController controllers");
+
+        logger.debug(
+            "Instantiating QuizUIController and BuilderUIController controllers"
+        );
         quizUIController = new QuizUIController(quizState, appNavController);
-        builderUIController = new BuilderUIController(builderState, quizUIController, appNavController);
-        
+        new BuilderUIController(
+            builderState,
+            quizUIController,
+            appNavController
+        );
+
         logger.debug("Synchronizing initial quiz UI bounds");
         quizUIController.synchronizeBounds();
         // ----------------------------------------------------------------------
@@ -64,7 +69,6 @@ async function initializeApp() {
         });
 
         logger.info("Application bootstrap completed successfully");
-
     } catch (error) {
         logger.error("Application bootstrap failed", error);
     }

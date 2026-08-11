@@ -23,22 +23,22 @@ jobs:
         run: npm ci || npm install
 
       - name: 1. Verify Code Formatting (Prettier)
-        run: npm run format:check || true
+        run: npm run format:check
 
       - name: 2. Run Static Code Analysis (ESLint)
-        run: npm run lint || true
+        run: npm run lint
 
       - name: 3. Validate HTML Markup & Accessibility
-        run: npx html-validate index.html || true
+        run: npx html-validate index.html
 
       - name: 4. Verify Strict JSDoc Type Safety (TSC)
-        run: npm run typecheck || true
+        run: npm run typecheck
 
       - name: 5. Execute Automated Unit Tests & Coverage
         run: npm run test
 
       - name: 6. Run Dependency Security Audit
-        run: npm run audit || true
+        run: npm run audit
 
       - name: 7. Verify Production Build Integrity
         run: npm run build
