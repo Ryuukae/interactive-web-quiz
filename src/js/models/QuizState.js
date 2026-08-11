@@ -55,7 +55,7 @@ export default class QuizState {
      * @name getCurrentQuestion
      * @public
      * @description Retrieves the current question object based on the active state pointer. Time complexity: O(1).
-     * @returns {object} - The active question object containing the text and associated answers array.
+     * @returns {QuestionType} - The active question object containing the text and associated answers array.
      */
     getCurrentQuestion() {
         this.logger.info("getCurrentQuestion called", {
@@ -219,8 +219,8 @@ export default class QuizState {
      * @name shuffleQuizData
      * @public
      * @description Performs an in-place Fisher-Yates shuffle on the provided array. Time complexity: O(n).
-     * @param {Array} array - The target array to mutate.
-     * @returns {Array} - A reference to the mutated array to allow method chaining.
+     * @param {Array<any>} array - The target array to mutate.
+     * @returns {Array<any>} - A reference to the mutated array to allow method chaining.
      */
     shuffleQuizData(array) {
         this.logger.info("shuffleQuizData called", {
@@ -243,8 +243,8 @@ export default class QuizState {
      * @name randomizeDeck
      * @public
      * @description Orchestrates the randomization of the entire quiz dataset matrix. Shuffles both the primary array (questions) and nested subarrays (answers). Time complexity: O(n * m).
-     * @param {Array<object>} deck - The collection of question objects to randomize.
-     * @returns {Array<object>} - A reference to the fully randomized matrix.
+     * @param {QuestionType[]} deck - The collection of question objects to randomize.
+     * @returns {QuestionType[]} - A reference to the fully randomized matrix.
      */
     randomizeDeck(deck) {
         this.logger.info("randomizeDeck called", {
