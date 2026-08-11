@@ -6,6 +6,7 @@ import { createLogger } from "../utils/logger.js";
 /**
  * @typedef {import('../models/QuizState.js').default} QuizStateType
  * @typedef {import('./AppNavigationController.js').default} AppNavigationControllerType
+ * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
  */
 
 /**
@@ -20,6 +21,21 @@ import { createLogger } from "../utils/logger.js";
  * Encapsulation Scope: Strictly isolated to active test session DOM manipulation.
  */
 export default class QuizUIController {
+    /**
+     * @type {QuestionType[] | null}
+     */
+    customPayload;
+
+    /**
+     * @param {string} id
+     * @returns {HTMLElement}
+     */
+    getEl(id) {
+        const el = document.getElementById(id);
+        if (!(el instanceof HTMLElement)) throw new Error(`Missing DOM node: ${id}`);
+        return el;
+    }
+
     /**
      * @name constructor
      * @public
@@ -38,15 +54,16 @@ export default class QuizUIController {
             throw new Error("start-btn missing or invalid type");
         }
         this.startButton = startBtnNode;
-        this.questionText = document.getElementById("question-text");
-        this.answersContainer = document.getElementById("answers-container");
-        this.currentQuestionSpan = document.getElementById("current-question");
-        this.totalQuestionsSpan = document.getElementById("totalQuestionsSpan");
-        this.scoreSpan = document.getElementById("score");
-        this.finalScoreSpan = document.getElementById("final-score");
-        this.maxScoreSpan = document.getElementById("max-score");
-        this.resultMessage = document.getElementById("result-message");
-        this.progressBar = document.getElementById("progress");
+
+        this.questionText = this.getEl("question-text");
+        this.answersContainer = this.getEl("answers-container");
+        this.currentQuestionSpan = this.getEl("current-question");
+        this.totalQuestionsSpan = this.getEl("totalQuestionsSpan");
+        this.scoreSpan = this.getEl("score");
+        this.finalScoreSpan = this.getEl("final-score");
+        this.maxScoreSpan = this.getEl("max-score");
+        this.resultMessage = this.getEl("result-message");
+        this.progressBar = this.getEl("progress");
 
         this.customPayload = null;
 
@@ -68,14 +85,13 @@ export default class QuizUIController {
             this.logger.info("Start quiz clicked");
             this.startQuiz();
         });
-        document.getElementById("restart-btn").addEventListener("click", () => {
+        this.getEl("restart-btn").addEventListener("click", () => {
             this.logger.info("bindEventListeners: onRestartButtonClick event");
             this.logger.info("Restart quiz clicked");
             this.startQuiz();
         });
 
-        document
-            .getElementById("custom-file-input")
+        this.getEl("custom-file-input")
             .addEventListener("change", (e) => {
                 this.logger.info(
                     "bindEventListeners: onCustomFileInputChange event",
@@ -83,8 +99,7 @@ export default class QuizUIController {
                 );
                 this.handleFileUpload(e, "file-name-display");
             });
-        document
-            .getElementById("result-file-input")
+        this.getEl("result-file-input")
             .addEventListener("change", (e) => {
                 this.logger.info(
                     "bindEventListeners: onResultFileInputChange event",
@@ -152,10 +167,11 @@ export default class QuizUIController {
 
             if (this.startButton) this.startButton.disabled = false;
         } catch (error) {
+            const errMessage = error instanceof Error ? error.message : "Unknown error";
             this.logger.error("File evaluation failed", error);
             statusNode.classList.remove("success");
             statusNode.classList.add("error");
-            statusNode.textContent = `Error: ${error.message}`;
+            statusNode.textContent = `Error: ${errMessage}`;
             this.customPayload = null;
         }
         // ----------------------------------------------------------------------
@@ -165,7 +181,7 @@ export default class QuizUIController {
      * @name loadCustomQuiz
      * @public
      * @description Exposed handler natively...
-     * @param {Array<object>} payload - Assessment question objects
+     * @param {QuestionType[]} payload - Assessment question objects
      * @returns {void} - Does not return a value.
      */
     loadCustomQuiz(payload) {
@@ -256,7 +272,7 @@ export default class QuizUIController {
             button.textContent = answer.text;
             button.classList.add("answer-btn");
 
-            button.dataset.correct = answer.correct;
+            button.dataset.correct = String(answer.correct);
             button.addEventListener("click", (event) => {
                 this.logger.info("showQuestion: onAnswerClick event", {
                     event
