@@ -22,13 +22,13 @@
 !package-lock.json
 !jsconfig.json
 !.eslintrc.json
+!.htmlvalidate.json
 !.prettierrc
 
 # HTML
 !index.html
 
 # JSON
-!*.json
 !public/*.json
 
 # TXT
