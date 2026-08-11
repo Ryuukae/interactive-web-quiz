@@ -4,15 +4,21 @@ import AppNavigationController from '../../src/js/controllers/AppNavigationContr
 describe('AppNavigationController Unit Tests', () => {
 
     beforeEach(() => {
+        globalThis.HTMLElement = class HTMLElement {};
+        globalThis.HTMLButtonElement = class HTMLButtonElement extends globalThis.HTMLElement {};
+        
         globalThis.document = {
-            getElementById: (id) => ({
-                id,
-                classList: {
+            getElementById: (id) => {
+                const isBtn = id.includes('btn');
+                const el = isBtn ? new globalThis.HTMLButtonElement() : new globalThis.HTMLElement();
+                el.id = id;
+                el.classList = {
                     add: () => {},
                     remove: () => {}
-                },
-                addEventListener: () => {}
-            })
+                };
+                el.addEventListener = () => {};
+                return el;
+            }
         };
     });
 
@@ -24,14 +30,17 @@ describe('AppNavigationController Unit Tests', () => {
     it('should update active screen when navigateTo is called', () => {
         let activeScreenId = 'start';
         globalThis.document = {
-            getElementById: (id) => ({
-                id,
-                classList: {
+            getElementById: (id) => {
+                const isBtn = id.includes('btn');
+                const el = isBtn ? new globalThis.HTMLButtonElement() : new globalThis.HTMLElement();
+                el.id = id;
+                el.classList = {
                     add: () => { activeScreenId = id; },
                     remove: () => {}
-                },
-                addEventListener: () => {}
-            })
+                };
+                el.addEventListener = () => {};
+                return el;
+            }
         };
 
         const nav = new AppNavigationController();
