@@ -359,6 +359,7 @@ input.glass-input.d-input {
     text-decoration: underline;
 }
 
-#accordion_btn {
+#accordion_btn_txt,
+#accordion_btn_json {
     font-family: sans-serif;
 }
