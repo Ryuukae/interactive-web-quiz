@@ -5,6 +5,18 @@
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * @typedef {Object} AnswerType
+ * @property {string} text
+ * @property {boolean} correct
+ */
+
+/**
+ * @typedef {Object} QuestionType
+ * @property {string} question
+ * @property {AnswerType[]} answers
+ */
+
+/**
  * @class QuizState
  * @name QuizState
  * @version 1.0.0
@@ -20,8 +32,7 @@ export default class QuizState {
      * @name constructor
      * @public
      * @description Initializes the quiz state machine and hydrates it with the provided dataset. Note: Invokes an immediate randomization of the question pool on instantiation.
-     * @param {Array<object>} questionData - The parsed array of question objects to ingest.
-     * @returns {void} - Does not return a value.
+     * @param {QuestionType[]} questionData - The parsed array of question objects to ingest.
      */
     constructor(questionData) {
         this.logger = createLogger("QuizState");
