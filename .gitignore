@@ -13,36 +13,26 @@
 
 # Only allow certain files
 !.gitignore
-
+!package.json
+!package-lock.json
 
 # HTML
 !index.html
 
 # JSON
-!public/questions.json
-!public/template.json
-!public/questions2.json
+!public/*.json
 
 # TXT
-!public/template.txt
+!public/*.txt
 
 # CSS
 !src/css/*.css
 
 # JS
-!src/js/script.js
-
-!src/js/components/BuilderCardComponent.js
-!src/js/controllers/AppNavigationController.js
-!src/js/controllers/BuilderUIController.js
-!src/js/controllers/QuizUIController.js
-!src/js/models/BuilderState.js
-!src/js/models/QuizState.js
-!src/js/utils/fileIO.js
-!src/js/utils/logger.js
-!src/js/utils/prompts.js
-!src/js/utils/qadParser.js
-!src/js/utils/schemaValidator.js
-!src/js/utils/templates.js
+!src/js/*.js
+!src/js/components/*.js
+!src/js/controllers/*.js
+!src/js/models/*.js
+!src/js/utils/*.js
 
 

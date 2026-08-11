@@ -1,0 +1,22 @@
+{
+  "name": "interactive-web-quiz",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Enterprise-grade interactive quiz platform featuring visual card creation, dual QAD/JSON data ingestion, auto-expanding textareas, and automated unit testing.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/**/*.js",
+    "format": "prettier --write \"src/**/*.{js,css,html}\""
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "vite": "^5.2.0",
+    "vitest": "^1.4.0"
+  }
+}
