@@ -20,7 +20,7 @@ import { createLogger } from './logger.js';
 export function getJsonTemplate() {
     const logger = createLogger("templates.getJsonTemplate");
     logger.info("getJsonTemplate called");
-    const template = `[\n  {\n    "question": "   ",\n    "answers": [\n      { "text": "   ", "correct": true },\n      { "text": "   ", "correct": false }\n    ]\n  }\n]`;
+    const template = `[\n  {\n    "question": "",\n    "answers": [\n      { "text": "", "correct": true },\n      { "text": "", "correct": false }\n    ]\n  }\n]`;
     logger.debug("Returning JSON template string", { length: template.length });
     return template;
 }

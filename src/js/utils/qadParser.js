@@ -69,8 +69,14 @@ export function parseQADFormat(rawText) {
                 throw new Error("Malformed block: Each question group can only have exactly one 'a=' line.");
             }
 
+            const aText = cleanLine.substring(2).trim();
+            if (!aText) {
+                logger.error("QAD parse error: Empty correct answer text");
+                throw new Error(`Correct answer line 'a=' for question "${currentQuestion.question || 'unnamed'}" cannot be empty or whitespace-only.`);
+            }
+
             currentQuestion.answers.push({
-                text: cleanLine.substring(2).trim(),
+                text: aText,
                 correct: true
             });
             answerCount++;
@@ -82,8 +88,14 @@ export function parseQADFormat(rawText) {
                 throw new Error("Orphaned distractor detected. Every block must start with 'q='.");
             }
 
+            const dText = cleanLine.substring(2).trim();
+            if (!dText) {
+                logger.error("QAD parse error: Empty distractor text");
+                throw new Error(`Distractor line 'd=' for question "${currentQuestion.question || 'unnamed'}" cannot be empty or whitespace-only.`);
+            }
+
             currentQuestion.answers.push({
-                text: cleanLine.substring(2).trim(),
+                text: dText,
                 correct: false
             });
             distractorCount++;

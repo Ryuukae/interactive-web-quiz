@@ -32,6 +32,16 @@ D=Dist 2
         expect(result[1].question).toBe('Question 2?');
     });
 
+    it('should reject whitespace-only QAD answer lines', () => {
+        const invalidText = "Q=Valid Question?\nA=   \nD=Distractor";
+        expect(() => parseQADFormat(invalidText)).toThrow("cannot be empty or whitespace-only.");
+    });
+
+    it('should reject whitespace-only QAD distractor lines', () => {
+        const invalidText = "Q=Valid Question?\nA=Correct Answer\nD=   ";
+        expect(() => parseQADFormat(invalidText)).toThrow("cannot be empty or whitespace-only.");
+    });
+
     it('should throw an error if a question is missing correct answer or distractors', () => {
         const invalidText = "Q=Incomplete Question?\nA=Only Answer";
         expect(() => parseQADFormat(invalidText)).toThrow();
