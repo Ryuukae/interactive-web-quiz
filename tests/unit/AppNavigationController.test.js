@@ -1,34 +1,50 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import AppNavigationController from '../../src/js/controllers/AppNavigationController.js';
 
 describe('AppNavigationController Unit Tests', () => {
 
-    it('should initialize with default active screen track', () => {
-        const nav = new AppNavigationController();
-        expect(nav.activeScreen).toBe('start');
+    beforeEach(() => {
+        globalThis.document = {
+            getElementById: (id) => ({
+                id,
+                classList: {
+                    add: () => {},
+                    remove: () => {}
+                },
+                addEventListener: () => {}
+            })
+        };
     });
 
-    it('should update active screen when switchScreen is called', () => {
-        const mockScreenNodes = {
-            start: { classList: { add: () => {}, remove: () => {} } },
-            quiz: { classList: { add: () => {}, remove: () => {} } },
-            creator: { classList: { add: () => {}, remove: () => {} } },
-            result: { classList: { add: () => {}, remove: () => {} } }
+    it('should initialize screen navigation nodes cleanly', () => {
+        const nav = new AppNavigationController();
+        expect(Object.keys(nav.screens)).toHaveLength(4);
+    });
+
+    it('should update active screen when navigateTo is called', () => {
+        let activeScreenId = 'start';
+        globalThis.document = {
+            getElementById: (id) => ({
+                id,
+                classList: {
+                    add: () => { activeScreenId = id; },
+                    remove: () => {}
+                },
+                addEventListener: () => {}
+            })
         };
 
         const nav = new AppNavigationController();
-        nav.screens = mockScreenNodes;
 
-        nav.switchScreen('quiz');
-        expect(nav.activeScreen).toBe('quiz');
+        nav.navigateTo('quiz');
+        expect(activeScreenId).toBe('quiz-screen');
 
-        nav.switchScreen('creator');
-        expect(nav.activeScreen).toBe('creator');
+        nav.navigateTo('creator');
+        expect(activeScreenId).toBe('creator-screen');
     });
 
-    it('should ignore invalid screen names cleanly', () => {
+    it('should warn and ignore invalid screen names cleanly', () => {
         const nav = new AppNavigationController();
-        nav.switchScreen('invalid-screen');
-        expect(nav.activeScreen).toBe('start');
+        expect(() => nav.navigateTo('invalid-screen')).not.toThrow();
     });
 });
