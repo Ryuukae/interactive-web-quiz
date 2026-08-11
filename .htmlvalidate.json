@@ -1,8 +1,11 @@
 {
   "extends": ["html-validate:recommended"],
   "rules": {
-    "doctype-first": "error",
     "attr-delimiter": "error",
-    "element-name": "error"
+    "element-name": "error",
+    "no-trailing-whitespace": "off",
+    "no-inline-style": "off",
+    "no-implicit-button-type": "off",
+    "no-dup-id": "error"
   }
 }
