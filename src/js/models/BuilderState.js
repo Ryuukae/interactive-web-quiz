@@ -6,6 +6,8 @@ import { createLogger } from "../utils/logger.js";
 
 /**
  * @typedef {import('../components/BuilderCardComponent.js').default} BuilderCardComponentType
+ * @typedef {import('./QuizState.js').QuestionType} QuestionType
+ * 
  */
 
 /**
@@ -18,9 +20,16 @@ import { createLogger } from "../utils/logger.js";
  * @description
  * Architectural Responsibilities: Manages the active form building session. Retains a live array of BuilderCardComponent instances in memory to act as the definitive source of truth, completely detaching data from the physical DOM layout.
  *
- * Encapsulation Scope: Isolated execution state strictly for a single active form builder session.
+ * 
  */
 export default class BuilderState {
+
+    /** 
+     * @type {BuilderCardComponentType[]} 
+     * @description Array of active builder card components.
+     */
+    cards = [];
+
     /**
      * @name constructor
      * @public
@@ -153,7 +162,7 @@ export default class BuilderState {
      * @name getSerializedPayload
      * @public
      * @description Iterates across the entire memory stack, commanding each component to scrape its local data into a unified array object.
-     * @returns {Array<object>} - The fully assembled assessment JSON.
+     * @returns {QuestionType[]} - The fully assembled assessment JSON.
      */
     getSerializedPayload() {
         this.logger.info("getSerializedPayload called", {
@@ -162,18 +171,15 @@ export default class BuilderState {
         this.logger.debug("Serializing builder payload", {
             cardCount: this.cards.length
         });
-        const payload = [];
 
         /* Iterates sequentially to trigger localized data extraction and assemble the overarching payload for the router or export utility. */
         // ----------------------------------------------------------------------
-        this.cards.forEach((card) => {
+        const payload = this.cards.flatMap((card) => {
             this.logger.trace("getSerializedPayload: serializeCallback", {
                 card
             });
             const data = card.getCardData();
-            if (data) {
-                payload.push(data);
-            }
+            return data ? [data] : [];
         });
         // ----------------------------------------------------------------------
 
