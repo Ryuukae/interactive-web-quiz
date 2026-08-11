@@ -25,6 +25,10 @@
 !.htmlvalidate.json
 !.prettierrc
 !vite.config.js
+!.commitlintrc.json
+!.stylelintrc.json
+!.lighthouserc.json
+!.lintstagedrc.json
 
 # HTML
 !index.html
