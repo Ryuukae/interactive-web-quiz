@@ -253,6 +253,12 @@ input.glass-input.d-input {
     opacity: 1; 
 }
 
+#bulk-import-status {
+    display: block;
+    text-align: center;
+    margin-top: 8px;
+}
+
 /* ============================ */
 /* --- FORMATTING ACCORDION --- */
 /* ============================ */
