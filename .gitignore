@@ -10,6 +10,9 @@
 !src/js/controllers/
 !src/js/models/
 !src/js/utils/
+!tests/
+!tests/unit/
+
 
 # Only allow certain files
 !.gitignore
@@ -34,5 +37,6 @@
 !src/js/controllers/*.js
 !src/js/models/*.js
 !src/js/utils/*.js
+!tests/unit/*.js
 
 
