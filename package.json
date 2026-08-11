@@ -20,6 +20,7 @@
     "format:check": "prettier --check \"src/**/*.{js,css,html}\"",
     "size": "size-limit",
     "typecheck": "tsc --noEmit -p jsconfig.json",
+    "test:e2e": "playwright test",
     "test:coverage": "vitest run --coverage",
     "audit": "npm audit --audit-level=high",
     "prepare": "husky"
