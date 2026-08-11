@@ -25,20 +25,23 @@ jobs:
       - name: 1. Verify Code Formatting (Prettier)
         run: npm run format:check
 
-      - name: 2. Run Static Code Analysis (ESLint)
+      - name: 2. Run JS Static Code Analysis (ESLint)
         run: npm run lint
 
-      - name: 3. Validate HTML Markup & Accessibility
+      - name: 3. Run CSS Static Analysis (Stylelint)
+        run: npx stylelint "src/**/*.css" || true
+
+      - name: 4. Validate HTML Markup & Accessibility
         run: npx html-validate index.html
 
-      - name: 4. Verify Strict JSDoc Type Safety (TSC)
+      - name: 5. Verify Strict JSDoc Type Safety (TSC)
         run: npm run typecheck
 
-      - name: 5. Execute Automated Unit Tests & Coverage
+      - name: 6. Execute Automated Unit & Integration Tests
         run: npm run test
 
-      - name: 6. Run Dependency Security Audit
+      - name: 7. Run Dependency Security Audit
         run: npm run audit
 
-      - name: 7. Verify Production Build Integrity
+      - name: 8. Verify Production Build Integrity
         run: npm run build
