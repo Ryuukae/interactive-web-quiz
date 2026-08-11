@@ -41,7 +41,8 @@ describe('fileIO Utility Unit Tests', () => {
             readAsText(file) {
                 setTimeout(() => {
                     if (this.onload) {
-                        this.onload({ target: { result: 'Q=Test?\nA=Ans\nD=Dist' }, loaded: 20 });
+                        this.result = 'Q=Test?\nA=Ans\nD=Dist';
+                        this.onload({ target: this, loaded: 20 });
                     }
                 }, 10);
             }
