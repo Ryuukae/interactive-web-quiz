@@ -17,7 +17,7 @@ export default class BuilderCardComponent {
      * @name constructor
      * @public
      * @description Initializes the component, constructs the underlying DOM node, handles prefill data, and binds structural listeners.
-     * @param {Object|null} prefillData - Optional question data to natively populate the inputs.
+     * @param {object | null} prefillData - Optional question data to natively populate the inputs.
      * @param {Function} onDeleteCallback - The explicit action to fire when the local delete button is triggered.
      * @param {Function} [onExpandCallback] - Optional callback triggered to enforce external layout constraints natively.
      * @returns {void} - Does not return a value.
@@ -51,7 +51,7 @@ export default class BuilderCardComponent {
      * @name render
      * @public
      * @description Processes internal string injection to structurally construct the component's interactive UI.
-     * @param {Object|null} prefillData - Sourced data mapped directly into input values.
+     * @param {object | null} prefillData - Sourced data mapped directly into input values.
      * @returns {void} - Does not return a value.
      */
     render(prefillData) {
@@ -327,7 +327,7 @@ export default class BuilderCardComponent {
      * @name getCardData
      * @public
      * @description Scrapes localized text inputs, discards empty references, and packages structural assessment objects.
-     * @returns {Object|null} - Clean payload containing a single question structure, or null if the prompt was ignored.
+     * @returns {object | null} - Clean payload containing a single question structure, or null if the prompt was ignored.
      */
     getCardData() {
         this.logger.info("getCardData called");

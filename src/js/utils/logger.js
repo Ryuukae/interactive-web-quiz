@@ -10,6 +10,10 @@ const LEVELS = {
 const STORAGE_KEY = "interactive-web-quiz:logLevel";
 const DEFAULT_LEVEL = "info";
 
+/**
+ *
+ * @param level
+ */
 function normalizeLevel(level) {
     const normalized = String(level || "").toLowerCase();
     return Object.prototype.hasOwnProperty.call(LEVELS, normalized)
@@ -17,6 +21,9 @@ function normalizeLevel(level) {
         : DEFAULT_LEVEL;
 }
 
+/**
+ *
+ */
 function getActiveLevel() {
     if (typeof window !== "undefined" && window.localStorage) {
         const storedLevel = window.localStorage.getItem(STORAGE_KEY);
@@ -28,10 +35,18 @@ function getActiveLevel() {
     return DEFAULT_LEVEL;
 }
 
+/**
+ *
+ * @param level
+ */
 function shouldLog(level) {
     return LEVELS[level] >= LEVELS[getActiveLevel()];
 }
 
+/**
+ *
+ * @param value
+ */
 function serializeValue(value) {
     if (value instanceof Error) {
         return {
@@ -63,6 +78,13 @@ function serializeValue(value) {
     return value;
 }
 
+/**
+ *
+ * @param level
+ * @param scope
+ * @param message
+ * @param details
+ */
 function emit(level, scope, message, details) {
     if (!shouldLog(level)) {
         return;
@@ -80,6 +102,10 @@ function emit(level, scope, message, details) {
     consoleMethod(prefix, serializeValue(details));
 }
 
+/**
+ *
+ * @param scope
+ */
 export function createLogger(scope) {
     return {
         trace(message, details) {
@@ -103,10 +129,17 @@ export function createLogger(scope) {
     };
 }
 
+/**
+ *
+ */
 export function getLogLevel() {
     return getActiveLevel();
 }
 
+/**
+ *
+ * @param level
+ */
 export function setLogLevel(level) {
     const normalized = normalizeLevel(level);
 

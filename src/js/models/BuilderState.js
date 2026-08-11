@@ -149,7 +149,7 @@ export default class BuilderState {
      * @name getSerializedPayload
      * @public
      * @description Iterates across the entire memory stack, commanding each component to scrape its local data into a unified array object.
-     * @returns {Array<Object>} - The fully assembled assessment JSON.
+     * @returns {Array<object>} - The fully assembled assessment JSON.
      */
     getSerializedPayload() {
         this.logger.info("getSerializedPayload called", {

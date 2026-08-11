@@ -16,7 +16,7 @@ import { createLogger } from "./logger.js";
  * @public
  * @description Parses custom QAD text files exclusively into a standardized JSON array optimally for the application natively.
  * @param {string} rawText - The raw text payload string from the optimally uploaded file or physically typed textarea.
- * @returns {Array<Object>} - Formatted question objects sequentially ready for state ingestion globally.
+ * @returns {Array<object>} - Formatted question objects sequentially ready for state ingestion globally.
  * @throws {Error} - Throws an explicit string error conclusively if structural formatting bounds are violated natively.
  */
 export function parseQADFormat(rawText) {
@@ -150,7 +150,7 @@ export function parseQADFormat(rawText) {
  * @name validateBlock
  * @private
  * @description Helper method to validate that a parsed QAD block meets strict structural requirements.
- * @param {Object} block - The question object being assembled.
+ * @param {object} block - The question object being assembled.
  * @param {number} answers - Count of correct answers found.
  * @param {number} distractors - Count of distractors found.
  * @returns {void} - Does not return a value.

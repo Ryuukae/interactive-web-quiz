@@ -150,7 +150,7 @@ export default class QuizUIController {
      * @name loadCustomQuiz
      * @public
      * @description Exposed handler natively...
-     * @param {Array<Object>} payload - Assessment question objects
+     * @param {Array<object>} payload - Assessment question objects
      * @returns {void} - Does not return a value.
      */
     loadCustomQuiz(payload) {
