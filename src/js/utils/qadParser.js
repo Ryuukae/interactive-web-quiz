@@ -12,11 +12,24 @@ import { createLogger } from "./logger.js";
  */
 
 /**
+ * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
+ * @typedef {import('../models/QuizState.js').AnswerType} AnswerType
+ */
+
+/**
+ * @param {string} question
+ * @returns {QuestionType}
+ */
+function createQuestionBlock(question) {
+    return { question, answers: [] };
+}
+
+/**
  * @name parseQADFormat
  * @public
  * @description Parses custom QAD text files exclusively into a standardized JSON array optimally for the application natively.
  * @param {string} rawText - The raw text payload string from the optimally uploaded file or physically typed textarea.
- * @returns {Array<object>} - Formatted question objects sequentially ready for state ingestion globally.
+ * @returns {QuestionType[]} - Formatted question objects sequentially ready for state ingestion globally.
  * @throws {Error} - Throws an explicit string error conclusively if structural formatting bounds are violated natively.
  */
 export function parseQADFormat(rawText) {
@@ -30,7 +43,9 @@ export function parseQADFormat(rawText) {
     const lines = normalizedText.split("\n");
     logger.debug("Normalized raw text into lines", { lineCount: lines.length });
 
+    /** @type {QuestionType[]} */
     const questions = [];
+    /** @type {QuestionType | null} */
     let currentQuestion = null;
     let answerCount = 0;
     let distractorCount = 0;
@@ -53,10 +68,7 @@ export function parseQADFormat(rawText) {
                 questions.push(currentQuestion);
             }
 
-            currentQuestion = {
-                question: cleanLine.substring(2).trim(),
-                answers: []
-            };
+            currentQuestion = createQuestionBlock(cleanLine.substring(2).trim());
             logger.debug("Parsed question header", {
                 question: currentQuestion.question
             });
@@ -150,7 +162,7 @@ export function parseQADFormat(rawText) {
  * @name validateBlock
  * @private
  * @description Helper method to validate that a parsed QAD block meets strict structural requirements.
- * @param {object} block - The question object being assembled.
+ * @param {QuestionType} block - The question object being assembled.
  * @param {number} answers - Count of correct answers found.
  * @param {number} distractors - Count of distractors found.
  * @returns {void} - Does not return a value.
