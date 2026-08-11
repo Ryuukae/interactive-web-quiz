@@ -1,4 +1,4 @@
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from "../utils/logger.js";
 
 /**
  * @class AppNavigationController
@@ -6,13 +6,12 @@ import { createLogger } from '../utils/logger.js';
  * @version 1.0.0
  * @author Adam Ross DeStafeno
  * @since 2026-08-09
- * @description 
+ * @description
  * Architectural Responsibilities: Centralized application router natively. Exclusively handles CSS visibility toggles to map the active viewport state seamlessly to the explicitly required stage.
- * 
+ *
  * Encapsulation Scope: Strictly isolated purely to global SPA transitions explicitly.
  */
 export default class AppNavigationController {
-
     /**
      * @name constructor
      * @public
@@ -47,23 +46,39 @@ export default class AppNavigationController {
         this.logger.info("bindGlobalNavigation called");
         this.logger.debug("Binding global navigation actions");
 
-        document.getElementById("create-quizset-btn").addEventListener("click", () => {
-            this.logger.info("bindGlobalNavigation: onCreateQuizsetClick event");
-            this.logger.info("Navigation request: creator screen");
-            this.navigateTo("creator");
-        });
+        document
+            .getElementById("create-quizset-btn")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "bindGlobalNavigation: onCreateQuizsetClick event"
+                );
+                this.logger.info("Navigation request: creator screen");
+                this.navigateTo("creator");
+            });
 
-        document.getElementById("btn-cancel-create").addEventListener("click", () => {
-            this.logger.info("bindGlobalNavigation: onCancelCreateClick event");
-            this.logger.info("Navigation request: start screen from creator cancel");
-            this.navigateTo("start");
-        });
+        document
+            .getElementById("btn-cancel-create")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "bindGlobalNavigation: onCancelCreateClick event"
+                );
+                this.logger.info(
+                    "Navigation request: start screen from creator cancel"
+                );
+                this.navigateTo("start");
+            });
 
-        document.getElementById("return-start-btn").addEventListener("click", () => {
-            this.logger.info("bindGlobalNavigation: onReturnStartClick event");
-            this.logger.info("Navigation request: start screen from result");
-            this.navigateTo("start");
-        });
+        document
+            .getElementById("return-start-btn")
+            .addEventListener("click", () => {
+                this.logger.info(
+                    "bindGlobalNavigation: onReturnStartClick event"
+                );
+                this.logger.info(
+                    "Navigation request: start screen from result"
+                );
+                this.navigateTo("start");
+            });
     }
 
     /**
@@ -79,8 +94,10 @@ export default class AppNavigationController {
 
         /* Iterates identically through cached DOM nodes natively to completely purge the dynamically active visibility class efficiently. */
         // ----------------------------------------------------------------------
-        Object.values(this.screens).forEach(screen => {
-            this.logger.trace("navigateTo: resetActiveScreenCallback", { screenId: screen ? screen.id : null });
+        Object.values(this.screens).forEach((screen) => {
+            this.logger.trace("navigateTo: resetActiveScreenCallback", {
+                screenId: screen ? screen.id : null
+            });
             if (screen) {
                 screen.classList.remove("active");
             }
@@ -93,6 +110,8 @@ export default class AppNavigationController {
             return;
         }
 
-        this.logger.warn("Attempted navigation to unknown screen", { screenId });
+        this.logger.warn("Attempted navigation to unknown screen", {
+            screenId
+        });
     }
 }

@@ -10,7 +10,8 @@
         padding: 2rem;
         width: 92%;
     }
-    #start-screen h1, #creator-screen h1 {
+    #start-screen h1,
+    #creator-screen h1 {
         font-size: 2.25rem;
     }
     #question-text {
@@ -25,8 +26,9 @@
    Dynamically recalculates internal paddings and typographic scales 
    to optimize spatial density for mobile hardware rendering. */
 @media (max-width: 540px) {
-    body::before, body::after {
-        display: none; 
+    body::before,
+    body::after {
+        display: none;
     }
     .container {
         padding: 1.5rem;
@@ -35,7 +37,8 @@
     .screen {
         padding: 1.2rem;
     }
-    #start-screen h1, #creator-screen h1 {
+    #start-screen h1,
+    #creator-screen h1 {
         font-size: 2rem;
     }
     #start-screen p {
@@ -78,7 +81,8 @@
     .screen {
         padding: 1rem;
     }
-    #start-screen h1, #creator-screen h1{
+    #start-screen h1,
+    #creator-screen h1 {
         font-size: 1.75rem;
     }
     #start-screen p {
@@ -94,7 +98,8 @@
     .action-stack {
         gap: 12px;
     }
-    button, .secondary-btn {
+    button,
+    .secondary-btn {
         padding: 10px 20px;
     }
 }

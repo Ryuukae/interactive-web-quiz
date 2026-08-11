@@ -1,13 +1,13 @@
-import { createLogger } from './logger.js';
+import { createLogger } from "./logger.js";
 
 /**
  * @module templates
  * @version 1.0.0
  * @author Adam Ross DeStafeno
  * @since 2026-08-08
- * @description 
+ * @description
  * Architectural Responsibilities: Houses static string payloads for injection into user-facing text areas to assist with syntax formatting.
- * 
+ *
  * Encapsulation Scope: Global utility. Provides read-only data string generation natively.
  */
 
@@ -35,6 +35,8 @@ export function getTxtTemplate() {
     const logger = createLogger("templates.getTxtTemplate");
     logger.info("getTxtTemplate called");
     const template = `q=\na=\nd=\n`;
-    logger.debug("Returning TXT QAD template string", { length: template.length });
+    logger.debug("Returning TXT QAD template string", {
+        length: template.length
+    });
     return template;
 }

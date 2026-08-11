@@ -12,7 +12,9 @@ const DEFAULT_LEVEL = "info";
 
 function normalizeLevel(level) {
     const normalized = String(level || "").toLowerCase();
-    return Object.prototype.hasOwnProperty.call(LEVELS, normalized) ? normalized : DEFAULT_LEVEL;
+    return Object.prototype.hasOwnProperty.call(LEVELS, normalized)
+        ? normalized
+        : DEFAULT_LEVEL;
 }
 
 function getActiveLevel() {
@@ -40,7 +42,7 @@ function serializeValue(value) {
     }
 
     if (Array.isArray(value)) {
-        return value.map(item => serializeValue(item));
+        return value.map((item) => serializeValue(item));
     }
 
     if (value && typeof value === "object") {
