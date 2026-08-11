@@ -15,7 +15,7 @@ import { createLogger } from "./logger.js";
  * @name exportJSON
  * @public
  * @description Converts a JavaScript payload into a formatted JSON file and triggers a client browser download globally.
- * @param {Array | object} payload - The compiled data logic to serialize cleanly.
+ * @param {any[] | object} payload - The compiled data logic to serialize cleanly.
  * @param {string} filename - The designated output file name strictly.
  * @returns {void} - Does not return a value.
  */
