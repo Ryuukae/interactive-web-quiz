@@ -15,11 +15,15 @@ const logger = createLogger("schemaValidator");
  */
 
 /**
+ * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
+ */
+
+/**
  * @name parseAndValidateRawText
  * @public
  * @description Evaluates raw input strings to determine structural formatting, delegates extraction naturally, and verifies the final output.
  * @param {string} rawText - The unformatted string payload to digest explicitly.
- * @returns {Array<object>} - The fully validated assessment dataset safely.
+ * @returns {QuestionType[]} - The fully validated assessment dataset safely.
  * @throws {Error} Throws an explicit error if the text is definitively invalid or malformed structurally.
  */
 export function parseAndValidateRawText(rawText) {
@@ -52,8 +56,9 @@ export function parseAndValidateRawText(rawText) {
                 questionCount: parsedData.length
             });
         } catch (jsonError) {
+            const errMessage = jsonError instanceof Error ? jsonError.message : "Unknown parsing error";
             logger.warn("JSON parsing failed, falling back to QAD digestion", {
-                error: jsonError.message
+                error: errMessage
             });
         }
     }
@@ -86,7 +91,7 @@ export function parseAndValidateRawText(rawText) {
  * @name validateQuizSchema
  * @public
  * @description Validates the structural integrity of the ingested JSON dataset logically. Enforces bounds (1-7 answers total, exactly 1 correct answer per question).
- * @param {Array<object>} data - The parsed JSON data to validate natively.
+ * @param {any[]} data - The parsed JSON data to validate natively.
  * @returns {void} - Does not return a value.
  * @throws {Error} Throws an explicit error if the schema dynamically violates specifications.
  */
