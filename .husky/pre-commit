@@ -1,2 +1,3 @@
 npm run audit
+npm run lint:secrets
 npx lint-staged
