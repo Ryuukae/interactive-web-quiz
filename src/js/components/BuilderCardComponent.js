@@ -20,7 +20,6 @@ export default class BuilderCardComponent {
      * @param {object | null} prefillData - Optional question data to natively populate the inputs.
      * @param {Function} onDeleteCallback - The explicit action to fire when the local delete button is triggered.
      * @param {Function} [onExpandCallback] - Optional callback triggered to enforce external layout constraints natively.
-     * @returns {void} - Does not return a value.
      */
     constructor(prefillData, onDeleteCallback, onExpandCallback = null) {
         this.logger = createLogger("BuilderCardComponent");
@@ -130,10 +129,24 @@ export default class BuilderCardComponent {
             </div>
         `;
 
-        this.qInput = this.node.querySelector(".q-input");
-        this.aInput = this.node.querySelector(".correct-input");
-        this.dContainer = this.node.querySelector(".distractors-container");
-        this.addBtn = this.node.querySelector(".btn-add-distractor");
+        const qInputNode = this.node.querySelector(".q-input");
+        const aInputNode = this.node.querySelector(".correct-input");
+        const dContainerNode = this.node.querySelector(".distractors-container");
+        const addBtnNode = this.node.querySelector(".btn-add-distractor");
+
+        if (
+            !(qInputNode instanceof HTMLInputElement) ||
+            !(aInputNode instanceof HTMLInputElement) ||
+            !(dContainerNode instanceof HTMLElement) ||
+            !(addBtnNode instanceof HTMLElement)
+        ) {
+            throw new Error("Critical builder card DOM nodes missing");
+        }
+
+        this.qInput = qInputNode;
+        this.aInput = aInputNode;
+        this.dContainer = dContainerNode;
+        this.addBtn = addBtnNode;
 
         if (distractorVals.length >= 6) {
             this.addBtn.style.display = "none";
@@ -189,6 +202,7 @@ export default class BuilderCardComponent {
         });
 
         this.qInput.addEventListener("input", (e) => {
+            if (!(e.target instanceof HTMLInputElement)) return;
             this.logger.trace("bindLocalListeners: onQuestionInput event", {
                 value: e.target.value
             });
@@ -221,6 +235,7 @@ export default class BuilderCardComponent {
         });
 
         this.node.querySelector(".card-body").addEventListener("input", (e) => {
+            if (!(e.target instanceof HTMLInputElement)) return;
             this.logger.trace("bindLocalListeners: onCardBodyInput event", {
                 target: e.target
             });
@@ -301,6 +316,7 @@ export default class BuilderCardComponent {
 
         let hasDistractor = false;
         dInputs.forEach((d) => {
+            if (!(d instanceof HTMLInputElement)) return;
             this.logger.trace("validate: distractorCheckCallback", {
                 value: d.value
             });
@@ -312,9 +328,11 @@ export default class BuilderCardComponent {
         if (!hasDistractor && dInputs.length > 0) {
             this.logger.warn("Validation error: No distractor text provided");
             const firstDistractor = dInputs[0];
-            firstDistractor.classList.add("input-error");
-            firstDistractor.placeholder =
-                "Required: Please enter at least one wrong answer";
+            if (firstDistractor instanceof HTMLInputElement) {
+                firstDistractor.classList.add("input-error");
+                firstDistractor.placeholder =
+                    "Required: Please enter at least one wrong answer";
+            }
             isValid = false;
             this.node.classList.remove("collapsed");
         }
@@ -350,6 +368,7 @@ export default class BuilderCardComponent {
         }
 
         dInputs.forEach((input) => {
+            if (!(input instanceof HTMLInputElement)) return;
             this.logger.trace("getCardData: distractorSerializeCallback", {
                 value: input.value
             });
