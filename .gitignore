@@ -35,6 +35,7 @@
 !.husky/pre-commit
 !.husky/pre-push
 !.husky/commit-msg
+!.cspell.json
 
 # .HTML
 !index.html
