@@ -16,7 +16,7 @@
 !.github/
 !.github/workflows/
 !.husky/
-!.husky/pre-commit
+
 
 # Only allow certain files
 !.gitignore
@@ -31,6 +31,9 @@
 !.stylelintrc.json
 !.lighthouserc.json
 !.lintstagedrc.json
+!.husky/pre-commit
+!.husky/pre-push
+!.husky/commit-msg
 
 # HTML
 !index.html
