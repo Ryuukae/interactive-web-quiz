@@ -12,6 +12,9 @@ import { createLogger } from "../utils/logger.js";
  * Encapsulation Scope: Strictly isolated purely to global SPA transitions explicitly.
  */
 export default class AppNavigationController {
+    /** @type {Record<string, HTMLElement | null>} */
+    screens;
+
     /**
      * @name constructor
      * @public
@@ -45,19 +48,20 @@ export default class AppNavigationController {
         this.logger.info("bindGlobalNavigation called");
         this.logger.debug("Binding global navigation actions");
 
-        document
-            .getElementById("create-quizset-btn")
-            .addEventListener("click", () => {
+        const createBtn = document.getElementById("create-quizset-btn");
+        if (createBtn instanceof HTMLButtonElement) {
+            createBtn.addEventListener("click", () => {
                 this.logger.info(
                     "bindGlobalNavigation: onCreateQuizsetClick event"
                 );
                 this.logger.info("Navigation request: creator screen");
                 this.navigateTo("creator");
             });
+        }
 
-        document
-            .getElementById("btn-cancel-create")
-            .addEventListener("click", () => {
+        const cancelBtn = document.getElementById("btn-cancel-create");
+        if (cancelBtn instanceof HTMLButtonElement) {
+            cancelBtn.addEventListener("click", () => {
                 this.logger.info(
                     "bindGlobalNavigation: onCancelCreateClick event"
                 );
@@ -66,10 +70,11 @@ export default class AppNavigationController {
                 );
                 this.navigateTo("start");
             });
+        }
 
-        document
-            .getElementById("return-start-btn")
-            .addEventListener("click", () => {
+        const returnBtn = document.getElementById("return-start-btn");
+        if (returnBtn instanceof HTMLButtonElement) {
+            returnBtn.addEventListener("click", () => {
                 this.logger.info(
                     "bindGlobalNavigation: onReturnStartClick event"
                 );
@@ -78,6 +83,7 @@ export default class AppNavigationController {
                 );
                 this.navigateTo("start");
             });
+        }
     }
 
     /**
