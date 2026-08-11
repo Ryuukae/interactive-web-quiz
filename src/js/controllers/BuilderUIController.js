@@ -6,6 +6,12 @@ import BuilderCardComponent from "../components/BuilderCardComponent.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * @typedef {import('../models/BuilderState.js').default} BuilderStateType
+ * @typedef {import('./QuizUIController.js').default} QuizUIControllerType
+ * @typedef {import('./AppNavigationController.js').default} AppNavigationControllerType
+ */
+
+/**
  * @class BuilderUIController
  * @name BuilderUIController
  * @version 1.0.0
@@ -21,10 +27,9 @@ export default class BuilderUIController {
      * @name constructor
      * @public
      * @description Links physical nodes with Model authorities cleanly.
-     * @param {BuilderState} builderState - The central tracker modeling card components natively.
-     * @param {QuizUIController} quizUIController - Exposed for direct bypass assessment triggers explicitly.
-     * @param {AppNavigationController} appNavController - Coordinates manual routing assignments optimally.
-     * @returns {void} - Does not return a value.
+     * @param {BuilderStateType} builderState - The central tracker modeling card components natively.
+     * @param {QuizUIControllerType} quizUIController - Exposed for direct bypass assessment triggers explicitly.
+     * @param {AppNavigationControllerType} appNavController - Coordinates manual routing assignments optimally.
      */
     constructor(builderState, quizUIController, appNavController) {
         this.logger = createLogger("BuilderUIController");
@@ -41,7 +46,13 @@ export default class BuilderUIController {
             "builder-questions-container"
         );
         this.bulkImportPanel = document.getElementById("bulk-import-panel");
-        this.bulkImportText = document.getElementById("bulk-import-text");
+        
+        const bulkImportTextEl = document.getElementById("bulk-import-text");
+        if (!(bulkImportTextEl instanceof HTMLTextAreaElement)) {
+            throw new Error("bulk-import-text element not found or not a textarea");
+        }
+        this.bulkImportText = bulkImportTextEl;
+
         this.bulkImportStatus = document.getElementById("bulk-import-status");
 
         this.logger.info("Builder UI controller initialized");
