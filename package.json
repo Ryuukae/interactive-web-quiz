@@ -18,7 +18,8 @@
     "format:check": "prettier --check \"src/**/*.{js,css,html}\"",
     "typecheck": "tsc --noEmit",
     "test:coverage": "vitest run --coverage",
-    "audit": "npm audit --audit-level=high"
+    "audit": "npm audit --audit-level=high",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",
@@ -26,6 +27,7 @@
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^8.57.0",
     "html-validate": "^10.9.0",
+    "husky": "^9.0.0",
     "prettier": "^3.2.5",
     "stylelint": "^16.2.0",
     "stylelint-config-standard": "^36.0.0",
