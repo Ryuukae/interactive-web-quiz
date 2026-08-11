@@ -4,7 +4,10 @@
     "es2022": true,
     "node": true
   },
-  "extends": "eslint:recommended",
+  "extends": [
+    "eslint:recommended"
+  ],
+  "plugins": ["jsdoc"],
   "parserOptions": {
     "ecmaVersion": 2022,
     "sourceType": "module"
@@ -13,6 +16,9 @@
     "no-unused-vars": "warn",
     "no-undef": "error",
     "eqeqeq": "error",
-    "curly": ["error", "multi-line"]
+    "curly": ["error", "multi-line"],
+    "jsdoc/check-param-names": "error",
+    "jsdoc/check-tag-names": "error",
+    "jsdoc/check-types": "error"
   }
 }
