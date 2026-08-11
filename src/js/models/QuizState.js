@@ -5,13 +5,13 @@
 import { createLogger } from "../utils/logger.js";
 
 /**
- * @typedef {Object} AnswerType
+ * @typedef {object} AnswerType
  * @property {string} text
  * @property {boolean} correct
  */
 
 /**
- * @typedef {Object} QuestionType
+ * @typedef {object} QuestionType
  * @property {string} question
  * @property {AnswerType[]} answers
  */
