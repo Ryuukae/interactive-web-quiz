@@ -22,25 +22,28 @@ jobs:
       - name: Install Dependencies
         run: npm ci || npm install
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
       - name: 1. Verify Code Formatting (Prettier)
         run: npm run format:check
 
-      - name: 2. Run JS Static Code Analysis (ESLint)
+      - name: 2. Run Master Code Linting Suite (JS + CSS + HTML + Spell + Secrets)
         run: npm run lint
 
-      - name: 3. Run CSS Static Analysis (Stylelint)
-        run: npx stylelint "src/**/*.css" || true
-
-      - name: 4. Validate HTML Markup & Accessibility
-        run: npx html-validate index.html
-
-      - name: 5. Verify Strict JSDoc Type Safety (TSC)
+      - name: 3. Verify Strict JSDoc Type Safety (TSC)
         run: npm run typecheck
 
-      - name: 6. Execute Automated Unit & Integration Tests
-        run: npm run test
+      - name: 4. Execute Production Bundle Byte Budget Check (Size-Limit)
+        run: npm run size
 
-      - name: 7. Run Dependency Security Audit
+      - name: 5. Execute Automated Unit & Integration Tests (Vitest)
+        run: npm run test:coverage
+
+      - name: 6. Execute Playwright Multi-Browser E2E Suite
+        run: npm run test:e2e
+
+      - name: 7. Run Dependency Security Audit (npm audit)
         run: npm run audit
 
       - name: 8. Verify Production Build Integrity
