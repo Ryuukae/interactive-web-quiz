@@ -12,6 +12,7 @@
 !src/js/utils/
 !tests/
 !tests/unit/
+!tests/integration/
 !.github/
 !.github/workflows/
 
@@ -20,11 +21,14 @@
 !package.json
 !package-lock.json
 !jsconfig.json
+!.eslintrc.json
+!.prettierrc
 
 # HTML
 !index.html
 
 # JSON
+!*.json
 !public/*.json
 
 # TXT
@@ -43,5 +47,6 @@
 !src/js/models/*.js
 !src/js/utils/*.js
 !tests/unit/*.js
+!tests/integration/*.js
 
 
