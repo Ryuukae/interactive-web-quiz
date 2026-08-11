@@ -33,7 +33,11 @@ export default class QuizUIController {
         this.quizState = quizState;
         this.appNavController = appNavController;
 
-        this.startButton = document.getElementById("start-btn");
+        const startBtnNode = document.getElementById("start-btn");
+        if (!(startBtnNode instanceof HTMLButtonElement)) {
+            throw new Error("start-btn missing or invalid type");
+        }
+        this.startButton = startBtnNode;
         this.questionText = document.getElementById("question-text");
         this.answersContainer = document.getElementById("answers-container");
         this.currentQuestionSpan = document.getElementById("current-question");
@@ -185,8 +189,8 @@ export default class QuizUIController {
     synchronizeBounds() {
         this.logger.info("synchronizeBounds called");
         const totalCount = this.quizState.questionData.length;
-        this.totalQuestionsSpan.textContent = totalCount;
-        this.maxScoreSpan.textContent = totalCount;
+        this.totalQuestionsSpan.textContent = String(totalCount);
+        this.maxScoreSpan.textContent = String(totalCount);
         this.logger.debug("Quiz bounds synchronized", { totalCount });
     }
 
@@ -208,7 +212,7 @@ export default class QuizUIController {
         }
 
         this.quizState.resetQuiz();
-        this.scoreSpan.textContent = this.quizState.score;
+        this.scoreSpan.textContent = String(this.quizState.score);
 
         this.appNavController.navigateTo("quiz");
         this.showQuestion();
@@ -235,7 +239,7 @@ export default class QuizUIController {
             return;
         }
 
-        this.currentQuestionSpan.textContent = this.quizState.index + 1;
+        this.currentQuestionSpan.textContent = String(this.quizState.index + 1);
         this.progressBar.style.width = `${this.quizState.getProgressPercentage()}%`;
         this.questionText.textContent = currentQuestion.question;
 
@@ -287,10 +291,12 @@ export default class QuizUIController {
         }
 
         const selectedButton = event.target;
+        if (!(selectedButton instanceof HTMLElement)) return;
         const isCorrect = selectedButton.dataset.correct === "true";
         this.logger.info("Answer selected", { isCorrect });
 
         Array.from(this.answersContainer.children).forEach((button) => {
+            if (!(button instanceof HTMLElement)) return;
             this.logger.trace("selectAnswer: highlightButtonCallback", {
                 buttonText: button.textContent,
                 isCorrect: button.dataset.correct === "true"
@@ -301,7 +307,7 @@ export default class QuizUIController {
         });
 
         this.quizState.evaluateAnswer(isCorrect);
-        this.scoreSpan.textContent = this.quizState.score;
+        this.scoreSpan.textContent = String(this.quizState.score);
 
         setTimeout(() => {
             this.logger.info("selectAnswer: advanceTimeoutCallback executed");
@@ -325,7 +331,7 @@ export default class QuizUIController {
         this.logger.info("showResults called");
         this.appNavController.navigateTo("result");
 
-        this.finalScoreSpan.textContent = this.quizState.score;
+        this.finalScoreSpan.textContent = String(this.quizState.score);
         const percentage = this.quizState.getGradePercentage();
         this.resultMessage.textContent = percentage + "%";
         this.logger.info("Quiz results displayed", {
