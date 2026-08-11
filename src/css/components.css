@@ -253,6 +253,12 @@ input.glass-input.d-input {
     opacity: 1; 
 }
 
+#bulk-import-status {
+    display: block;
+    text-align: center;
+    margin-top: 8px;
+}
+
 /* ============================ */
 /* --- FORMATTING ACCORDION --- */
 /* ============================ */
@@ -304,6 +310,13 @@ input.glass-input.d-input {
 .guide-content {
     color: #e2e8f0;
     padding: 0 16px 16px;
+}
+
+#start-screen .guide-content p {
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.4;
+    margin-bottom: 12px;
 }
 
 .guide-content pre {
