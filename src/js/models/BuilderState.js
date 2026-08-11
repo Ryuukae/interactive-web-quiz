@@ -39,7 +39,7 @@ export default class BuilderState {
      * @name addCard
      * @public
      * @description Appends a new BuilderCardComponent instance to the active tracking array.
-     * @param {BuilderCardComponent} card - The initialized component instance.
+     * @param {BuilderCardComponentType} card - The initialized component instance.
      * @returns {void} - Does not return a value.
      */
     addCard(card) {
@@ -57,7 +57,7 @@ export default class BuilderState {
      * @name removeCard
      * @public
      * @description Evaluates the internal array to locate and purge the specific component instance, triggering its physical DOM destruction.
-     * @param {BuilderCardComponent} card - The specific component instance to purge.
+     * @param {BuilderCardComponentType} card - The specific component instance to purge.
      * @returns {void} - Does not return a value.
      */
     removeCard(card) {

@@ -4,6 +4,11 @@ import QuizState from "../models/QuizState.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * @typedef {import('../models/QuizState.js').default} QuizStateType
+ * @typedef {import('./AppNavigationController.js').default} AppNavigationControllerType
+ */
+
+/**
  * @class QuizUIController
  * @name QuizUIController
  * @version 1.0.0
@@ -19,9 +24,8 @@ export default class QuizUIController {
      * @name constructor
      * @public
      * @description Caches nodes securely and effectively properly physically correctly.
-     * @param {QuizState} quizState - The core Model housing the assessment logic.
-     * @param {AppNavigationController} appNavController - The centralized router utility.
-     * @returns {void} - Does not return a value.
+     * @param {QuizStateType} quizState - The core Model housing the assessment logic.
+     * @param {AppNavigationControllerType} appNavController - The centralized router utility.
      */
     constructor(quizState, appNavController) {
         this.logger = createLogger("QuizUIController");
@@ -96,6 +100,12 @@ export default class QuizUIController {
      */
     async handleFileUpload(event, statusNodeId) {
         this.logger.info("handleFileUpload called", { event, statusNodeId });
+        
+        if (!(event.target instanceof HTMLInputElement) || !event.target.files) {
+            this.logger.warn("Event target is not an input element or lacks files.");
+            return;
+        }
+        
         const file = event.target.files[0];
 
         if (!file) {
@@ -112,6 +122,7 @@ export default class QuizUIController {
         });
 
         const statusNode = document.getElementById(statusNodeId);
+        if (!statusNode) return;
 
         if (this.startButton) this.startButton.disabled = true;
 
