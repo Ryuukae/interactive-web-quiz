@@ -31,6 +31,7 @@
 !.commitlintrc.json
 !.stylelintrc.json
 !.secretlintrc.json
+!.size-limit.json
 !.lighthouserc.json
 !.lintstagedrc.json
 !.husky/pre-commit
