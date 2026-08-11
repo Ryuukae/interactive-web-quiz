@@ -2,6 +2,17 @@ import { confirmAction } from "../utils/prompts.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
+ * @typedef {import('../models/QuizState.js').AnswerType} AnswerType
+ */
+
+/**
+ * @callback OnCardActionCallback
+ * @param {BuilderCardComponent} card
+ * @returns {void}
+ */
+
+/**
  * @class BuilderCardComponent
  * @name BuilderCardComponent
  * @version 1.0.0
@@ -11,17 +22,26 @@ import { createLogger } from "../utils/logger.js";
  * Architectural Responsibilities: A dedicated UI Component that encapsulates its own physical DOM node, string template rendering, localized event listeners, and physical validation states.
  *
  * Encapsulation Scope: Extremely confined logic strictly tied to one specific question entry block.
+ * 
+ * @property {HTMLElement} node - The root DOM node of the component.
+ * @property {HTMLInputElement} [qInput] - The question prompt input field.
+ * @property {HTMLInputElement} [aInput] - The correct answer input field.
+ * @property {HTMLElement} [dContainer] - The container for distractor input fields.
+ * @property {HTMLElement} [addBtn] - The button to add more distractors.
+ * @property {OnCardActionCallback} onDeleteCallback - Callback for deleting the card.
+ * @property {OnCardActionCallback} [onExpandCallback] - Callback for expanding the card.
  */
 export default class BuilderCardComponent {
+
     /**
      * @name constructor
      * @public
      * @description Initializes the component, constructs the underlying DOM node, handles prefill data, and binds structural listeners.
-     * @param {object | null} prefillData - Optional question data to natively populate the inputs.
-     * @param {Function} onDeleteCallback - The explicit action to fire when the local delete button is triggered.
-     * @param {Function} [onExpandCallback] - Optional callback triggered to enforce external layout constraints natively.
+     * @param {QuestionType | null} prefillData - Optional question data to natively populate the inputs.
+     * @param {OnCardActionCallback} onDeleteCallback - The explicit action to fire when the local delete button is triggered.
+     * @param {OnCardActionCallback} [onExpandCallback] - Optional callback triggered to enforce external layout constraints natively.
      */
-    constructor(prefillData, onDeleteCallback, onExpandCallback = null) {
+    constructor(prefillData, onDeleteCallback, onExpandCallback) {
         this.logger = createLogger("BuilderCardComponent");
         this.logger.info("constructor called", {
             prefillData,
@@ -50,7 +70,7 @@ export default class BuilderCardComponent {
      * @name render
      * @public
      * @description Processes internal string injection to structurally construct the component's interactive UI.
-     * @param {object | null} prefillData - Sourced data mapped directly into input values.
+     * @param {QuestionType | null} prefillData - Sourced data mapped directly into input values.
      * @returns {void} - Does not return a value.
      */
     render(prefillData) {
@@ -169,6 +189,19 @@ export default class BuilderCardComponent {
         const deleteBtn = this.node.querySelector(".delete-icon-btn");
         const cardHeader = this.node.querySelector(".card-header");
         const cardTitle = this.node.querySelector(".card-title");
+        const cardBody = this.node.querySelector(".card-body");
+
+        if (!(deleteBtn instanceof HTMLElement) || 
+            !(cardHeader instanceof HTMLElement) || 
+            !(cardTitle instanceof HTMLElement) ||
+            !(cardBody instanceof HTMLElement) ||
+            !this.qInput || 
+            !this.aInput || 
+            !this.addBtn || 
+            !this.dContainer) {
+            this.logger.error("Missing critical nodes for card interactions");
+            return;
+        }
 
         deleteBtn.addEventListener("click", (event) => {
             this.logger.info("bindLocalListeners: onDeleteClick event", {
@@ -212,8 +245,10 @@ export default class BuilderCardComponent {
             });
         });
 
+        if (!this.addBtn || !this.dContainer) return;
         this.addBtn.addEventListener("click", () => {
             this.logger.info("bindLocalListeners: onAddDistractorClick event");
+            if (!this.dContainer || !this.addBtn) return;
             const currentCount =
                 this.dContainer.querySelectorAll(".d-input").length;
             if (currentCount < 6) {
@@ -234,7 +269,7 @@ export default class BuilderCardComponent {
             }
         });
 
-        this.node.querySelector(".card-body").addEventListener("input", (e) => {
+        cardBody.addEventListener("input", (e) => {
             if (!(e.target instanceof HTMLInputElement)) return;
             this.logger.trace("bindLocalListeners: onCardBodyInput event", {
                 target: e.target
@@ -293,6 +328,9 @@ export default class BuilderCardComponent {
     validate() {
         this.logger.info("validate called");
         this.logger.debug("Validating builder card");
+        
+        if (!this.qInput || !this.aInput || !this.dContainer) return false;
+
         let isValid = true;
         const dInputs = this.node.querySelectorAll(".d-input");
 
@@ -345,11 +383,13 @@ export default class BuilderCardComponent {
      * @name getCardData
      * @public
      * @description Scrapes localized text inputs, discards empty references, and packages structural assessment objects.
-     * @returns {object | null} - Clean payload containing a single question structure, or null if the prompt was ignored.
+     * @returns {QuestionType | null} - Clean payload containing a single question structure, or null if the prompt was ignored.
      */
     getCardData() {
         this.logger.info("getCardData called");
         this.logger.trace("Serializing builder card data");
+        if (!this.qInput || !this.aInput || !this.dContainer) return null;
+        
         const qText = this.qInput.value.trim();
         const aText = this.aInput.value.trim();
         const dInputs = this.node.querySelectorAll(".d-input");
