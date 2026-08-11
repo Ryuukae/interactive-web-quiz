@@ -84,7 +84,11 @@ export function readFile(file) {
                 size: file.size,
                 bytesLoaded: loadEvent.loaded
             });
-            resolve(loadEvent.target.result);
+            if (!(loadEvent.target instanceof FileReader)) {
+                resolve("");
+                return;
+            }
+            resolve(String(loadEvent.target.result));
         };
 
         reader.onerror = () => {
