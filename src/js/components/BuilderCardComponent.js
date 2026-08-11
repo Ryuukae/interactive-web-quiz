@@ -1,5 +1,5 @@
-import { confirmAction } from '../utils/prompts.js';
-import { createLogger } from '../utils/logger.js';
+import { confirmAction } from "../utils/prompts.js";
+import { createLogger } from "../utils/logger.js";
 
 /**
  * @class BuilderCardComponent
@@ -7,13 +7,12 @@ import { createLogger } from '../utils/logger.js';
  * @version 1.0.0
  * @author Adam Ross DeStafeno
  * @since 2026-08-09
- * @description 
+ * @description
  * Architectural Responsibilities: A dedicated UI Component that encapsulates its own physical DOM node, string template rendering, localized event listeners, and physical validation states.
- * 
+ *
  * Encapsulation Scope: Extremely confined logic strictly tied to one specific question entry block.
  */
 export default class BuilderCardComponent {
-
     /**
      * @name constructor
      * @public
@@ -25,10 +24,14 @@ export default class BuilderCardComponent {
      */
     constructor(prefillData, onDeleteCallback, onExpandCallback = null) {
         this.logger = createLogger("BuilderCardComponent");
-        this.logger.info("constructor called", { prefillData, onDeleteCallback, onExpandCallback });
+        this.logger.info("constructor called", {
+            prefillData,
+            onDeleteCallback,
+            onExpandCallback
+        });
         this.onDeleteCallback = onDeleteCallback;
         this.onExpandCallback = onExpandCallback;
-        
+
         this.node = document.createElement("div");
         this.node.className = "glass-panel question-card";
 
@@ -38,7 +41,7 @@ export default class BuilderCardComponent {
 
         this.render(prefillData);
         this.bindLocalListeners();
-        
+
         if (prefillData) {
             this.collapse();
         }
@@ -64,21 +67,25 @@ export default class BuilderCardComponent {
         /* Evaluates the prefill data to map raw strings into their correct tiered values explicitly. */
         // ----------------------------------------------------------------------
         if (prefillData && prefillData.answers) {
-            const correctAns = prefillData.answers.find(a => {
+            const correctAns = prefillData.answers.find((a) => {
                 this.logger.trace("render: findCorrectAnswerCallback", { a });
                 return a.correct;
             });
             if (correctAns) correctVal = correctAns.text;
 
-            const distractors = prefillData.answers.filter(a => {
+            const distractors = prefillData.answers.filter((a) => {
                 this.logger.trace("render: filterDistractorsCallback", { a });
                 return !a.correct;
             });
             if (distractors.length > 0) {
-                distractorVals = distractors.map(d => {
-                    this.logger.trace("render: mapDistractorsCallback", { d });
-                    return d.text;
-                }).slice(0, 6);
+                distractorVals = distractors
+                    .map((d) => {
+                        this.logger.trace("render: mapDistractorsCallback", {
+                            d
+                        });
+                        return d.text;
+                    })
+                    .slice(0, 6);
             }
         }
         // ----------------------------------------------------------------------
@@ -108,10 +115,15 @@ export default class BuilderCardComponent {
                 <div class="input-group">
                     <label class="input-label distractor-label">Distractors (Max 6)</label>
                     <div class="distractors-container">
-                        ${distractorVals.map(val => {
-                            this.logger.trace("render: mapDistractorHTMLCallback", { val });
-                            return `<input type="text" class="glass-input d-input" placeholder="e.g., 80" value="${val}">`;
-                        }).join('')}
+                        ${distractorVals
+                            .map((val) => {
+                                this.logger.trace(
+                                    "render: mapDistractorHTMLCallback",
+                                    { val }
+                                );
+                                return `<input type="text" class="glass-input d-input" placeholder="e.g., 80" value="${val}">`;
+                            })
+                            .join("")}
                     </div>
                     <button class="secondary-btn btn-add-distractor">+ Add Distractor</button>
                 </div>
@@ -122,7 +134,7 @@ export default class BuilderCardComponent {
         this.aInput = this.node.querySelector(".correct-input");
         this.dContainer = this.node.querySelector(".distractors-container");
         this.addBtn = this.node.querySelector(".btn-add-distractor");
-        
+
         if (distractorVals.length >= 6) {
             this.addBtn.style.display = "none";
         }
@@ -146,31 +158,40 @@ export default class BuilderCardComponent {
         const cardTitle = this.node.querySelector(".card-title");
 
         deleteBtn.addEventListener("click", (event) => {
-            this.logger.info("bindLocalListeners: onDeleteClick event", { event, title: cardTitle.textContent });
+            this.logger.info("bindLocalListeners: onDeleteClick event", {
+                event,
+                title: cardTitle.textContent
+            });
             event.stopPropagation();
             this.logger.info("Delete requested for builder card", {
                 title: cardTitle.textContent
             });
-            if (confirmAction("Are you sure you want to delete this question?")) {
+            if (
+                confirmAction("Are you sure you want to delete this question?")
+            ) {
                 this.onDeleteCallback(this);
             }
         });
 
         cardHeader.addEventListener("click", () => {
-            this.logger.info("bindLocalListeners: onHeaderClick event", { title: cardTitle.textContent });
+            this.logger.info("bindLocalListeners: onHeaderClick event", {
+                title: cardTitle.textContent
+            });
             const isNowCollapsed = this.node.classList.toggle("collapsed");
             this.logger.debug("Builder card toggle requested", {
                 collapsed: isNowCollapsed,
                 title: cardTitle.textContent
             });
-            
+
             if (!isNowCollapsed && this.onExpandCallback) {
                 this.onExpandCallback(this);
             }
         });
 
         this.qInput.addEventListener("input", (e) => {
-            this.logger.trace("bindLocalListeners: onQuestionInput event", { value: e.target.value });
+            this.logger.trace("bindLocalListeners: onQuestionInput event", {
+                value: e.target.value
+            });
             cardTitle.textContent = e.target.value || "New Question...";
             this.logger.trace("Question text updated", {
                 title: cardTitle.textContent
@@ -179,7 +200,8 @@ export default class BuilderCardComponent {
 
         this.addBtn.addEventListener("click", () => {
             this.logger.info("bindLocalListeners: onAddDistractorClick event");
-            const currentCount = this.dContainer.querySelectorAll(".d-input").length;
+            const currentCount =
+                this.dContainer.querySelectorAll(".d-input").length;
             if (currentCount < 6) {
                 const input = document.createElement("input");
                 input.type = "text";
@@ -199,13 +221,22 @@ export default class BuilderCardComponent {
         });
 
         this.node.querySelector(".card-body").addEventListener("input", (e) => {
-            this.logger.trace("bindLocalListeners: onCardBodyInput event", { target: e.target });
+            this.logger.trace("bindLocalListeners: onCardBodyInput event", {
+                target: e.target
+            });
             if (e.target.classList.contains("glass-input")) {
                 e.target.classList.remove("input-error");
-                
-                if (e.target.classList.contains("q-input")) e.target.placeholder = "e.g., What is the default port for HTTPS?";
-                if (e.target.classList.contains("a-input")) e.target.placeholder = "e.g., 443";
-                if (e.target.classList.contains("d-input")) e.target.placeholder = "e.g., 80";
+
+                if (e.target.classList.contains("q-input")) {
+                    e.target.placeholder =
+                        "e.g., What is the default port for HTTPS?";
+                }
+                if (e.target.classList.contains("a-input")) {
+                    e.target.placeholder = "e.g., 443";
+                }
+                if (e.target.classList.contains("d-input")) {
+                    e.target.placeholder = "e.g., 80";
+                }
 
                 this.logger.trace("Builder card input changed", {
                     fieldClass: Array.from(e.target.classList)
@@ -253,7 +284,8 @@ export default class BuilderCardComponent {
         if (this.qInput.value.trim() === "") {
             this.logger.warn("Validation error: Question prompt is empty");
             this.qInput.classList.add("input-error");
-            this.qInput.placeholder = "Required: Please enter a question prompt";
+            this.qInput.placeholder =
+                "Required: Please enter a question prompt";
             isValid = false;
             this.node.classList.remove("collapsed");
         }
@@ -261,14 +293,17 @@ export default class BuilderCardComponent {
         if (this.aInput.value.trim() === "") {
             this.logger.warn("Validation error: Correct answer is empty");
             this.aInput.classList.add("input-error");
-            this.aInput.placeholder = "Required: Please enter the correct answer";
+            this.aInput.placeholder =
+                "Required: Please enter the correct answer";
             isValid = false;
             this.node.classList.remove("collapsed");
         }
 
         let hasDistractor = false;
-        dInputs.forEach(d => {
-            this.logger.trace("validate: distractorCheckCallback", { value: d.value });
+        dInputs.forEach((d) => {
+            this.logger.trace("validate: distractorCheckCallback", {
+                value: d.value
+            });
             if (d.value.trim() !== "") {
                 hasDistractor = true;
             }
@@ -278,7 +313,8 @@ export default class BuilderCardComponent {
             this.logger.warn("Validation error: No distractor text provided");
             const firstDistractor = dInputs[0];
             firstDistractor.classList.add("input-error");
-            firstDistractor.placeholder = "Required: Please enter at least one wrong answer";
+            firstDistractor.placeholder =
+                "Required: Please enter at least one wrong answer";
             isValid = false;
             this.node.classList.remove("collapsed");
         }
@@ -301,7 +337,9 @@ export default class BuilderCardComponent {
         const dInputs = this.node.querySelectorAll(".d-input");
 
         if (!qText) {
-            this.logger.warn("Builder card skipped during serialization because question text is empty");
+            this.logger.warn(
+                "Builder card skipped during serialization because question text is empty"
+            );
             return null;
         }
 
@@ -311,15 +349,20 @@ export default class BuilderCardComponent {
             answers.push({ text: aText, correct: true });
         }
 
-        dInputs.forEach(input => {
-            this.logger.trace("getCardData: distractorSerializeCallback", { value: input.value });
+        dInputs.forEach((input) => {
+            this.logger.trace("getCardData: distractorSerializeCallback", {
+                value: input.value
+            });
             const dText = input.value.trim();
             if (dText) {
                 answers.push({ text: dText, correct: false });
             }
         });
 
-        this.logger.debug("Card data serialized successfully", { question: qText, answerCount: answers.length });
+        this.logger.debug("Card data serialized successfully", {
+            question: qText,
+            answerCount: answers.length
+        });
         return {
             question: qText,
             answers: answers
