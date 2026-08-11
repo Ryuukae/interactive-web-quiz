@@ -12,6 +12,8 @@
 !src/js/utils/
 !tests/
 !tests/unit/
+!.github/
+!.github/workflows/
 
 # Only allow certain files
 !.gitignore
@@ -27,6 +29,9 @@
 
 # TXT
 !public/*.txt
+
+#YML
+!.github/workflows/*.yml
 
 # CSS
 !src/css/*.css
