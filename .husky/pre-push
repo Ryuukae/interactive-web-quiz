@@ -1,3 +1,5 @@
+npm run audit
+npm run lint:secrets
 npm run test
 npm run typecheck
 npm run build
