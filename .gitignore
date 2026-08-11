@@ -28,6 +28,7 @@
 !.htmlvalidate.json
 !.prettierrc
 !vite.config.js
+!playwright.config.js
 !.commitlintrc.json
 !.stylelintrc.json
 !.secretlintrc.json
