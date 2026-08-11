@@ -13,11 +13,11 @@
 !tests/
 !tests/unit/
 
-
 # Only allow certain files
 !.gitignore
 !package.json
 !package-lock.json
+!jsconfig.json
 
 # HTML
 !index.html
