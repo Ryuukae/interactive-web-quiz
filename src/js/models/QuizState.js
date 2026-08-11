@@ -20,7 +20,7 @@ export default class QuizState {
      * @name constructor
      * @public
      * @description Initializes the quiz state machine and hydrates it with the provided dataset. Note: Invokes an immediate randomization of the question pool on instantiation.
-     * @param {Array<Object>} questionData - The parsed array of question objects to ingest.
+     * @param {Array<object>} questionData - The parsed array of question objects to ingest.
      * @returns {void} - Does not return a value.
      */
     constructor(questionData) {
@@ -44,7 +44,7 @@ export default class QuizState {
      * @name getCurrentQuestion
      * @public
      * @description Retrieves the current question object based on the active state pointer. Time complexity: O(1).
-     * @returns {Object} - The active question object containing the text and associated answers array.
+     * @returns {object} - The active question object containing the text and associated answers array.
      */
     getCurrentQuestion() {
         this.logger.info("getCurrentQuestion called", {
@@ -232,8 +232,8 @@ export default class QuizState {
      * @name randomizeDeck
      * @public
      * @description Orchestrates the randomization of the entire quiz dataset matrix. Shuffles both the primary array (questions) and nested subarrays (answers). Time complexity: O(n * m).
-     * @param {Array<Object>} deck - The collection of question objects to randomize.
-     * @returns {Array<Object>} - A reference to the fully randomized matrix.
+     * @param {Array<object>} deck - The collection of question objects to randomize.
+     * @returns {Array<object>} - A reference to the fully randomized matrix.
      */
     randomizeDeck(deck) {
         this.logger.info("randomizeDeck called", {
