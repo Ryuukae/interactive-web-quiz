@@ -16,7 +16,6 @@ export default class AppNavigationController {
      * @name constructor
      * @public
      * @description Caches application screen nodes optimally and delegates fundamental routing interactions visually.
-     * @returns {void} - Does not return a value.
      */
     constructor() {
         this.logger = createLogger("AppNavigationController");
