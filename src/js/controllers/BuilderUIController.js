@@ -24,6 +24,16 @@ import { createLogger } from "../utils/logger.js";
  */
 export default class BuilderUIController {
     /**
+     * @param {string} id
+     * @returns {HTMLElement}
+     */
+    getEl(id) {
+        const el = document.getElementById(id);
+        if (!(el instanceof HTMLElement)) throw new Error(`Missing DOM node: ${id}`);
+        return el;
+    }
+
+    /**
      * @name constructor
      * @public
      * @description Links physical nodes with Model authorities cleanly.
@@ -42,18 +52,16 @@ export default class BuilderUIController {
         this.quizUIController = quizUIController;
         this.appNavController = appNavController;
 
-        this.builderContainer = document.getElementById(
-            "builder-questions-container"
-        );
-        this.bulkImportPanel = document.getElementById("bulk-import-panel");
+        this.builderContainer = this.getEl("builder-questions-container");
+        this.bulkImportPanel = this.getEl("bulk-import-panel");
         
-        const bulkImportTextEl = document.getElementById("bulk-import-text");
+        const bulkImportTextEl = this.getEl("bulk-import-text");
         if (!(bulkImportTextEl instanceof HTMLTextAreaElement)) {
             throw new Error("bulk-import-text element not found or not a textarea");
         }
         this.bulkImportText = bulkImportTextEl;
 
-        this.bulkImportStatus = document.getElementById("bulk-import-status");
+        this.bulkImportStatus = this.getEl("bulk-import-status");
 
         this.logger.info("Builder UI controller initialized");
 
@@ -68,8 +76,7 @@ export default class BuilderUIController {
      */
     initializeEventListeners() {
         this.logger.info("initializeEventListeners called");
-        document
-            .getElementById("create-quizset-btn")
+        this.getEl("create-quizset-btn")
             .addEventListener("click", () => {
                 this.logger.info(
                     "initializeEventListeners: onCreateQuizsetClick event"
@@ -78,8 +85,7 @@ export default class BuilderUIController {
                 this.initializeBuilder();
             });
 
-        document
-            .getElementById("btn-add-question")
+        this.getEl("btn-add-question")
             .addEventListener("click", () => {
                 this.logger.info(
                     "initializeEventListeners: onAddQuestionClick event"
@@ -88,8 +94,7 @@ export default class BuilderUIController {
                 this.handleAddQuestion();
             });
 
-        document
-            .getElementById("btn-run-builder-quiz")
+        this.getEl("btn-run-builder-quiz")
             .addEventListener("click", () => {
                 this.logger.info(
                     "initializeEventListeners: onRunBuilderQuizClick event"
@@ -98,8 +103,7 @@ export default class BuilderUIController {
                 this.startBuilderQuiz();
             });
 
-        document
-            .getElementById("btn-export-quiz")
+        this.getEl("btn-export-quiz")
             .addEventListener("click", () => {
                 this.logger.info(
                     "initializeEventListeners: onExportQuizClick event"
@@ -112,8 +116,7 @@ export default class BuilderUIController {
             this.adjustBulkImportTextareaHeight();
         });
 
-        document
-            .getElementById("btn-parse-bulk")
+        this.getEl("btn-parse-bulk")
             .addEventListener("click", () => {
                 this.logger.info(
                     "initializeEventListeners: onParseBulkClick event"
@@ -122,8 +125,7 @@ export default class BuilderUIController {
                 this.handleBulkImport();
             });
 
-        document
-            .getElementById("bulk-import-header")
+        this.getEl("bulk-import-header")
             .addEventListener("click", () => {
                 this.logger.info(
                     "initializeEventListeners: onBulkImportHeaderClick event"
@@ -141,8 +143,7 @@ export default class BuilderUIController {
                 }
             });
 
-        document
-            .getElementById("btn-template-txt")
+        this.getEl("btn-template-txt")
             .addEventListener("click", () => {
                 this.logger.info(
                     "initializeEventListeners: onTemplateTxtClick event"
@@ -163,8 +164,7 @@ export default class BuilderUIController {
                 this.adjustBulkImportTextareaHeight();
             });
 
-        document
-            .getElementById("btn-template-json")
+        this.getEl("btn-template-json")
             .addEventListener("click", () => {
                 this.logger.info(
                     "initializeEventListeners: onTemplateJsonClick event"
@@ -185,8 +185,7 @@ export default class BuilderUIController {
                 this.adjustBulkImportTextareaHeight();
             });
 
-        document
-            .getElementById("btn-clear-builder")
+        this.getEl("btn-clear-builder")
             .addEventListener("click", () => {
                 this.logger.info(
                     "initializeEventListeners: onClearBuilderClick event"
@@ -417,8 +416,9 @@ export default class BuilderUIController {
                 );
             }, 50);
         } catch (error) {
+            const errMessage = error instanceof Error ? error.message : "Unknown error";
             this.logger.error("Bulk parsing failed", error);
-            this.bulkImportStatus.textContent = `Error: ${error.message}`;
+            this.bulkImportStatus.textContent = `Error: ${errMessage}`;
             this.bulkImportStatus.classList.add("error", "visible");
         }
     }
