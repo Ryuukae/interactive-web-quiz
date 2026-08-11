@@ -1,0 +1,5 @@
+{
+  "src/**/*.js": ["eslint --max-warnings 0", "prettier --check"],
+  "src/**/*.css": ["stylelint", "prettier --check"],
+  "index.html": ["html-validate"]
+}
