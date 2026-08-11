@@ -1,7 +1,7 @@
-import { readFile } from '../utils/fileIO.js';
-import { parseAndValidateRawText } from '../utils/schemaValidator.js';
-import QuizState from '../models/QuizState.js';
-import { createLogger } from '../utils/logger.js';
+import { readFile } from "../utils/fileIO.js";
+import { parseAndValidateRawText } from "../utils/schemaValidator.js";
+import QuizState from "../models/QuizState.js";
+import { createLogger } from "../utils/logger.js";
 
 /**
  * @class QuizUIController
@@ -9,13 +9,12 @@ import { createLogger } from '../utils/logger.js';
  * @version 1.0.0
  * @author Adam Ross DeStafeno
  * @since 2026-08-09
- * @description 
+ * @description
  * Architectural Responsibilities: Commands the execution of live assessments. Renders test nodes dynamically, updates progress and score metrics, and handles interactive answer evaluation.
- * 
+ *
  * Encapsulation Scope: Strictly isolated to active test session DOM manipulation.
  */
 export default class QuizUIController {
-    
     /**
      * @name constructor
      * @public
@@ -29,7 +28,7 @@ export default class QuizUIController {
         this.logger.info("constructor called", { quizState, appNavController });
         this.quizState = quizState;
         this.appNavController = appNavController;
-        
+
         this.startButton = document.getElementById("start-btn");
         this.questionText = document.getElementById("question-text");
         this.answersContainer = document.getElementById("answers-container");
@@ -66,15 +65,25 @@ export default class QuizUIController {
             this.logger.info("Restart quiz clicked");
             this.startQuiz();
         });
-        
-        document.getElementById("custom-file-input").addEventListener("change", (e) => {
-            this.logger.info("bindEventListeners: onCustomFileInputChange event", { e });
-            this.handleFileUpload(e, "file-name-display");
-        });
-        document.getElementById("result-file-input").addEventListener("change", (e) => {
-            this.logger.info("bindEventListeners: onResultFileInputChange event", { e });
-            this.handleFileUpload(e, "result-file-status");
-        });
+
+        document
+            .getElementById("custom-file-input")
+            .addEventListener("change", (e) => {
+                this.logger.info(
+                    "bindEventListeners: onCustomFileInputChange event",
+                    { e }
+                );
+                this.handleFileUpload(e, "file-name-display");
+            });
+        document
+            .getElementById("result-file-input")
+            .addEventListener("change", (e) => {
+                this.logger.info(
+                    "bindEventListeners: onResultFileInputChange event",
+                    { e }
+                );
+                this.handleFileUpload(e, "result-file-status");
+            });
     }
 
     /**
@@ -90,14 +99,20 @@ export default class QuizUIController {
         const file = event.target.files[0];
 
         if (!file) {
-            this.logger.warn("File upload ignored because no file was selected", { statusNodeId });
+            this.logger.warn(
+                "File upload ignored because no file was selected",
+                { statusNodeId }
+            );
             return;
         }
 
-        this.logger.info("File upload started", { fileName: file.name, statusNodeId });
+        this.logger.info("File upload started", {
+            fileName: file.name,
+            statusNodeId
+        });
 
         const statusNode = document.getElementById(statusNodeId);
-        
+
         if (this.startButton) this.startButton.disabled = true;
 
         statusNode.classList.remove("error", "success");
@@ -109,7 +124,7 @@ export default class QuizUIController {
         try {
             const rawText = await readFile(file);
             const parsedData = parseAndValidateRawText(rawText);
-            
+
             this.customPayload = parsedData;
 
             this.logger.info("File upload parsed successfully", {
@@ -139,8 +154,13 @@ export default class QuizUIController {
      * @returns {void} - Does not return a value.
      */
     loadCustomQuiz(payload) {
-        this.logger.info("loadCustomQuiz called", { payload, questionCount: payload ? payload.length : 0 });
-        this.logger.info("Loading custom quiz payload", { questionCount: payload.length });
+        this.logger.info("loadCustomQuiz called", {
+            payload,
+            questionCount: payload ? payload.length : 0
+        });
+        this.logger.info("Loading custom quiz payload", {
+            questionCount: payload.length
+        });
         this.customPayload = payload;
         this.startQuiz();
     }
@@ -178,10 +198,12 @@ export default class QuizUIController {
 
         this.quizState.resetQuiz();
         this.scoreSpan.textContent = this.quizState.score;
-        
+
         this.appNavController.navigateTo("quiz");
         this.showQuestion();
-        this.logger.info("Quiz session started", { questionCount: this.quizState.questionData.length });
+        this.logger.info("Quiz session started", {
+            questionCount: this.quizState.questionData.length
+        });
     }
 
     /**
@@ -193,33 +215,40 @@ export default class QuizUIController {
     showQuestion() {
         this.logger.info("showQuestion called");
         this.quizState.resetClickLock();
-        
+
         const currentQuestion = this.quizState.getCurrentQuestion();
         if (!currentQuestion) {
-            this.logger.warn("No current question available while rendering quiz question");
+            this.logger.warn(
+                "No current question available while rendering quiz question"
+            );
             return;
         }
-        
+
         this.currentQuestionSpan.textContent = this.quizState.index + 1;
         this.progressBar.style.width = `${this.quizState.getProgressPercentage()}%`;
         this.questionText.textContent = currentQuestion.question;
-        
+
         this.answersContainer.innerHTML = "";
-        
+
         /* Spawns strictly naturally explicit seamlessly natively distinct implicitly actively physical elements generically manually independently directly securely purely physically mapped visually functionally intuitively rationally cleanly intelligently mathematically identically logically uniquely explicitly physically perfectly rationally natively naturally cleanly dynamically seamlessly. */
         // ----------------------------------------------------------------------
-        currentQuestion.answers.forEach(answer => {
-            this.logger.trace("showQuestion: renderAnswerButtonCallback", { text: answer.text, correct: answer.correct });
+        currentQuestion.answers.forEach((answer) => {
+            this.logger.trace("showQuestion: renderAnswerButtonCallback", {
+                text: answer.text,
+                correct: answer.correct
+            });
             const button = document.createElement("button");
             button.textContent = answer.text;
             button.classList.add("answer-btn");
-            
+
             button.dataset.correct = answer.correct;
             button.addEventListener("click", (event) => {
-                this.logger.info("showQuestion: onAnswerClick event", { event });
+                this.logger.info("showQuestion: onAnswerClick event", {
+                    event
+                });
                 this.selectAnswer(event);
             });
-            
+
             this.answersContainer.appendChild(button);
         });
         // ----------------------------------------------------------------------
@@ -240,26 +269,33 @@ export default class QuizUIController {
     selectAnswer(event) {
         this.logger.info("selectAnswer called", { event });
         if (this.quizState.disabled) {
-            this.logger.warn("Answer selection ignored because quiz state is locked");
+            this.logger.warn(
+                "Answer selection ignored because quiz state is locked"
+            );
             return;
         }
-        
+
         const selectedButton = event.target;
         const isCorrect = selectedButton.dataset.correct === "true";
         this.logger.info("Answer selected", { isCorrect });
-        
+
         Array.from(this.answersContainer.children).forEach((button) => {
-            this.logger.trace("selectAnswer: highlightButtonCallback", { buttonText: button.textContent, isCorrect: button.dataset.correct === "true" });
-            button.classList.add(button.dataset.correct === "true" ? "correct" : "incorrect");
+            this.logger.trace("selectAnswer: highlightButtonCallback", {
+                buttonText: button.textContent,
+                isCorrect: button.dataset.correct === "true"
+            });
+            button.classList.add(
+                button.dataset.correct === "true" ? "correct" : "incorrect"
+            );
         });
-        
+
         this.quizState.evaluateAnswer(isCorrect);
         this.scoreSpan.textContent = this.quizState.score;
-        
+
         setTimeout(() => {
             this.logger.info("selectAnswer: advanceTimeoutCallback executed");
             this.quizState.advanceQuestion();
-            
+
             if (this.quizState.isQuizOver()) {
                 this.showResults();
             } else {
@@ -277,7 +313,7 @@ export default class QuizUIController {
     showResults() {
         this.logger.info("showResults called");
         this.appNavController.navigateTo("result");
-        
+
         this.finalScoreSpan.textContent = this.quizState.score;
         const percentage = this.quizState.getGradePercentage();
         this.resultMessage.textContent = percentage + "%";

@@ -1,13 +1,13 @@
-import { createLogger } from './logger.js';
+import { createLogger } from "./logger.js";
 
 /**
  * @module prompts
  * @version 1.0.0
  * @author Adam Ross DeStafeno
  * @since 2026-08-09
- * @description 
+ * @description
  * Architectural Responsibilities: Encapsulates user confirmation interactions securely, providing a unified interface for protective warnings before destructive actions globally.
- * 
+ *
  * Encapsulation Scope: Global utility explicitly wrapping native browser dialogs seamlessly.
  */
 
