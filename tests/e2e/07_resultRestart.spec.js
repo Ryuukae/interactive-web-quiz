@@ -1,0 +1,35 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('E2E Spec 7: Result Summary & Restart Flow', () => {
+
+    test('should display result metrics and allow returning to start screen', async ({ page }) => {
+        await page.goto('http://localhost:5173');
+
+        // Navigate to Creator Screen
+        await page.click('#create-quizset-btn');
+
+        // Expand Bulk Import Panel if collapsed
+        await page.click('#bulk-import-header');
+
+        // Insert sample QAD question
+        await page.fill('#bulk-import-text', 'Q=Is HTML a programming language?\nA=No\nD=Yes');
+        await page.click('#btn-parse-bulk');
+
+        // Start Quiz
+        await page.click('#btn-run-builder-quiz');
+
+        // Answer question
+        await page.locator('#answers-container .answer-btn').first().click();
+
+        // Verify #result-screen is active
+        const resultScreen = page.locator('#result-screen');
+        await expect(resultScreen).toHaveClass(/active/);
+
+        // Click "Back to Start" button (#return-start-btn)
+        await page.click('#return-start-btn');
+
+        // Verify #start-screen is active
+        const startScreen = page.locator('#start-screen');
+        await expect(startScreen).toHaveClass(/active/);
+    });
+});
