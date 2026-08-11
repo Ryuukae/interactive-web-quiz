@@ -1,10 +1,17 @@
-import { describe, it, expect, vi } from 'vitest';
-import { confirmAction, showErrorMessage, showSuccessMessage } from '../../src/js/utils/prompts.js';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { confirmAction, alertAction } from '../../src/js/utils/prompts.js';
 
 describe('prompts Utility Unit Tests', () => {
 
+    beforeEach(() => {
+        globalThis.window = {
+            confirm: () => true,
+            alert: () => {}
+        };
+    });
+
     it('should invoke window.confirm and return boolean decision', () => {
-        const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+        const confirmSpy = vi.spyOn(globalThis.window, 'confirm').mockReturnValue(true);
 
         const result = confirmAction('Are you sure?');
         expect(confirmSpy).toHaveBeenCalledWith('Are you sure?');
@@ -13,20 +20,11 @@ describe('prompts Utility Unit Tests', () => {
         confirmSpy.mockRestore();
     });
 
-    it('should format and invoke window.alert for showErrorMessage', () => {
-        const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    it('should format and invoke window.alert for alertAction', () => {
+        const alertSpy = vi.spyOn(globalThis.window, 'alert').mockImplementation(() => {});
 
-        showErrorMessage('Invalid QAD data block');
-        expect(alertSpy).toHaveBeenCalledWith('[ERROR] Invalid QAD data block');
-
-        alertSpy.mockRestore();
-    });
-
-    it('should format and invoke window.alert for showSuccessMessage', () => {
-        const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-
-        showSuccessMessage('Quiz exported successfully!');
-        expect(alertSpy).toHaveBeenCalledWith('[SUCCESS] Quiz exported successfully!');
+        alertAction('Invalid QAD data block');
+        expect(alertSpy).toHaveBeenCalledWith('Invalid QAD data block');
 
         alertSpy.mockRestore();
     });
