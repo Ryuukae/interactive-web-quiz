@@ -30,6 +30,7 @@
 !vite.config.js
 !.commitlintrc.json
 !.stylelintrc.json
+!.secretlintrc.json
 !.lighthouserc.json
 !.lintstagedrc.json
 !.husky/pre-commit
