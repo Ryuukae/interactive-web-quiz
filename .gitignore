@@ -13,6 +13,7 @@
 !tests/
 !tests/unit/
 !tests/integration/
+!tests/e2e/
 !.github/
 !.github/workflows/
 !.husky/
@@ -35,22 +36,22 @@
 !.husky/pre-push
 !.husky/commit-msg
 
-# HTML
+# .HTML
 !index.html
 
-# JSON
+# .JSON
 !public/*.json
 
-# TXT
+# .TXT
 !public/*.txt
 
-#YML
+# .YML
 !.github/workflows/*.yml
 
-# CSS
+# .CSS
 !src/css/*.css
 
-# JS
+# .JS
 !src/js/*.js
 !src/js/components/*.js
 !src/js/controllers/*.js
@@ -59,4 +60,6 @@
 !tests/unit/*.js
 !tests/integration/*.js
 
+# .SPEC.JS
+!tests/e2e/*.spec.js
 
