@@ -31,7 +31,7 @@ const logger = createLogger("AppBootstrap");
  * @name initializeApp
  * @public
  * @description Orchestrates the asynchronous bootstrap sequence systematically. Enforces a strict initialization pipeline natively: State Models -> Controllers sequentially.
- * @returns {void} - Does not return a value.
+ * @returns {Promise<void>} - Resolves when bootstrap completes.
  */
 async function initializeApp() {
     logger.info("initializeApp called");
