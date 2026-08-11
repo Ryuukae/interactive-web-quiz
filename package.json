@@ -29,7 +29,8 @@
     "typecheck": "tsc --noEmit -p jsconfig.json",
     "audit": "npm audit --audit-level=high",
     "deps:check": "npm outdated",
-    "prepare": "husky"
+    "prepare": "husky",
+    "verify": "npm run format:check && npm run lint && npm run size && npm run typecheck && npm run test:coverage && npm run audit && npm run build"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",
