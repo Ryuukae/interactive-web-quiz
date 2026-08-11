@@ -211,6 +211,46 @@ button.secondary-btn.btn-add-distractor {
     transform: rotate(-90deg);
 }
 
+/* =============================== */
+/* --- TEMPLATE & CARD ACTIONS --- */
+/* =============================== */
+
+.template-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    width: 100%;
+    padding: 0 4px;
+}
+
+.template-btn {
+    background: transparent;
+    color: rgb(168 170 174);
+    border: none;
+    padding: 0;
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+    box-shadow: none;
+}
+
+.template-btn:hover {
+    color: #a7d5ff;
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-danger {
+    border-color: rgba(244, 67, 54, 0.3);
+    color: #F44336;
+}
+
+.btn-danger:hover {
+    background: rgba(244, 67, 54, 0.1);
+    border-color: rgba(244, 67, 54, 0.6);
+}
+
 #return-start-btn {
     border: none;
     opacity: 0.7;

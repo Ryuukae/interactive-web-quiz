@@ -63,6 +63,17 @@ button:disabled {
     margin-top: 12px;
 }
 
+#creator-action-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+    width: 100%;
+    
+    /* Prevents the button stack from crushing when the question cards container expands */
+    flex-shrink: 0; 
+}
+
 .action-row {
     display: flex;
     gap: 12px;
