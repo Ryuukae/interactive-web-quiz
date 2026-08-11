@@ -329,6 +329,7 @@ export default class BuilderUIController {
 
         if (!this.builderState.validateAllCards()) {
             this.logger.warn("Builder quiz start blocked by validation failure");
+            this.collapseBulkImport();
             this.scrollToFirstError();
             return;
         }
@@ -362,6 +363,7 @@ export default class BuilderUIController {
 
         if (!this.builderState.validateAllCards()) {
             this.logger.warn("Builder export blocked by validation failure");
+            this.collapseBulkImport();
             this.scrollToFirstError();
             return;
         }
