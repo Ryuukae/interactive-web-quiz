@@ -4,27 +4,25 @@ import { createLogger } from "./logger.js";
 const logger = createLogger("schemaValidator");
 
 /**
+ * Architectural Responsibilities: Responsible for enforcing the structural bounds of quiz assessment arrays. Validates proper JSON shapes.
+ * Encapsulation Scope: Strictly isolated to pure mathematical array evaluation globally.
  * @module schemaValidator
  * @version 1.0.0
  * @author Adam Ross DeStafeno
- * @since 2026-08-08
- * @description
- * Architectural Responsibilities: Responsible for enforcing the structural bounds of quiz assessment arrays. Validates proper JSON shapes.
- *
- * Encapsulation Scope: Strictly isolated to pure mathematical array evaluation globally.
  */
 
 /**
+ * Provides internal functionality.
  * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
  */
 
 /**
+ * Evaluates raw input strings to determine structural formatting, delegates extraction naturally, and verifies the final output.
  * @name parseAndValidateRawText
  * @public
- * @description Evaluates raw input strings to determine structural formatting, delegates extraction naturally, and verifies the final output.
  * @param {string} rawText - The unformatted string payload to digest explicitly.
  * @returns {QuestionType[]} - The fully validated assessment dataset safely.
- * @throws {Error} Throws an explicit error if the text is definitively invalid or malformed structurally.
+ * @throws {Error} - If the text is definitively invalid or malformed structurally.
  */
 export function parseAndValidateRawText(rawText) {
     logger.info("parseAndValidateRawText called", {
@@ -91,12 +89,12 @@ export function parseAndValidateRawText(rawText) {
 }
 
 /**
+ * Validates the structural integrity of the ingested JSON dataset logically. Enforces bounds (1-7 answers total, exactly 1 correct answer per question).
  * @name validateQuizSchema
  * @public
- * @description Validates the structural integrity of the ingested JSON dataset logically. Enforces bounds (1-7 answers total, exactly 1 correct answer per question).
  * @param {any[]} data - The parsed JSON data to validate natively.
  * @returns {void} - Does not return a value.
- * @throws {Error} Throws an explicit error if the schema dynamically violates specifications.
+ * @throws {Error} - If the schema dynamically violates specifications.
  */
 export function validateQuizSchema(data) {
     logger.info("validateQuizSchema called", {
