@@ -4,6 +4,9 @@ import AxeBuilder from '@axe-core/playwright';
 test.describe('Accessibility Audits', () => {
     test('should not have any automatically detectable accessibility issues on load', async ({ page }) => {
         await page.goto('http://localhost:5173');
+
+        // Wait for app to be ready
+        await page.waitForLoadState('networkidle');
         
         // Wait for the main UI to render
         await page.waitForSelector('#start-screen.active');
@@ -16,6 +19,9 @@ test.describe('Accessibility Audits', () => {
 
     test('should maintain accessibility in Quiz view', async ({ page }) => {
         await page.goto('http://localhost:5173');
+
+        // Wait for app to be ready
+        await page.waitForLoadState('networkidle');
         // Automatically accept any browser confirmation dialogs
         page.on('dialog', dialog => dialog.accept());
 

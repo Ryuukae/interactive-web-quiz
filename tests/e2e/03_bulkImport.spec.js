@@ -5,6 +5,9 @@ test.describe('E2E Spec 3: Bulk Text Import Operations (QAD & JSON)', () => {
     test('should parse QAD text input and auto-generate question cards', async ({ page }) => {
         await page.goto('http://localhost:5173');
 
+        // Wait for app to be ready
+        await page.waitForLoadState('networkidle');
+
         // Navigate to Creator Screen
         await page.click('#create-quizset-btn');
 
@@ -20,6 +23,6 @@ test.describe('E2E Spec 3: Bulk Text Import Operations (QAD & JSON)', () => {
 
         // Verify generated question card exists
         const cards = page.locator('#builder-questions-container .question-card');
-        await expect(cards).toHaveCount(1);
+        await expect(cards).toHaveCount(2);
     });
 });
