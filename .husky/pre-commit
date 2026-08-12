@@ -1,1 +1,14 @@
+#!/bin/sh
+
+# Validate Branch Name
+local_branch_name="$(git rev-parse --abbrev-ref HEAD)"
+valid_branch_regex="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|security)\/[a-z0-9._-]+$|^(main|master)$"
+
+if [[ ! $local_branch_name =~ $valid_branch_regex ]]; then
+    echo "ERROR: Invalid branch name ($local_branch_name)."
+    echo "Branch names must adhere to the format: <type>/<description>"
+    echo "Examples: feat/add-button, fix/header-bug, ci/github-actions"
+    exit 1
+fi
+
 npx lint-staged
