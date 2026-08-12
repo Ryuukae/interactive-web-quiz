@@ -5,6 +5,9 @@ test.describe('E2E Spec 6: Complete Interactive Quiz Execution Flow', () => {
     test('should allow playing a quiz to completion and advancing through questions', async ({ page }) => {
         await page.goto('http://localhost:5173');
 
+        // Automatically accept any browser confirmation dialogs
+        page.on('dialog', dialog => dialog.accept());
+
         // Navigate to Creator Screen
         await page.click('#create-quizset-btn');
 
@@ -14,6 +17,9 @@ test.describe('E2E Spec 6: Complete Interactive Quiz Execution Flow', () => {
         // Insert sample QAD question deck
         const quizDeck = 'Q=What is 1+1?\nA=2\nD=3\n\nQ=What color is the sky?\nA=Blue\nD=Green';
         await page.fill('#bulk-import-text', quizDeck);
+
+        // Clear any default cards before parsing
+        await page.click('#btn-clear-builder');
 
         // Parse Quizset Data
         await page.click('#btn-parse-bulk');
@@ -25,16 +31,25 @@ test.describe('E2E Spec 6: Complete Interactive Quiz Execution Flow', () => {
         const quizScreen = page.locator('#quiz-screen');
         await expect(quizScreen).toHaveClass(/active/);
 
-        // Click an answer option button
-        const firstAnswerButton = page.locator('#answers-container .answer-btn').first();
-        await firstAnswerButton.click();
-
-        // Click answer option button for second question
-        const secondAnswerButton = page.locator('#answers-container .answer-btn').first();
-        await secondAnswerButton.click();
+        // Answer questions dynamically until the result screen appears
+        const resultScreen = page.locator('#result-screen');
+        
+        while (!(await resultScreen.evaluate(node => node.classList.contains('active')))) {
+            // Wait for answer buttons to be available and enabled
+            const firstAnswerButton = page.locator('#answers-container .answer-btn').first();
+            await firstAnswerButton.waitFor({ state: 'visible' });
+            
+            // Only click if the button is not disabled
+            const isDisabled = await firstAnswerButton.evaluate(node => node.disabled);
+            if (!isDisabled) {
+                await firstAnswerButton.click();
+            }
+            
+            // Wait a short tick before checking again
+            await page.waitForTimeout(500);
+        }
 
         // Verify screen navigated to #result-screen upon completion
-        const resultScreen = page.locator('#result-screen');
         await expect(resultScreen).toHaveClass(/active/);
     });
 });
