@@ -44,11 +44,11 @@ jobs:
       uses: davelosert/vitest-coverage-report-action@v2
       if: always()
       
+    - name: Production Build
+      run: npm run build
+      
     - name: Bundle Size Audit
       run: npm run size
       
     - name: End-to-End Tests
       run: npm run test:e2e
-      
-    - name: Production Build
-      run: npm run build
