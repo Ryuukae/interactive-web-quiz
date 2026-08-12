@@ -5,33 +5,32 @@
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * Provides internal functionality.
  * @typedef {object} AnswerType
- * @property {string} text
- * @property {boolean} correct
+ * @property {string} text - The answer text.
+ * @property {boolean} correct - Indicates if the answer is correct.
  */
 
 /**
+ * Provides internal functionality.
  * @typedef {object} QuestionType
- * @property {string} question
- * @property {AnswerType[]} answers
+ * @property {string} question - The question text.
+ * @property {AnswerType[]} answers - Array of possible answers.
  */
 
 /**
+ * Architectural Responsibilities: Manages the state and core logic for the interactive quiz application. Encapsulates the question dataset, scoring metrics, progression tracking, and interaction locks to strictly decouple business logic from the DOM manipulation layer.
+ * Encapsulation Scope: Isolated execution state for a single active assessment.
  * @class QuizState
  * @name QuizState
  * @version 1.0.0
  * @author Adam Ross DeStafeno
- * @since 2026-08-09
- * @description
- * Architectural Responsibilities: Manages the state and core logic for the interactive quiz application. Encapsulates the question dataset, scoring metrics, progression tracking, and interaction locks to strictly decouple business logic from the DOM manipulation layer.
- *
- * Encapsulation Scope: Isolated execution state for a single active assessment.
  */
 export default class QuizState {
     /**
+     * Initializes the quiz state machine and hydrates it with the provided dataset. Note: Invokes an immediate randomization of the question pool on instantiation.
      * @name constructor
      * @public
-     * @description Initializes the quiz state machine and hydrates it with the provided dataset. Note: Invokes an immediate randomization of the question pool on instantiation.
      * @param {QuestionType[]} questionData - The parsed array of question objects to ingest.
      */
     constructor(questionData) {
@@ -52,9 +51,9 @@ export default class QuizState {
     }
 
     /**
+     * Retrieves the current question object based on the active state pointer. Time complexity: O(1).
      * @name getCurrentQuestion
      * @public
-     * @description Retrieves the current question object based on the active state pointer. Time complexity: O(1).
      * @returns {QuestionType} - The active question object containing the text and associated answers array.
      */
     getCurrentQuestion() {
@@ -66,9 +65,9 @@ export default class QuizState {
     }
 
     /**
+     * Increments the internal state pointer to progress the quiz sequence. Shifts the application state forward.
      * @name advanceQuestion
      * @public
-     * @description Increments the internal state pointer to progress the quiz sequence. Shifts the application state forward.
      * @returns {void} - Does not return a value.
      */
     advanceQuestion() {
@@ -83,9 +82,9 @@ export default class QuizState {
     }
 
     /**
+     * Computes the current user completion progress ratio.
      * @name getProgressPercentage
      * @public
-     * @description Computes the current user completion progress ratio.
      * @returns {number} - The progression metric represented as a percentage (0-100).
      */
     getProgressPercentage() {
@@ -101,9 +100,9 @@ export default class QuizState {
     }
 
     /**
+     * Computes the user's final performance grade based on accumulated score.
      * @name getGradePercentage
      * @public
-     * @description Computes the user's final performance grade based on accumulated score.
      * @returns {number} - The grade metric represented as a percentage (0-100).
      */
     getGradePercentage() {
@@ -119,9 +118,9 @@ export default class QuizState {
     }
 
     /**
+     * Evaluates a submitted answer, manages state scoring, and enforces a strict interaction lock to prevent asynchronous race conditions or rapid multi-click mutations.
      * @name evaluateAnswer
      * @public
-     * @description Evaluates a submitted answer, manages state scoring, and enforces a strict interaction lock to prevent asynchronous race conditions or rapid multi-click mutations.
      * @param {boolean} isCorrect - Evaluated truthiness of the user's selected answer.
      * @returns {void} - Does not return a value.
      */
@@ -160,9 +159,9 @@ export default class QuizState {
     }
 
     /**
+     * Releases the interaction lock, permitting the evaluation of subsequent answers.
      * @name resetClickLock
      * @public
-     * @description Releases the interaction lock, permitting the evaluation of subsequent answers.
      * @returns {void} - Does not return a value.
      */
     resetClickLock() {
@@ -172,9 +171,9 @@ export default class QuizState {
     }
 
     /**
+     * Resets the state machine back to its baseline parameters for a new session. Triggers a fresh memory reallocation and shuffle of the dataset.
      * @name resetQuiz
      * @public
-     * @description Resets the state machine back to its baseline parameters for a new session. Triggers a fresh memory reallocation and shuffle of the dataset.
      * @returns {void} - Does not return a value.
      */
     resetQuiz() {
@@ -196,9 +195,9 @@ export default class QuizState {
     }
 
     /**
+     * Evaluates the active state pointer against the dataset boundary to determine termination. Time complexity: O(1).
      * @name isQuizOver
      * @public
-     * @description Evaluates the active state pointer against the dataset boundary to determine termination. Time complexity: O(1).
      * @returns {boolean} - True if the pointer has reached or exceeded the dataset length.
      */
     isQuizOver() {
@@ -216,9 +215,9 @@ export default class QuizState {
     }
 
     /**
+     * Performs an in-place Fisher-Yates shuffle on the provided array. Time complexity: O(n).
      * @name shuffleQuizData
      * @public
-     * @description Performs an in-place Fisher-Yates shuffle on the provided array. Time complexity: O(n).
      * @param {Array<any>} array - The target array to mutate.
      * @returns {Array<any>} - A reference to the mutated array to allow method chaining.
      */
@@ -240,9 +239,9 @@ export default class QuizState {
     }
 
     /**
+     * Orchestrates the randomization of the entire quiz dataset matrix. Shuffles both the primary array (questions) and nested subarrays (answers). Time complexity: O(n * m).
      * @name randomizeDeck
      * @public
-     * @description Orchestrates the randomization of the entire quiz dataset matrix. Shuffles both the primary array (questions) and nested subarrays (answers). Time complexity: O(n * m).
      * @param {QuestionType[]} deck - The collection of question objects to randomize.
      * @returns {QuestionType[]} - A reference to the fully randomized matrix.
      */
