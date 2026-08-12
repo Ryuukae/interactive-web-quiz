@@ -12,7 +12,7 @@ export default defineConfig({
         exclude: ['tests/e2e/**'],
         coverage: {
             provider: 'v8',
-            reporter: ['text', 'json', 'html'],
+            reporter: ['text', 'json', 'html', 'json-summary'],
             thresholds: {
                 statements: 80,
                 branches: 80,
