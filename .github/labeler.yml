@@ -1,0 +1,12 @@
+ui:
+  - changed-files:
+    - any-glob-to-any-file: ['src/css/**', 'index.html']
+logic:
+  - changed-files:
+    - any-glob-to-any-file: ['src/js/**']
+tests:
+  - changed-files:
+    - any-glob-to-any-file: ['tests/**']
+ci:
+  - changed-files:
+    - any-glob-to-any-file: ['.github/**']

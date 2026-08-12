@@ -54,7 +54,12 @@
 !public/*.txt
 
 # .YML
+!.github/dependabot.yml
+!.github/labeler.yml
 !.github/workflows/*.yml
+
+# GitHub Config
+!.github/CODEOWNERS
 
 # .CSS
 !src/css/*.css
