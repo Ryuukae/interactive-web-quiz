@@ -1,24 +1,24 @@
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * Architectural Responsibilities: Centralized application router natively. Exclusively handles CSS visibility toggles to map the active viewport state seamlessly to the explicitly required stage.
+ * Encapsulation Scope: Strictly isolated purely to global SPA transitions explicitly.
  * @class AppNavigationController
  * @name AppNavigationController
  * @version 1.0.0
  * @author Adam Ross DeStafeno
- * @since 2026-08-09
- * @description
- * Architectural Responsibilities: Centralized application router natively. Exclusively handles CSS visibility toggles to map the active viewport state seamlessly to the explicitly required stage.
- *
- * Encapsulation Scope: Strictly isolated purely to global SPA transitions explicitly.
  */
 export default class AppNavigationController {
-    /** @type {Record<string, HTMLElement | null>} */
+    /**
+     * Provides internal functionality.
+     * @type {Record<string, HTMLElement | null>}
+     */
     screens;
 
     /**
+     * Caches application screen nodes optimally and delegates fundamental routing interactions visually.
      * @name constructor
      * @public
-     * @description Caches application screen nodes optimally and delegates fundamental routing interactions visually.
      */
     constructor() {
         this.logger = createLogger("AppNavigationController");
@@ -39,9 +39,9 @@ export default class AppNavigationController {
     }
 
     /**
+     * Links physical DOM triggers cleanly to explicit routing capabilities.
      * @name bindGlobalNavigation
      * @public
-     * @description Links physical DOM triggers cleanly to explicit routing capabilities.
      * @returns {void} - Does not return a value.
      */
     bindGlobalNavigation() {
@@ -87,9 +87,9 @@ export default class AppNavigationController {
     }
 
     /**
+     * Iterates through global view nodes to strictly force invisibility natively explicitly, then selectively appends the active class natively.
      * @name navigateTo
      * @public
-     * @description Iterates through global view nodes to strictly force invisibility natively explicitly, then selectively appends the active class natively.
      * @param {string} screenId - The string key natively mapping physically to cached nodes exclusively.
      * @returns {void} - Does not return a value.
      */
