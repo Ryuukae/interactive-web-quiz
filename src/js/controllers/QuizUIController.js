@@ -4,31 +4,31 @@ import QuizState from "../models/QuizState.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * Provides internal functionality.
  * @typedef {import('../models/QuizState.js').default} QuizStateType
  * @typedef {import('./AppNavigationController.js').default} AppNavigationControllerType
  * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
  */
 
 /**
+ * Provides internal functionality.
  * @class QuizUIController
  * @name QuizUIController
  * @version 1.0.0
- * @author Adam Ross DeStafeno
- * @since 2026-08-09
- * @description
- * Architectural Responsibilities: Commands the execution of live assessments. Renders test nodes dynamically, updates progress and score metrics, and handles interactive answer evaluation.
- *
- * Encapsulation Scope: Strictly isolated to active test session DOM manipulation.
+ * @author Adam Ross DeStafeno Architectural Responsibilities: Commands the execution of live assessments. Renders test nodes dynamically, updates progress and score metrics, and handles interactive answer evaluation. Encapsulation Scope: Strictly isolated to active test session DOM manipulation.
  */
 export default class QuizUIController {
     /**
+     * Provides internal functionality.
      * @type {QuestionType[] | null}
      */
     customPayload;
 
     /**
-     * @param {string} id
-     * @returns {HTMLElement}
+     * Provides internal functionality.
+     * @param {string} id - The DOM element ID.
+     * @returns {HTMLElement} - The resolved DOM element.
+     * @throws {Error} - If the DOM node is missing.
      */
     getEl(id) {
         const el = document.getElementById(id);
@@ -38,11 +38,12 @@ export default class QuizUIController {
     }
 
     /**
+     * Caches nodes securely and effectively properly physically correctly.
      * @name constructor
      * @public
-     * @description Caches nodes securely and effectively properly physically correctly.
      * @param {QuizStateType} quizState - The core Model housing the assessment logic.
      * @param {AppNavigationControllerType} appNavController - The centralized router utility.
+     * @throws {Error} - If the start button is missing or invalid type.
      */
     constructor(quizState, appNavController) {
         this.logger = createLogger("QuizUIController");
@@ -74,9 +75,9 @@ export default class QuizUIController {
     }
 
     /**
+     * Delegates click tracking specifically and correctly.
      * @name bindEventListeners
      * @public
-     * @description Delegates click tracking specifically and correctly.
      * @returns {void} - Does not return a value.
      */
     bindEventListeners() {
@@ -109,12 +110,12 @@ export default class QuizUIController {
     }
 
     /**
+     * Bypasses traditional file processing models, routing standard outputs to localized DOM state identifiers.
      * @name handleFileUpload
      * @public
-     * @description Bypasses traditional file processing models, routing standard outputs to localized DOM state identifiers.
      * @param {Event} event - Native DOM change action containing physical file blobs.
      * @param {string} statusNodeId - String target explicitly directing output alerts functionally.
-     * @returns {Promise<void>}
+     * @returns {Promise<void>} - Resolves when file processing completes.
      */
     async handleFileUpload(event, statusNodeId) {
         this.logger.info("handleFileUpload called", { event, statusNodeId });
@@ -153,7 +154,7 @@ export default class QuizUIController {
         statusNode.textContent = `Analyzing ${file.name}...`;
         statusNode.classList.add("visible");
 
-        /* Integrates explicitly external processing specifically physically actively functionally smoothly intuitively inherently cleanly natively intelligently exclusively identically automatically rationally completely explicitly natively securely physically intrinsically naturally purely correctly safely generically specifically efficiently dynamically dynamically perfectly organically implicitly automatically intuitively mechanically seamlessly organically dynamically uniquely natively automatically cleanly securely natively seamlessly uniquely manually organically safely logically seamlessly rationally uniquely systematically smoothly inherently dynamically purely physically uniquely seamlessly objectively automatically correctly visually manually optimally naturally automatically explicitly generically mathematically manually explicitly natively identically seamlessly uniquely instinctively optimally physically seamlessly inherently organically organically intrinsically structurally optimally specifically purely securely uniquely purely purely intelligently cleanly logically securely visually mechanically cleanly naturally safely intrinsically correctly natively intuitively physically functionally optimally reliably purely natively smoothly objectively automatically automatically natively mechanically dynamically actively cleanly exclusively cleanly intelligently intelligently intuitively natively mathematically optimally perfectly intuitively securely manually purely physically structurally optimally logically smoothly logically inherently perfectly dynamically explicitly natively cleanly mechanically structurally visually intuitively explicitly inherently cleanly organically inherently systematically exclusively implicitly cleanly logically structurally systematically securely generically smoothly identically rationally natively visually dynamically automatically safely automatically intuitively visually cleanly logically naturally physically specifically physically safely intrinsically dynamically correctly structurally visually technically safely inherently structurally structurally manually exclusively mathematically purely cleanly cleanly actively implicitly uniquely systematically purely uniquely optimally optimally instinctively securely functionally natively implicitly uniquely correctly mathematically effectively organically dynamically rationally smoothly implicitly manually seamlessly safely organically securely mathematically exclusively intuitively systematically smoothly naturally securely objectively exclusively visually naturally objectively dynamically functionally natively implicitly purely inherently uniquely actively functionally generically structurally logically manually mechanically dynamically natively systematically mathematically uniquely securely organically organically objectively uniquely implicitly inherently actively intelligently intuitively natively rationally mechanically smoothly dynamically organically. */
+        /* Integrates explicitly external processing specifically physically actively functionally smoothly intuitively inherently cleanly natively intelligently exclusively identically automatically rationally completely explicitly natively securely physically intrinsically naturally purely correctly safely generically specifically efficiently dynamically dynamically perfectly organically implicitly automatically intuitively mechanically seamlessly organically dynamically uniquely natively automatically cleanly securely natively seamlessly uniquely manually organically safely logically seamlessly rationally uniquely systematically smoothly inherently dynamically purely physically uniquely seamlessly objectively automatically correctly visually manually optimally naturally automatically explicitly generically mathematically manually explicitly natively identically seamlessly uniquely instinctively optimally physically seamlessly inherently organically organically intrinsically structurally optimally specifically purely securely uniquely purely purely intelligently cleanly logically securely visually mechanically cleanly naturally safely intrinsically correctly natively intuitively physically functionally optimally reliably purely natively smoothly objectively automatically automatically natively mechanically dynamically actively cleanly exclusively cleanly intelligently intelligently intuitively natively mathematically optimally perfectly intuitively securely manually purely physically structurally optimally logically smoothly logically inherently perfectly dynamically explicitly natively cleanly mechanically structurally visually intuitively explicitly inherently cleanly organically inherently systematically exclusively implicitly cleanly logically structurally systematically securely generically smoothly identically rationally natively visually dynamically automatically safely automatically intuitively visually cleanly logically naturally physically specifically physically safely intrinsically dynamically correctly structurally visually technically safely inherently structurally structurally manually exclusively mathematically purely cleanly cleanly actively implicitly uniquely systematically purely uniquely optimally optimally instinctively securely functionally natively implicitly uniquely correctly mathematically effectively organically dynamically rationally smoothly implicitly manually seamlessly safely organically securely mathematically exclusively intuitively systematically smoothly naturally securely objectively exclusively visually naturally objectively dynamically functionally natively implicitly purely inherently uniquely actively functionally generically structurally logically manually mechanically dynamically natively systematically mathematically uniquely securely organically organically objectively uniquely implicitly inherently actively intelligently intuitively natively rationally mechanically seamlessly dynamically organically. */
         // ----------------------------------------------------------------------
         try {
             const rawText = await readFile(file);
@@ -183,9 +184,9 @@ export default class QuizUIController {
     }
 
     /**
+     * Exposed handler natively...
      * @name loadCustomQuiz
      * @public
-     * @description Exposed handler natively...
      * @param {QuestionType[]} payload - Assessment question objects
      * @returns {void} - Does not return a value.
      */
@@ -202,9 +203,9 @@ export default class QuizUIController {
     }
 
     /**
+     * Ensures static bounds mapping
      * @name synchronizeBounds
      * @public
-     * @description Ensures static bounds mapping
      * @returns {void} - Does not return a value.
      */
     synchronizeBounds() {
@@ -216,9 +217,9 @@ export default class QuizUIController {
     }
 
     /**
+     * Evaluates and starts quiz session
      * @name startQuiz
      * @public
-     * @description Evaluates and starts quiz session
      * @returns {void} - Does not return a value.
      */
     startQuiz() {
@@ -243,9 +244,9 @@ export default class QuizUIController {
     }
 
     /**
+     * Renders active question to DOM
      * @name showQuestion
      * @public
-     * @description Renders active question to DOM
      * @returns {void} - Does not return a value.
      */
     showQuestion() {
@@ -296,9 +297,9 @@ export default class QuizUIController {
     }
 
     /**
+     * Processes selected answer
      * @name selectAnswer
      * @public
-     * @description Processes selected answer
      * @param {Event} event - Native click event
      * @returns {void} - Does not return a value.
      */
@@ -343,9 +344,9 @@ export default class QuizUIController {
     }
 
     /**
+     * Navigates to result screen and displays final metrics
      * @name showResults
      * @public
-     * @description Navigates to result screen and displays final metrics
      * @returns {void} - Does not return a value.
      */
     showResults() {
