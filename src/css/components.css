@@ -12,20 +12,20 @@ button {
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(217, 70, 239, 0.15);
+    box-shadow: 0 4px 15px rgb(217 70 239 / 0.15);
     filter: brightness(0.85);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(217, 70, 239, 0.4);
+    box-shadow: 0 8px 25px rgb(217 70 239 / 0.4);
     filter: brightness(1.1);
 }
 
 button:active {
     transform: translateY(1px) scale(0.96);
-    box-shadow: 0 2px 8px rgba(217, 70, 239, 0.15);
+    box-shadow: 0 2px 8px rgb(217 70 239 / 0.15);
     filter: brightness(0.95);
 }
 
@@ -95,7 +95,7 @@ button:disabled {
 .secondary-btn {
     background: transparent;
     color: #a7d5ff;
-    border: 1px solid rgba(167, 213, 255, 0.3);
+    border: 1px solid rgb(167 213 255 / 0.3);
     border-radius: 8px;
     padding: 10px 24px;
     font-size: 0.95rem;
@@ -110,8 +110,8 @@ button:disabled {
 }
 
 .secondary-btn:hover {
-    background: rgba(167, 213, 255, 0.1);
-    border-color: rgba(167, 213, 255, 0.6);
+    background: rgb(167 213 255 / 0.1);
+    border-color: rgb(167 213 255 / 0.6);
     box-shadow: none;
     filter: none;
     transform: none;
@@ -127,22 +127,22 @@ button:disabled {
     width: 100%;
     border-style: dashed;
     border-width: 2px;
-    background: rgba(167, 213, 255, 0.05);
+    background: rgb(167 213 255 / 0.05);
 }
 
 .dashed-btn:hover {
-    background: rgba(167, 213, 255, 0.15);
+    background: rgb(167 213 255 / 0.15);
     border-style: dashed;
 }
 
 .btn-danger {
-    border-color: rgba(244, 67, 54, 0.3);
+    border-color: rgb(244 67 54 / 0.3);
     color: #f44336;
 }
 
 .btn-danger:hover {
-    background: rgba(244, 67, 54, 0.1);
-    border-color: rgba(244, 67, 54, 0.6);
+    background: rgb(244 67 54 / 0.1);
+    border-color: rgb(244 67 54 / 0.6);
 }
 
 /* =============================== */
@@ -151,9 +151,9 @@ button:disabled {
 
 .glass-input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.25);
+    background: rgb(0 0 0 / 0.25);
     color: #ffffff;
-    border: 1px solid rgba(167, 213, 255, 0.15);
+    border: 1px solid rgb(167 213 255 / 0.15);
     border-radius: 8px;
     padding: 10px 14px;
     margin-bottom: 8px;
@@ -177,12 +177,12 @@ input.glass-input.d-input {
 /* =============================== */
 
 .glass-input.input-error {
-    border-color: rgba(244, 67, 54, 0.6) !important;
-    box-shadow: 0 0 8px rgba(244, 67, 54, 0.2) !important;
+    border-color: rgb(244 67 54 / 0.6) !important;
+    box-shadow: 0 0 8px rgb(244 67 54 / 0.2) !important;
 }
 
 .glass-input.input-error::placeholder {
-    color: rgba(244, 67, 54, 0.8) !important;
+    color: rgb(244 67 54 / 0.8) !important;
     font-style: italic;
 }
 
@@ -191,12 +191,12 @@ input.glass-input.d-input {
 /* =============================== */
 
 .progress-bar {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgb(255 255 255 / 0.08);
     height: 12px;
     border-radius: 12px;
     margin-top: 24px;
     overflow: hidden;
-    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 1px 4px rgb(0 0 0 / 0.4);
 }
 
 .progress {
@@ -212,20 +212,20 @@ input.glass-input.d-input {
 @keyframes progress-streak-pulse {
     0% {
         background-position: 100% 0;
-        box-shadow: 0 0 4px rgba(126, 182, 230, 0.4);
+        box-shadow: 0 0 4px rgb(126 182 230 / 0.4);
         filter: brightness(1);
     }
     50%,
     100% {
         background-position: 0 0;
-        box-shadow: 0 0 4px rgba(126, 182, 230, 0.4);
+        box-shadow: 0 0 4px rgb(126 182 230 / 0.4);
         filter: brightness(1);
     }
     75% {
         background-position: 0 0;
         box-shadow:
-            0 0 16px 2px rgba(126, 182, 230, 0.95),
-            0 0 40px 4px rgba(126, 182, 230, 0.7);
+            0 0 16px 2px rgb(126 182 230 / 0.95),
+            0 0 40px 4px rgb(126 182 230 / 0.7);
         filter: brightness(1.4);
     }
 }
@@ -276,8 +276,8 @@ input.glass-input.d-input {
     max-width: 185px;
     margin-top: -8px;
     text-align: left;
-    background: rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(167, 213, 255, 0.15);
+    background: rgb(0 0 0 / 0.15);
+    border: 1px solid rgb(167 213 255 / 0.15);
     border-radius: 12px;
     overflow: hidden;
     transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -328,8 +328,8 @@ input.glass-input.d-input {
 }
 
 .guide-content pre {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px inset rgba(255, 255, 255, 0.05);
+    background: rgb(0 0 0 / 0.4);
+    border: 1px inset rgb(255 255 255 / 0.05);
     border-radius: 8px;
     padding: 12px;
     margin-bottom: 16px;

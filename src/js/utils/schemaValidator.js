@@ -56,7 +56,10 @@ export function parseAndValidateRawText(rawText) {
                 questionCount: parsedData.length
             });
         } catch (jsonError) {
-            const errMessage = jsonError instanceof Error ? jsonError.message : "Unknown parsing error";
+            const errMessage =
+                jsonError instanceof Error
+                    ? jsonError.message
+                    : "Unknown parsing error";
             logger.warn("JSON parsing failed, falling back to QAD digestion", {
                 error: errMessage
             });

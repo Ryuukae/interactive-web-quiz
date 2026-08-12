@@ -99,14 +99,24 @@ function emit(level, scope, message, details) {
 
     const timestamp = new Date().toISOString();
     const prefix = `[${timestamp}] [${level.toUpperCase()}] [${scope}] ${message}`;
-    
+
     let consoleMethod = console.log;
     switch (level) {
-        case "trace": consoleMethod = console.trace; break;
-        case "debug": consoleMethod = console.debug; break;
-        case "info": consoleMethod = console.info; break;
-        case "warn": consoleMethod = console.warn; break;
-        case "error": consoleMethod = console.error; break;
+        case "trace":
+            consoleMethod = console.trace;
+            break;
+        case "debug":
+            consoleMethod = console.debug;
+            break;
+        case "info":
+            consoleMethod = console.info;
+            break;
+        case "warn":
+            consoleMethod = console.warn;
+            break;
+        case "error":
+            consoleMethod = console.error;
+            break;
     }
 
     if (typeof details === "undefined") {

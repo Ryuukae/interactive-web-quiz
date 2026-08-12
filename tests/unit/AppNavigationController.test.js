@@ -56,4 +56,14 @@ describe('AppNavigationController Unit Tests', () => {
         const nav = new AppNavigationController();
         expect(() => nav.navigateTo('invalid-screen')).not.toThrow();
     });
+
+    it('should return early if navigating to the currently active screen', () => {
+        const nav = new AppNavigationController();
+        
+        // First navigation sets the active state
+        nav.navigateTo('quiz');
+        
+        // Second navigation to the same screen should trigger the early-return branch
+        expect(() => nav.navigateTo('quiz')).not.toThrow();
+    });
 });

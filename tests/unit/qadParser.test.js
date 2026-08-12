@@ -46,4 +46,25 @@ D=Dist 2
         const invalidText = "Q=Incomplete Question?\nA=Only Answer";
         expect(() => parseQADFormat(invalidText)).toThrow();
     });
+
+    it('should ignore random unrecognized lines or comments gracefully', () => {
+        const rawText = "This is a comment\nQ=Valid Question?\nA=Ans\nD=Dist";
+        const result = parseQADFormat(rawText);
+        expect(result).toHaveLength(1);
+    });
+
+    it('should throw an error if a distractor block appears before a question', () => {
+        const invalidText = "D=Distractor\nQ=Question?\nA=Answer";
+        expect(() => parseQADFormat(invalidText)).toThrow();
+    });
+
+    it('should throw an error if a block is missing the Question (Q=) line', () => {
+        const invalidText = "A=Only Answer\nD=Distractor";
+        expect(() => parseQADFormat(invalidText)).toThrow();
+    });
+
+    it('should throw an error if a block is missing the Answer (A=) line', () => {
+        const invalidText = "Q=Only Question?\nD=Distractor";
+        expect(() => parseQADFormat(invalidText)).toThrow();
+    });
 });

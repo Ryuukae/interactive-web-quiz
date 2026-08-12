@@ -55,4 +55,43 @@ describe('BuilderState Model Unit Tests', () => {
         expect(payload).toHaveLength(1);
         expect(payload[0].question).toBe("Q1");
     });
+
+    it('should clear all cards via clearAll()', () => {
+        const state = new BuilderState();
+        const mockCard = { id: 1, node: { remove: () => {} }, destroy: () => {} };
+        state.addCard(mockCard);
+        
+        state.clearAll();
+        expect(state.cards).toHaveLength(0);
+    });
+
+    it('should validate all cards and accurately return overall validity', () => {
+        const state = new BuilderState();
+        const validCard = { validate: () => true };
+        const invalidCard = { validate: () => false };
+        
+        // Test all valid
+        state.addCard(validCard);
+        expect(state.validateAllCards()).toBe(true);
+        
+        // Test mixed validity
+        state.addCard(invalidCard);
+        expect(state.validateAllCards()).toBe(false);
+    });
+
+    it('should exclude cards that return null when serializing the payload', () => {
+        const state = new BuilderState();
+        
+        // This explicitly triggers the falsy array branch
+        const invalidCard = { getCardData: () => null };
+        const validCard = { getCardData: () => ({ question: "Q1" }) };
+        
+        state.addCard(invalidCard);
+        state.addCard(validCard);
+        
+        const payload = state.getSerializedPayload();
+        
+        // Even though we added 2 cards, only 1 should be serialized
+        expect(payload).toHaveLength(1);
+    });
 });

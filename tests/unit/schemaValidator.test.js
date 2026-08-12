@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseAndValidateRawText } from '../../src/js/utils/schemaValidator.js';
+import { parseAndValidateRawText, validateQuizSchema } from '../../src/js/utils/schemaValidator.js';
 
 describe('schemaValidator Unit Tests', () => {
 
@@ -68,5 +68,40 @@ describe('schemaValidator Unit Tests', () => {
     it('should throw an error if payload is structurally invalid', () => {
         const invalidJson = JSON.stringify({ question: "Not an array" });
         expect(() => parseAndValidateRawText(invalidJson)).toThrow();
+    });
+
+    it('should throw an error for missing required schema fields', () => {
+        const badData = [{ answers: [{ text: "Yes", correct: true }] }]; // Missing "question"
+        expect(() => validateQuizSchema(badData)).toThrow();
+    });
+
+    it('should throw an error if no answers are marked correct', () => {
+        const badData = [{ question: "Q1", answers: [{ text: "Yes", correct: false }] }];
+        expect(() => validateQuizSchema(badData)).toThrow();
+    });
+
+    it('should throw an error for invalid JSON that fails QAD fallback', () => {
+        const gibberish = "NOT JSON \n AND NOT QAD";
+        expect(() => parseAndValidateRawText(gibberish)).toThrow();
+    });
+
+    it('should throw an error if the JSON root is an object instead of an array', () => {
+        const badData = { question: "Not an array", answers: [] };
+        expect(() => validateQuizSchema(badData)).toThrow();
+    });
+
+    it('should throw an error if the answers property is not an array', () => {
+        const badData = [{ question: "Q1", answers: "String instead of array" }];
+        expect(() => validateQuizSchema(badData)).toThrow();
+    });
+
+    it('should throw an error if an answer is missing the text property', () => {
+        const badData = [{ question: "Q1", answers: [{ correct: true }] }]; // Missing "text"
+        expect(() => validateQuizSchema(badData)).toThrow();
+    });
+
+    it('should throw an error if the correct property is a string instead of a strict boolean', () => {
+        const badData = [{ question: "Q1", answers: [{ text: "Yes", correct: "true" }] }]; 
+        expect(() => validateQuizSchema(badData)).toThrow();
     });
 });

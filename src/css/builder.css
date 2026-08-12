@@ -23,12 +23,12 @@
 .glass-panel {
     width: 100%;
     max-width: 600px;
-    background: rgba(167, 213, 255, 0.05);
-    border: 1px solid rgba(167, 213, 255, 0.1);
+    background: rgb(167 213 255 / 0.05);
+    border: 1px solid rgb(167 213 255 / 0.1);
     border-radius: 16px;
     padding: 12px 16px;
     margin: 0 auto 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
     text-align: left;
 }
 
@@ -43,7 +43,7 @@
     overflow-x: hidden;
     padding-right: 4px;
     scrollbar-width: thin;
-    scrollbar-color: rgba(167, 213, 255, 0.3) transparent;
+    scrollbar-color: rgb(167 213 255 / 0.3) transparent;
 }
 
 /* Enables vertical auto-expansion while preserving theme harmony and removing inner scrollbars. */
@@ -102,7 +102,7 @@ button.secondary-btn.btn-add-distractor {
     margin-bottom: 12px;
 
     scrollbar-width: thin;
-    scrollbar-color: rgba(167, 213, 255, 0.3) transparent;
+    scrollbar-color: rgb(167 213 255 / 0.3) transparent;
 }
 
 #builder-questions-container::-webkit-scrollbar {
@@ -110,17 +110,17 @@ button.secondary-btn.btn-add-distractor {
 }
 
 #builder-questions-container::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgb(0 0 0 / 0.15);
     border-radius: 8px;
 }
 
 #builder-questions-container::-webkit-scrollbar-thumb {
-    background: rgba(167, 213, 255, 0.3);
+    background: rgb(167 213 255 / 0.3);
     border-radius: 8px;
 }
 
 #builder-questions-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(167, 213, 255, 0.5);
+    background: rgb(167 213 255 / 0.5);
 }
 
 /* ========================================= */
@@ -137,7 +137,7 @@ button.secondary-btn.btn-add-distractor {
 
 .input-label {
     display: block;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgb(255 255 255 / 0.6);
     font-size: 0.65rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -155,7 +155,7 @@ button.secondary-btn.btn-add-distractor {
     align-items: center;
     padding-bottom: 8px;
     margin-bottom: 12px;
-    border-bottom: 1px solid rgba(167, 213, 255, 0.1);
+    border-bottom: 1px solid rgb(167 213 255 / 0.1);
     cursor: pointer;
     transition:
         padding 0.2s ease,
@@ -182,7 +182,7 @@ button.secondary-btn.btn-add-distractor {
 .delete-icon-btn {
     background: transparent;
     border: none;
-    color: rgba(244, 67, 54, 0.6);
+    color: rgb(244 67 54 / 0.6);
     font-size: 0.85rem;
     cursor: pointer;
     padding: 0;
@@ -192,12 +192,12 @@ button.secondary-btn.btn-add-distractor {
 }
 
 .delete-icon-btn:hover {
-    color: rgba(244, 67, 54, 1);
+    color: rgb(244 67 54 / 1);
     transform: scale(1.15);
 }
 
 .toggle-icon {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgb(255 255 255 / 0.6);
     font-size: 0.8rem;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -247,13 +247,13 @@ button.secondary-btn.btn-add-distractor {
 }
 
 .btn-danger {
-    border-color: rgba(244, 67, 54, 0.3);
+    border-color: rgb(244 67 54 / 0.3);
     color: #f44336;
 }
 
 .btn-danger:hover {
-    background: rgba(244, 67, 54, 0.1);
-    border-color: rgba(244, 67, 54, 0.6);
+    background: rgb(244 67 54 / 0.1);
+    border-color: rgb(244 67 54 / 0.6);
 }
 
 #return-start-btn {

@@ -54,18 +54,18 @@ body {
     overflow: hidden;
 
     /* Establishes the primary glassmorphism canvas using a 40% smoked glass fill. */
-    background: rgba(20, 20, 20, 0.4);
+    background: rgb(20 20 20 / 0.4);
 
     /* Applies hardware-accelerated backdrop filtering to heavily blur the underlying ambient pseudo-elements, synthesizing frosted glass. */
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
 
     /* Constructs a high-opacity specular edge border to simulate directional lighting catching the physical rim of the glass pane. */
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgb(255 255 255 / 0.08);
     border-radius: 1rem;
 
     /* Synthesizes a composite 3D shadow system to separate the UI layer from the background environment. */
     box-shadow:
-        0 24px 40px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        0 24px 40px rgb(0 0 0 / 0.15),
+        inset 0 1px 0 rgb(255 255 255 / 0.8);
 }

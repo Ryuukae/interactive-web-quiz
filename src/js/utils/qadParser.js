@@ -68,7 +68,9 @@ export function parseQADFormat(rawText) {
                 questions.push(currentQuestion);
             }
 
-            currentQuestion = createQuestionBlock(cleanLine.substring(2).trim());
+            currentQuestion = createQuestionBlock(
+                cleanLine.substring(2).trim()
+            );
             logger.debug("Parsed question header", {
                 question: currentQuestion.question
             });
