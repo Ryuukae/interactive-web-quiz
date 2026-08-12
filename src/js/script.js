@@ -10,14 +10,11 @@ import BuilderUIController from "./controllers/BuilderUIController.js";
 import { createLogger } from "./utils/logger.js";
 
 /**
+ * Architectural Responsibilities: Application Entry Point. Orchestrates state instantiation and controller initialization.
+ * Encapsulation Scope: Serves as the composition root where dependencies are physically wired together correctly.
  * @module script
  * @version 1.0.0
  * @author Adam Ross DeStafeno
- * @since 2026-08-09
- * @description
- * Architectural Responsibilities: Application Entry Point. Orchestrates state instantiation and controller initialization.
- *
- * Encapsulation Scope: Serves as the composition root where dependencies are physically wired together correctly.
  */
 
 let appNavController;
@@ -28,9 +25,9 @@ let quizUIController;
 const logger = createLogger("AppBootstrap");
 
 /**
+ * Orchestrates the asynchronous bootstrap sequence systematically. Enforces a strict initialization pipeline natively: State Models -> Controllers sequentially.
  * @name initializeApp
  * @public
- * @description Orchestrates the asynchronous bootstrap sequence systematically. Enforces a strict initialization pipeline natively: State Models -> Controllers sequentially.
  * @returns {Promise<void>} - Resolves when bootstrap completes.
  */
 async function initializeApp() {
