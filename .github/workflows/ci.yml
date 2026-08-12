@@ -25,5 +25,26 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
       
-    - name: Run verification suite
-      run: npm run verify
+    - name: Code Formatting Check
+      run: npm run format:check
+      
+    - name: Static Linting
+      run: npm run lint
+      
+    - name: Security Audit
+      run: npm run audit
+      
+    - name: Strict Typecheck
+      run: npm run typecheck
+      
+    - name: Unit Tests & Coverage
+      run: npm run test:coverage
+      
+    - name: Bundle Size Audit
+      run: npm run size
+      
+    - name: End-to-End Tests
+      run: npm run test:e2e
+      
+    - name: Production Build
+      run: npm run build
