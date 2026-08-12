@@ -39,7 +39,7 @@
     "@playwright/test": "^1.62.1",
     "@secretlint/secretlint-rule-pattern": "^13.0.4",
     "@secretlint/secretlint-rule-preset-recommend": "^13.0.4",
-    "@size-limit/preset-app": "^11.0.0",
+    "@size-limit/file": "^13.0.3",
     "@vitest/coverage-v8": "^4.1.10",
     "cspell": "^8.19.4",
     "eslint": "^9.39.5",
