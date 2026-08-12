@@ -1,4 +1,5 @@
 /**
+ * Provides internal functionality.
  * @typedef {"trace"|"debug"|"info"|"warn"|"error"|"silent"} LogLevel
  */
 
@@ -15,8 +16,9 @@ const STORAGE_KEY = "interactive-web-quiz:logLevel";
 const DEFAULT_LEVEL = "info";
 
 /**
- * @param {string | undefined | null} level
- * @returns {LogLevel}
+ * Provides internal functionality.
+ * @param {string | undefined | null} level - The log level to normalize
+ * @returns {LogLevel} - The normalized log level
  */
 function normalizeLevel(level) {
     const normalized = String(level || "").toLowerCase();
@@ -34,7 +36,8 @@ function normalizeLevel(level) {
 }
 
 /**
- * @returns {LogLevel}
+ * Provides internal functionality.
+ * @returns {LogLevel} - The active log level
  */
 function getActiveLevel() {
     if (typeof window !== "undefined" && window.localStorage) {
@@ -48,16 +51,18 @@ function getActiveLevel() {
 }
 
 /**
- * @param {LogLevel} level
- * @returns {boolean}
+ * Provides internal functionality.
+ * @param {LogLevel} level - The log level to check
+ * @returns {boolean} - Whether logging should occur
  */
 function shouldLog(level) {
     return LEVELS[level] >= LEVELS[getActiveLevel()];
 }
 
 /**
- * @param {any} value
- * @returns {any}
+ * Provides internal functionality.
+ * @param {any} value - The value to serialize
+ * @returns {any} - The serialized value
  */
 function serializeValue(value) {
     if (value instanceof Error) {
@@ -86,11 +91,12 @@ function serializeValue(value) {
 }
 
 /**
- * @param {LogLevel} level
- * @param {string} scope
- * @param {string} message
- * @param {any} [details]
- * @returns {void}
+ * Provides internal functionality.
+ * @param {LogLevel} level - The log level
+ * @param {string} scope - The logger scope
+ * @param {string} message - The log message
+ * @param {any} [details] - Optional log details
+ * @returns {void} - No return value
  */
 function emit(level, scope, message, details) {
     if (!shouldLog(level)) {
@@ -128,48 +134,56 @@ function emit(level, scope, message, details) {
 }
 
 /**
- * @param {string} scope
- * @returns {Record<string, Function>}
+ * Provides internal functionality.
+ * @param {string} scope - The scope of the logger
+ * @returns {Record<string, Function>} - The logger instance
  */
 export function createLogger(scope) {
     return {
         /**
-         * @param {string} message
-         * @param {any} [details]
+         * Provides internal functionality.
+         * @param {string} message - The log message
+         * @param {any} [details] - Optional log details
          */
         trace(message, details) {
             emit("trace", scope, message, details);
         },
         /**
-         * @param {string} message
-         * @param {any} [details]
+         * Provides internal functionality.
+         * @param {string} message - The log message
+         * @param {any} [details] - Optional log details
          */
         debug(message, details) {
             emit("debug", scope, message, details);
         },
         /**
-         * @param {string} message
-         * @param {any} [details]
+         * Provides internal functionality.
+         * @param {string} message - The log message
+         * @param {any} [details] - Optional log details
          */
         info(message, details) {
             emit("info", scope, message, details);
         },
         /**
-         * @param {string} message
-         * @param {any} [details]
+         * Provides internal functionality.
+         * @param {string} message - The log message
+         * @param {any} [details] - Optional log details
          */
         warn(message, details) {
             emit("warn", scope, message, details);
         },
         /**
-         * @param {string} message
-         * @param {any} [details]
+         * Provides internal functionality.
+         * @param {string} message - The log message
+         * @param {any} [details] - Optional log details
          */
         error(message, details) {
             emit("error", scope, message, details);
         },
         /**
-         * @param {string} childScope
+         * Provides internal functionality.
+         * @param {string} childScope - The child scope
+         * @returns {object} - A child logger instance
          */
         child(childScope) {
             return createLogger(`${scope}.${childScope}`);
@@ -178,15 +192,17 @@ export function createLogger(scope) {
 }
 
 /**
- * @returns {LogLevel}
+ * Provides internal functionality.
+ * @returns {LogLevel} - The current log level
  */
 export function getLogLevel() {
     return getActiveLevel();
 }
 
 /**
- * @param {string} level
- * @returns {LogLevel}
+ * Provides internal functionality.
+ * @param {string} level - The log level to set
+ * @returns {LogLevel} - The normalized set log level
  */
 export function setLogLevel(level) {
     const normalized = normalizeLevel(level);
