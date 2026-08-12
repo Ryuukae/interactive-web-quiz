@@ -22,7 +22,7 @@ import { createLogger } from "../utils/logger.js";
  * Architectural Responsibilities: A dedicated UI Component that encapsulates its own physical DOM node, string template rendering, localized event listeners, and physical validation states.
  *
  * Encapsulation Scope: Extremely confined logic strictly tied to one specific question entry block.
- * 
+ *
  * @property {HTMLElement} node - The root DOM node of the component.
  * @property {HTMLInputElement} [qInput] - The question prompt input field.
  * @property {HTMLInputElement} [aInput] - The correct answer input field.
@@ -32,7 +32,6 @@ import { createLogger } from "../utils/logger.js";
  * @property {OnCardActionCallback} [onExpandCallback] - Callback for expanding the card.
  */
 export default class BuilderCardComponent {
-
     /**
      * @name constructor
      * @public
@@ -151,7 +150,9 @@ export default class BuilderCardComponent {
 
         const qInputNode = this.node.querySelector(".q-input");
         const aInputNode = this.node.querySelector(".correct-input");
-        const dContainerNode = this.node.querySelector(".distractors-container");
+        const dContainerNode = this.node.querySelector(
+            ".distractors-container"
+        );
         const addBtnNode = this.node.querySelector(".btn-add-distractor");
 
         if (
@@ -191,14 +192,16 @@ export default class BuilderCardComponent {
         const cardTitle = this.node.querySelector(".card-title");
         const cardBody = this.node.querySelector(".card-body");
 
-        if (!(deleteBtn instanceof HTMLElement) || 
-            !(cardHeader instanceof HTMLElement) || 
+        if (
+            !(deleteBtn instanceof HTMLElement) ||
+            !(cardHeader instanceof HTMLElement) ||
             !(cardTitle instanceof HTMLElement) ||
             !(cardBody instanceof HTMLElement) ||
-            !this.qInput || 
-            !this.aInput || 
-            !this.addBtn || 
-            !this.dContainer) {
+            !this.qInput ||
+            !this.aInput ||
+            !this.addBtn ||
+            !this.dContainer
+        ) {
             this.logger.error("Missing critical nodes for card interactions");
             return;
         }
@@ -328,7 +331,7 @@ export default class BuilderCardComponent {
     validate() {
         this.logger.info("validate called");
         this.logger.debug("Validating builder card");
-        
+
         if (!this.qInput || !this.aInput || !this.dContainer) return false;
 
         let isValid = true;
@@ -389,7 +392,7 @@ export default class BuilderCardComponent {
         this.logger.info("getCardData called");
         this.logger.trace("Serializing builder card data");
         if (!this.qInput || !this.aInput || !this.dContainer) return null;
-        
+
         const qText = this.qInput.value.trim();
         const aText = this.aInput.value.trim();
         const dInputs = this.node.querySelectorAll(".d-input");

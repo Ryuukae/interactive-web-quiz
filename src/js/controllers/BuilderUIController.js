@@ -29,7 +29,8 @@ export default class BuilderUIController {
      */
     getEl(id) {
         const el = document.getElementById(id);
-        if (!(el instanceof HTMLElement)) throw new Error(`Missing DOM node: ${id}`);
+        if (!(el instanceof HTMLElement))
+            throw new Error(`Missing DOM node: ${id}`);
         return el;
     }
 
@@ -54,10 +55,12 @@ export default class BuilderUIController {
 
         this.builderContainer = this.getEl("builder-questions-container");
         this.bulkImportPanel = this.getEl("bulk-import-panel");
-        
+
         const bulkImportTextEl = this.getEl("bulk-import-text");
         if (!(bulkImportTextEl instanceof HTMLTextAreaElement)) {
-            throw new Error("bulk-import-text element not found or not a textarea");
+            throw new Error(
+                "bulk-import-text element not found or not a textarea"
+            );
         }
         this.bulkImportText = bulkImportTextEl;
 
@@ -76,132 +79,119 @@ export default class BuilderUIController {
      */
     initializeEventListeners() {
         this.logger.info("initializeEventListeners called");
-        this.getEl("create-quizset-btn")
-            .addEventListener("click", () => {
-                this.logger.info(
-                    "initializeEventListeners: onCreateQuizsetClick event"
-                );
-                this.logger.info("Create quiz set requested from builder UI");
-                this.initializeBuilder();
-            });
+        this.getEl("create-quizset-btn").addEventListener("click", () => {
+            this.logger.info(
+                "initializeEventListeners: onCreateQuizsetClick event"
+            );
+            this.logger.info("Create quiz set requested from builder UI");
+            this.initializeBuilder();
+        });
 
-        this.getEl("btn-add-question")
-            .addEventListener("click", () => {
-                this.logger.info(
-                    "initializeEventListeners: onAddQuestionClick event"
-                );
-                this.logger.info("Add question requested");
-                this.handleAddQuestion();
-            });
+        this.getEl("btn-add-question").addEventListener("click", () => {
+            this.logger.info(
+                "initializeEventListeners: onAddQuestionClick event"
+            );
+            this.logger.info("Add question requested");
+            this.handleAddQuestion();
+        });
 
-        this.getEl("btn-run-builder-quiz")
-            .addEventListener("click", () => {
-                this.logger.info(
-                    "initializeEventListeners: onRunBuilderQuizClick event"
-                );
-                this.logger.info("Run builder quiz requested");
-                this.startBuilderQuiz();
-            });
+        this.getEl("btn-run-builder-quiz").addEventListener("click", () => {
+            this.logger.info(
+                "initializeEventListeners: onRunBuilderQuizClick event"
+            );
+            this.logger.info("Run builder quiz requested");
+            this.startBuilderQuiz();
+        });
 
-        this.getEl("btn-export-quiz")
-            .addEventListener("click", () => {
-                this.logger.info(
-                    "initializeEventListeners: onExportQuizClick event"
-                );
-                this.logger.info("Export builder quiz requested");
-                this.exportBuilderQuiz();
-            });
+        this.getEl("btn-export-quiz").addEventListener("click", () => {
+            this.logger.info(
+                "initializeEventListeners: onExportQuizClick event"
+            );
+            this.logger.info("Export builder quiz requested");
+            this.exportBuilderQuiz();
+        });
 
         this.bulkImportText.addEventListener("input", () => {
             this.adjustBulkImportTextareaHeight();
         });
 
-        this.getEl("btn-parse-bulk")
-            .addEventListener("click", () => {
-                this.logger.info(
-                    "initializeEventListeners: onParseBulkClick event"
-                );
-                this.logger.info("Bulk import parse requested");
-                this.handleBulkImport();
-            });
+        this.getEl("btn-parse-bulk").addEventListener("click", () => {
+            this.logger.info(
+                "initializeEventListeners: onParseBulkClick event"
+            );
+            this.logger.info("Bulk import parse requested");
+            this.handleBulkImport();
+        });
 
-        this.getEl("bulk-import-header")
-            .addEventListener("click", () => {
-                this.logger.info(
-                    "initializeEventListeners: onBulkImportHeaderClick event"
-                );
-                const isNowCollapsed =
-                    this.bulkImportPanel.classList.toggle("collapsed");
-                this.logger.debug("Bulk import panel toggled", {
-                    collapsed: isNowCollapsed
-                });
-                if (!isNowCollapsed) {
-                    this.builderState.collapseAllCards();
-                    requestAnimationFrame(() =>
-                        this.adjustBulkImportTextareaHeight()
-                    );
-                }
+        this.getEl("bulk-import-header").addEventListener("click", () => {
+            this.logger.info(
+                "initializeEventListeners: onBulkImportHeaderClick event"
+            );
+            const isNowCollapsed =
+                this.bulkImportPanel.classList.toggle("collapsed");
+            this.logger.debug("Bulk import panel toggled", {
+                collapsed: isNowCollapsed
             });
+            if (!isNowCollapsed) {
+                this.builderState.collapseAllCards();
+                requestAnimationFrame(() =>
+                    this.adjustBulkImportTextareaHeight()
+                );
+            }
+        });
 
-        this.getEl("btn-template-txt")
-            .addEventListener("click", () => {
-                this.logger.info(
-                    "initializeEventListeners: onTemplateTxtClick event"
-                );
-                if (this.bulkImportText.value.trim() !== "") {
-                    if (
-                        !confirmAction(
-                            "Inserting this template will overwrite your current text. Do you wish to continue?"
-                        )
-                    ) {
-                        return;
-                    }
-                }
-                this.logger.info(
-                    "Text template inserted into bulk import field"
-                );
-                this.bulkImportText.value = getTxtTemplate();
-                this.adjustBulkImportTextareaHeight();
-            });
-
-        this.getEl("btn-template-json")
-            .addEventListener("click", () => {
-                this.logger.info(
-                    "initializeEventListeners: onTemplateJsonClick event"
-                );
-                if (this.bulkImportText.value.trim() !== "") {
-                    if (
-                        !confirmAction(
-                            "Inserting this template will overwrite your current text. Do you wish to continue?"
-                        )
-                    ) {
-                        return;
-                    }
-                }
-                this.logger.info(
-                    "JSON template inserted into bulk import field"
-                );
-                this.bulkImportText.value = getJsonTemplate();
-                this.adjustBulkImportTextareaHeight();
-            });
-
-        this.getEl("btn-clear-builder")
-            .addEventListener("click", () => {
-                this.logger.info(
-                    "initializeEventListeners: onClearBuilderClick event"
-                );
-                this.logger.info("Clear builder requested", {
-                    cardCount: this.builderState.cards.length
-                });
-                if (this.builderState.cards.length === 0) return;
+        this.getEl("btn-template-txt").addEventListener("click", () => {
+            this.logger.info(
+                "initializeEventListeners: onTemplateTxtClick event"
+            );
+            if (this.bulkImportText.value.trim() !== "") {
                 if (
-                    confirmAction(
-                        "Are you sure you want to clear all questions? This action cannot be undone."
+                    !confirmAction(
+                        "Inserting this template will overwrite your current text. Do you wish to continue?"
                     )
                 ) {
-                    this.builderState.clearAll();
+                    return;
                 }
+            }
+            this.logger.info("Text template inserted into bulk import field");
+            this.bulkImportText.value = getTxtTemplate();
+            this.adjustBulkImportTextareaHeight();
+        });
+
+        this.getEl("btn-template-json").addEventListener("click", () => {
+            this.logger.info(
+                "initializeEventListeners: onTemplateJsonClick event"
+            );
+            if (this.bulkImportText.value.trim() !== "") {
+                if (
+                    !confirmAction(
+                        "Inserting this template will overwrite your current text. Do you wish to continue?"
+                    )
+                ) {
+                    return;
+                }
+            }
+            this.logger.info("JSON template inserted into bulk import field");
+            this.bulkImportText.value = getJsonTemplate();
+            this.adjustBulkImportTextareaHeight();
+        });
+
+        this.getEl("btn-clear-builder").addEventListener("click", () => {
+            this.logger.info(
+                "initializeEventListeners: onClearBuilderClick event"
+            );
+            this.logger.info("Clear builder requested", {
+                cardCount: this.builderState.cards.length
             });
+            if (this.builderState.cards.length === 0) return;
+            if (
+                confirmAction(
+                    "Are you sure you want to clear all questions? This action cannot be undone."
+                )
+            ) {
+                this.builderState.clearAll();
+            }
+        });
     }
 
     /**
@@ -416,7 +406,8 @@ export default class BuilderUIController {
                 );
             }, 50);
         } catch (error) {
-            const errMessage = error instanceof Error ? error.message : "Unknown error";
+            const errMessage =
+                error instanceof Error ? error.message : "Unknown error";
             this.logger.error("Bulk parsing failed", error);
             this.bulkImportStatus.textContent = `Error: ${errMessage}`;
             this.bulkImportStatus.classList.add("error", "visible");

@@ -21,6 +21,7 @@
 
 # Only allow certain files
 !.gitignore
+!.gitattributes
 !.github/PULL_REQUEST_TEMPLATE.md
 !package.json
 !package-lock.json
@@ -40,6 +41,7 @@
 !.husky/pre-push
 !.husky/commit-msg
 !.cspell.json
+!eslint.config.js
 
 # .HTML
 !index.html

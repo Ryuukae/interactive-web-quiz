@@ -32,7 +32,8 @@ export default class QuizUIController {
      */
     getEl(id) {
         const el = document.getElementById(id);
-        if (!(el instanceof HTMLElement)) throw new Error(`Missing DOM node: ${id}`);
+        if (!(el instanceof HTMLElement))
+            throw new Error(`Missing DOM node: ${id}`);
         return el;
     }
 
@@ -91,22 +92,20 @@ export default class QuizUIController {
             this.startQuiz();
         });
 
-        this.getEl("custom-file-input")
-            .addEventListener("change", (e) => {
-                this.logger.info(
-                    "bindEventListeners: onCustomFileInputChange event",
-                    { e }
-                );
-                this.handleFileUpload(e, "file-name-display");
-            });
-        this.getEl("result-file-input")
-            .addEventListener("change", (e) => {
-                this.logger.info(
-                    "bindEventListeners: onResultFileInputChange event",
-                    { e }
-                );
-                this.handleFileUpload(e, "result-file-status");
-            });
+        this.getEl("custom-file-input").addEventListener("change", (e) => {
+            this.logger.info(
+                "bindEventListeners: onCustomFileInputChange event",
+                { e }
+            );
+            this.handleFileUpload(e, "file-name-display");
+        });
+        this.getEl("result-file-input").addEventListener("change", (e) => {
+            this.logger.info(
+                "bindEventListeners: onResultFileInputChange event",
+                { e }
+            );
+            this.handleFileUpload(e, "result-file-status");
+        });
     }
 
     /**
@@ -119,12 +118,17 @@ export default class QuizUIController {
      */
     async handleFileUpload(event, statusNodeId) {
         this.logger.info("handleFileUpload called", { event, statusNodeId });
-        
-        if (!(event.target instanceof HTMLInputElement) || !event.target.files) {
-            this.logger.warn("Event target is not an input element or lacks files.");
+
+        if (
+            !(event.target instanceof HTMLInputElement) ||
+            !event.target.files
+        ) {
+            this.logger.warn(
+                "Event target is not an input element or lacks files."
+            );
             return;
         }
-        
+
         const file = event.target.files[0];
 
         if (!file) {
@@ -167,7 +171,8 @@ export default class QuizUIController {
 
             if (this.startButton) this.startButton.disabled = false;
         } catch (error) {
-            const errMessage = error instanceof Error ? error.message : "Unknown error";
+            const errMessage =
+                error instanceof Error ? error.message : "Unknown error";
             this.logger.error("File evaluation failed", error);
             statusNode.classList.remove("success");
             statusNode.classList.add("error");

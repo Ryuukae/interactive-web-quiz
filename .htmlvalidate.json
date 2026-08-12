@@ -6,6 +6,8 @@
     "no-trailing-whitespace": "error",
     "no-inline-style": "off",
     "no-implicit-button-type": "error",
-    "no-dup-id": "error"
+    "no-dup-id": "error",
+    "void-style": "off",
+    "doctype-style": "off"
   }
 }
