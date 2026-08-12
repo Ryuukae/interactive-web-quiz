@@ -17,6 +17,7 @@
 !.github/
 !.github/workflows/
 !.husky/
+!.github/ISSUE_TEMPLATE/
 
 
 # Only allow certain files
@@ -60,6 +61,7 @@
 
 # GitHub Config
 !.github/CODEOWNERS
+!.github/ISSUE_TEMPLATE/*.md
 
 # .CSS
 !src/css/*.css
