@@ -2,27 +2,24 @@ import { confirmAction } from "../utils/prompts.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * Provides internal functionality.
  * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
  * @typedef {import('../models/QuizState.js').AnswerType} AnswerType
  */
 
 /**
+ * Provides internal functionality.
  * @callback OnCardActionCallback
- * @param {BuilderCardComponent} card
- * @returns {void}
+ * @param {BuilderCardComponent} card - The builder card component instance.
+ * @returns {void} - Does not return a value.
  */
 
 /**
+ * Provides internal functionality.
  * @class BuilderCardComponent
  * @name BuilderCardComponent
  * @version 1.0.0
- * @author Adam Ross DeStafeno
- * @since 2026-08-09
- * @description
- * Architectural Responsibilities: A dedicated UI Component that encapsulates its own physical DOM node, string template rendering, localized event listeners, and physical validation states.
- *
- * Encapsulation Scope: Extremely confined logic strictly tied to one specific question entry block.
- *
+ * @author Adam Ross DeStafeno Architectural Responsibilities: A dedicated UI Component that encapsulates its own physical DOM node, string template rendering, localized event listeners, and physical validation states. Encapsulation Scope: Extremely confined logic strictly tied to one specific question entry block.
  * @property {HTMLElement} node - The root DOM node of the component.
  * @property {HTMLInputElement} [qInput] - The question prompt input field.
  * @property {HTMLInputElement} [aInput] - The correct answer input field.
@@ -33,9 +30,9 @@ import { createLogger } from "../utils/logger.js";
  */
 export default class BuilderCardComponent {
     /**
+     * Initializes the component, constructs the underlying DOM node, handles prefill data, and binds structural listeners.
      * @name constructor
      * @public
-     * @description Initializes the component, constructs the underlying DOM node, handles prefill data, and binds structural listeners.
      * @param {QuestionType | null} prefillData - Optional question data to natively populate the inputs.
      * @param {OnCardActionCallback} onDeleteCallback - The explicit action to fire when the local delete button is triggered.
      * @param {OnCardActionCallback} [onExpandCallback] - Optional callback triggered to enforce external layout constraints natively.
@@ -66,10 +63,11 @@ export default class BuilderCardComponent {
     }
 
     /**
+     * Processes internal string injection to structurally construct the component's interactive UI.
      * @name render
      * @public
-     * @description Processes internal string injection to structurally construct the component's interactive UI.
      * @param {QuestionType | null} prefillData - Sourced data mapped directly into input values.
+     * @throws {Error} - If critical builder card DOM nodes are missing.
      * @returns {void} - Does not return a value.
      */
     render(prefillData) {
@@ -180,9 +178,9 @@ export default class BuilderCardComponent {
     }
 
     /**
+     * Attaches highly scoped physical DOM listeners to govern internal functionality seamlessly.
      * @name bindLocalListeners
      * @public
-     * @description Attaches highly scoped physical DOM listeners to govern internal functionality seamlessly.
      * @returns {void} - Does not return a value.
      */
     bindLocalListeners() {
@@ -299,9 +297,9 @@ export default class BuilderCardComponent {
     }
 
     /**
+     * Safely forces the DOM node into a constrained CSS visibility state.
      * @name collapse
      * @public
-     * @description Safely forces the DOM node into a constrained CSS visibility state.
      * @returns {void} - Does not return a value.
      */
     collapse() {
@@ -311,9 +309,9 @@ export default class BuilderCardComponent {
     }
 
     /**
+     * Physically purges the internal template structure from the master DOM.
      * @name destroy
      * @public
-     * @description Physically purges the internal template structure from the master DOM.
      * @returns {void} - Does not return a value.
      */
     destroy() {
@@ -323,9 +321,9 @@ export default class BuilderCardComponent {
     }
 
     /**
+     * Evaluates local input integrity to ensure required bounds are satisfied.
      * @name validate
      * @public
-     * @description Evaluates local input integrity to ensure required bounds are satisfied.
      * @returns {boolean} - True if populated properly; otherwise forces visibility uncollapse, renders red warnings, and returns false.
      */
     validate() {
@@ -383,9 +381,9 @@ export default class BuilderCardComponent {
     }
 
     /**
+     * Scrapes localized text inputs, discards empty references, and packages structural assessment objects.
      * @name getCardData
      * @public
-     * @description Scrapes localized text inputs, discards empty references, and packages structural assessment objects.
      * @returns {QuestionType | null} - Clean payload containing a single question structure, or null if the prompt was ignored.
      */
     getCardData() {
