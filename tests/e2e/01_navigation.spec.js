@@ -5,6 +5,9 @@ test.describe('E2E Spec 1: Screen Navigation & State Transitions', () => {
     test('should transition cleanly between start, creator, and quiz screens', async ({ page }) => {
         await page.goto('http://localhost:5173');
 
+        // Wait for app to be ready
+        await page.waitForLoadState('networkidle');
+
         // Verify initial screen is #start-screen
         const startScreen = page.locator('#start-screen');
         await expect(startScreen).toHaveClass(/active/);

@@ -5,6 +5,9 @@ test.describe('E2E Spec 2: Dynamic Question Card Builder Operations', () => {
     test('should allow adding, populating, and removing dynamic question cards', async ({ page }) => {
         await page.goto('http://localhost:5173');
 
+        // Wait for app to be ready
+        await page.waitForLoadState('networkidle');
+
         // Navigate to Creator Screen
         await page.click('#create-quizset-btn');
 
@@ -28,6 +31,7 @@ test.describe('E2E Spec 2: Dynamic Question Card Builder Operations', () => {
         await distractorInput.fill('Ag');
 
         // Remove the card
+        page.once('dialog', dialog => dialog.accept());
         await cards.first().locator('.remove-card-btn').click();
         await expect(cards).toHaveCount(0);
     });

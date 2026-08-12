@@ -112,7 +112,7 @@ export default class BuilderCardComponent {
             <div class="card-header">
                 <span class="card-title">${headerTitle}</span>
                 <div class="header-actions">
-                    <button class="delete-icon-btn" title="Delete Question">&#10006;</button>
+                    <button class="delete-icon-btn remove-card-btn" title="Delete Question">&#10006;</button>
                     <span class="toggle-icon">▼</span>
                 </div>
             </div>
@@ -120,15 +120,15 @@ export default class BuilderCardComponent {
             <div class="card-body">
                 <div class="input-group">
                     <label class="input-label">Question</label>
-                    <input type="text" class="glass-input q-input" placeholder="e.g., What is the default port for HTTPS?" value="${questionVal}">
+                    <input type="text" class="glass-input q-input question-input" placeholder="e.g., What is the default port for HTTPS?" value="${questionVal}">
                 </div>
                 
-                <div class="input-group">
+                <div class="input-group answer-row correct-row">
                     <label class="input-label correct-label">Correct Answer</label>
                     <input type="text" class="glass-input a-input correct-input" placeholder="e.g., 443" value="${correctVal}">
                 </div>
                 
-                <div class="input-group">
+                <div class="input-group answer-row distractor-row">
                     <label class="input-label distractor-label">Distractors (Max 6)</label>
                     <div class="distractors-container">
                         ${distractorVals
