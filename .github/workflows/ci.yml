@@ -40,6 +40,10 @@ jobs:
     - name: Unit Tests & Coverage
       run: npm run test:coverage
       
+    - name: Report Code Coverage
+      uses: davelosert/vitest-coverage-report-action@v2
+      if: always()
+      
     - name: Bundle Size Audit
       run: npm run size
       
