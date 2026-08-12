@@ -1,50 +1,29 @@
-name: CI Quality Pipeline
+name: CI Pipeline
 
 on:
   push:
-    branches: [ main, "feat/*", "fix/*", "build/*", "chore/*", "ci/*" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
-  validate:
+  build-and-test:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js Environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Install Dependencies
-        run: npm ci || npm install
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-
-      - name: 1. Verify Code Formatting (Prettier)
-        run: npm run format:check
-
-      - name: 2. Run Master Code Linting Suite (JS + CSS + HTML + Spell + Secrets)
-        run: npm run lint
-
-      - name: 3. Verify Strict JSDoc Type Safety (TSC)
-        run: npm run typecheck
-
-      - name: 4. Execute Production Bundle Byte Budget Check (Size-Limit)
-        run: npm run size
-
-      - name: 5. Execute Automated Unit & Integration Tests (Vitest)
-        run: npm run test:coverage
-
-      - name: 6. Execute Playwright Multi-Browser E2E Suite
-        run: npm run test:e2e
-
-      - name: 7. Run Dependency Security Audit (npm audit)
-        run: npm run audit
-
-      - name: 8. Verify Production Build Integrity
-        run: npm run build
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+      
+    - name: Run verification suite
+      run: npm run verify
