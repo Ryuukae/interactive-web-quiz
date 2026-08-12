@@ -30,8 +30,7 @@
     "audit": "npm audit --audit-level=high",
     "deps:check": "npm outdated",
     "prepare": "husky",
-    "verify": "npm run format:check && npm run lint && npm run size && npm run typecheck && npm run test:coverage && npm run audit && npm run build",
-    "release": "standard-version"
+    "verify": "npm run format:check && npm run lint && npm run size && npm run typecheck && npm run test:coverage && npm run audit && npm run build"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
@@ -54,7 +53,6 @@
     "rimraf": "^3.0.2",
     "secretlint": "^13.0.4",
     "size-limit": "^13.0.3",
-    "standard-version": "^9.5.0",
     "stylelint": "^16.0.0",
     "stylelint-config-standard": "^37.0.0",
     "typescript": "^5.0.0",
