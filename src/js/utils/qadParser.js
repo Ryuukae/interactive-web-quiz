@@ -1,33 +1,55 @@
-import { createLogger } from './logger.js';
+import { createLogger } from "./logger.js";
 
 /**
+ * Provides internal functionality.
  * @module qadParser
  * @version 1.0.0
- * @author Adam Ross DeStafeno
- * @since 2026-08-09
- * @description 
- * Architectural Responsibilities: Responsible for ingesting raw QAD formatted text strings, normalizing line endings, and executing parsing loops to assemble valid question objects. Enforces strict schema rules (1 Question, 1 Answer, 1-6 Distractors).
- * 
- * Encapsulation Scope: Strictly isolated to data formatting. It does not interact with the DOM, nor does it mutate global states.
+ * @author Adam Ross DeStafeno Architectural Responsibilities: Responsible for ingesting raw QAD formatted text strings, normalizing line endings, and executing parsing loops to assemble valid question objects. Enforces strict schema rules (1 Question, 1 Answer, 1-6 Distractors). Encapsulation Scope: Strictly isolated to data formatting. It does not interact with the DOM, nor does it mutate global states.
  */
 
 /**
+ * Provides internal functionality.
+ * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
+ * @typedef {import('../models/QuizState.js').AnswerType} AnswerType
+ */
+
+/**
+ * Provides internal functionality.
+ * @param {string} question - The text of the question.
+ * @returns {QuestionType} - The initialized question object.
+ */
+function createQuestionBlock(question) {
+    return { question, answers: [] };
+}
+
+/**
+ * Parses custom QAD text files exclusively into a standardized JSON array optimally for the application natively.
  * @name parseQADFormat
  * @public
- * @description Parses custom QAD text files exclusively into a standardized JSON array optimally for the application natively.
  * @param {string} rawText - The raw text payload string from the optimally uploaded file or physically typed textarea.
- * @returns {Array<Object>} - Formatted question objects sequentially ready for state ingestion globally.
+ * @returns {QuestionType[]} - Formatted question objects sequentially ready for state ingestion globally.
  * @throws {Error} - Throws an explicit string error conclusively if structural formatting bounds are violated natively.
  */
 export function parseQADFormat(rawText) {
     const logger = createLogger("qadParser.parseQADFormat");
-    logger.info("parseQADFormat called", { rawText, characterCount: rawText ? rawText.length : 0 });
+    logger.info("parseQADFormat called", {
+        rawText,
+        characterCount: rawText ? rawText.length : 0
+    });
 
-    const normalizedText = rawText.replace(/\r\n/g, '\n').trim();
-    const lines = normalizedText.split('\n');
+    const normalizedText = rawText.replace(/\r\n/g, "\n").trim();
+    const lines = normalizedText.split("\n");
     logger.debug("Normalized raw text into lines", { lineCount: lines.length });
-    
+
+    /**
+     * Provides internal functionality.
+     * @type {QuestionType[]}
+     */
     const questions = [];
+    /**
+     * Provides internal functionality.
+     * @type {QuestionType | null}
+     */
     let currentQuestion = null;
     let answerCount = 0;
     let distractorCount = 0;
@@ -35,44 +57,54 @@ export function parseQADFormat(rawText) {
     /* Iterates sequentially physically through generic text lines exclusively to assemble discrete organically validated question blocks. */
     // ----------------------------------------------------------------------
     for (let line of lines) {
-        
         const cleanLine = line.trim();
-        
+
         if (!cleanLine) continue;
 
         const lowerLine = cleanLine.toLowerCase();
 
         if (lowerLine.startsWith("q=")) {
             if (currentQuestion !== null) {
-                logger.debug("Finalizing previous question block", { question: currentQuestion.question });
+                logger.debug("Finalizing previous question block", {
+                    question: currentQuestion.question
+                });
                 validateBlock(currentQuestion, answerCount, distractorCount);
                 questions.push(currentQuestion);
             }
 
-            currentQuestion = {
-                question: cleanLine.substring(2).trim(),
-                answers: []
-            };
-            logger.debug("Parsed question header", { question: currentQuestion.question });
-            
+            currentQuestion = createQuestionBlock(
+                cleanLine.substring(2).trim()
+            );
+            logger.debug("Parsed question header", {
+                question: currentQuestion.question
+            });
+
             answerCount = 0;
             distractorCount = 0;
-
         } else if (lowerLine.startsWith("a=")) {
             if (currentQuestion === null) {
                 logger.error("QAD parse error: Orphaned answer detected");
-                throw new Error("Orphaned answer detected. Every block must start with 'q='.");
+                throw new Error(
+                    "Orphaned answer detected. Every block must start with 'q='."
+                );
             }
-            
+
             if (answerCount >= 1) {
-                logger.error("QAD parse error: Multiple correct answers detected in block", { question: currentQuestion.question });
-                throw new Error("Malformed block: Each question group can only have exactly one 'a=' line.");
+                logger.error(
+                    "QAD parse error: Multiple correct answers detected in block",
+                    { question: currentQuestion.question }
+                );
+                throw new Error(
+                    "Malformed block: Each question group can only have exactly one 'a=' line."
+                );
             }
 
             const aText = cleanLine.substring(2).trim();
             if (!aText) {
                 logger.error("QAD parse error: Empty correct answer text");
-                throw new Error(`Correct answer line 'a=' for question "${currentQuestion.question || 'unnamed'}" cannot be empty or whitespace-only.`);
+                throw new Error(
+                    `Correct answer line 'a=' for question "${currentQuestion.question || "unnamed"}" cannot be empty or whitespace-only.`
+                );
             }
 
             currentQuestion.answers.push({
@@ -80,18 +112,24 @@ export function parseQADFormat(rawText) {
                 correct: true
             });
             answerCount++;
-            logger.trace("Parsed correct answer", { question: currentQuestion.question, answerCount });
-
+            logger.trace("Parsed correct answer", {
+                question: currentQuestion.question,
+                answerCount
+            });
         } else if (lowerLine.startsWith("d=")) {
             if (currentQuestion === null) {
                 logger.error("QAD parse error: Orphaned distractor detected");
-                throw new Error("Orphaned distractor detected. Every block must start with 'q='.");
+                throw new Error(
+                    "Orphaned distractor detected. Every block must start with 'q='."
+                );
             }
 
             const dText = cleanLine.substring(2).trim();
             if (!dText) {
                 logger.error("QAD parse error: Empty distractor text");
-                throw new Error(`Distractor line 'd=' for question "${currentQuestion.question || 'unnamed'}" cannot be empty or whitespace-only.`);
+                throw new Error(
+                    `Distractor line 'd=' for question "${currentQuestion.question || "unnamed"}" cannot be empty or whitespace-only.`
+                );
             }
 
             currentQuestion.answers.push({
@@ -99,13 +137,18 @@ export function parseQADFormat(rawText) {
                 correct: false
             });
             distractorCount++;
-            logger.trace("Parsed distractor", { question: currentQuestion.question, distractorCount });
+            logger.trace("Parsed distractor", {
+                question: currentQuestion.question,
+                distractorCount
+            });
         }
     }
     // ----------------------------------------------------------------------
 
     if (currentQuestion !== null) {
-        logger.debug("Finalizing trailing question block", { question: currentQuestion.question });
+        logger.debug("Finalizing trailing question block", {
+            question: currentQuestion.question
+        });
         validateBlock(currentQuestion, answerCount, distractorCount);
         questions.push(currentQuestion);
     }
@@ -115,15 +158,17 @@ export function parseQADFormat(rawText) {
         throw new Error("No valid question blocks detected.");
     }
 
-    logger.info("QAD parsing completed successfully", { questionCount: questions.length });
+    logger.info("QAD parsing completed successfully", {
+        questionCount: questions.length
+    });
     return questions;
 }
 
 /**
+ * Helper method to validate that a parsed QAD block meets strict structural requirements.
  * @name validateBlock
  * @private
- * @description Helper method to validate that a parsed QAD block meets strict structural requirements.
- * @param {Object} block - The question object being assembled.
+ * @param {QuestionType} block - The question object being assembled.
  * @param {number} answers - Count of correct answers found.
  * @param {number} distractors - Count of distractors found.
  * @returns {void} - Does not return a value.
@@ -138,12 +183,22 @@ function validateBlock(block, answers, distractors) {
         throw new Error("Question block is missing prompt text.");
     }
     if (answers !== 1) {
-        logger.error("validateBlock error: Invalid correct answer count", { answers, question: block.question });
-        throw new Error(`Question "${block.question}" must have exactly one 'a=' correct answer line.`);
+        logger.error("validateBlock error: Invalid correct answer count", {
+            answers,
+            question: block.question
+        });
+        throw new Error(
+            `Question "${block.question}" must have exactly one 'a=' correct answer line.`
+        );
     }
     if (distractors < 1 || distractors > 6) {
-        logger.error("validateBlock error: Distractor count out of bounds", { distractors, question: block.question });
-        throw new Error(`Question "${block.question}" must have between 1 and 6 'd=' distractor lines (found ${distractors}).`);
+        logger.error("validateBlock error: Distractor count out of bounds", {
+            distractors,
+            question: block.question
+        });
+        throw new Error(
+            `Question "${block.question}" must have between 1 and 6 'd=' distractor lines (found ${distractors}).`
+        );
     }
 
     logger.debug("Validated QAD block successfully", {
@@ -152,4 +207,3 @@ function validateBlock(block, answers, distractors) {
         distractors
     });
 }
-

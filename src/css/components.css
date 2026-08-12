@@ -7,25 +7,25 @@ button {
     color: #e2e8f0;
     border: none;
     border-radius: 12px;
-    padding: 14px 32px; 
+    padding: 14px 32px;
     font-size: 1.1rem;
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(217, 70, 239, 0.15);
+    box-shadow: 0 4px 15px rgb(217 70 239 / 0.15);
     filter: brightness(0.85);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(217, 70, 239, 0.4);
+    box-shadow: 0 8px 25px rgb(217 70 239 / 0.4);
     filter: brightness(1.1);
 }
 
 button:active {
     transform: translateY(1px) scale(0.96);
-    box-shadow: 0 2px 8px rgba(217, 70, 239, 0.15);
+    box-shadow: 0 2px 8px rgb(217 70 239 / 0.15);
     filter: brightness(0.95);
 }
 
@@ -46,7 +46,7 @@ button:disabled {
 /* ==================================== */
 
 :where(button, input, select, textarea, [tabindex="0"]):focus-visible {
-    outline: 3px solid #a7d5ff; 
+    outline: 3px solid #a7d5ff;
     outline-offset: 3px;
     border-radius: 0.5rem;
 }
@@ -59,7 +59,7 @@ button:disabled {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px; 
+    gap: 12px;
     margin-top: 12px;
 }
 
@@ -69,9 +69,9 @@ button:disabled {
     gap: 12px;
     margin-top: 8px;
     width: 100%;
-    
+
     /* Prevents the button stack from crushing when the question cards container expands */
-    flex-shrink: 0; 
+    flex-shrink: 0;
 }
 
 .action-row {
@@ -83,9 +83,9 @@ button:disabled {
 
 .action-row button {
     flex: 1;
-    margin: 0; 
-    padding: 12px 16px; 
-    font-size: 0.95rem; 
+    margin: 0;
+    padding: 12px 16px;
+    font-size: 0.95rem;
 }
 
 /* ================================ */
@@ -95,7 +95,7 @@ button:disabled {
 .secondary-btn {
     background: transparent;
     color: #a7d5ff;
-    border: 1px solid rgba(167, 213, 255, 0.3);
+    border: 1px solid rgb(167 213 255 / 0.3);
     border-radius: 8px;
     padding: 10px 24px;
     font-size: 0.95rem;
@@ -103,15 +103,18 @@ button:disabled {
     cursor: pointer;
     box-shadow: none;
     filter: none;
-    transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.1s ease;
 }
 
 .secondary-btn:hover {
-    background: rgba(167, 213, 255, 0.1);
-    border-color: rgba(167, 213, 255, 0.6);
+    background: rgb(167 213 255 / 0.1);
+    border-color: rgb(167 213 255 / 0.6);
     box-shadow: none;
     filter: none;
-    transform: none; 
+    transform: none;
 }
 
 .secondary-btn:active {
@@ -124,22 +127,22 @@ button:disabled {
     width: 100%;
     border-style: dashed;
     border-width: 2px;
-    background: rgba(167, 213, 255, 0.05);
+    background: rgb(167 213 255 / 0.05);
 }
 
 .dashed-btn:hover {
-    background: rgba(167, 213, 255, 0.15);
-    border-style: dashed; 
+    background: rgb(167 213 255 / 0.15);
+    border-style: dashed;
 }
 
 .btn-danger {
-    border-color: rgba(244, 67, 54, 0.3);
-    color: #F44336;
+    border-color: rgb(244 67 54 / 0.3);
+    color: #f44336;
 }
 
 .btn-danger:hover {
-    background: rgba(244, 67, 54, 0.1);
-    border-color: rgba(244, 67, 54, 0.6);
+    background: rgb(244 67 54 / 0.1);
+    border-color: rgb(244 67 54 / 0.6);
 }
 
 /* =============================== */
@@ -148,23 +151,25 @@ button:disabled {
 
 .glass-input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.25);
+    background: rgb(0 0 0 / 0.25);
     color: #ffffff;
-    border: 1px solid rgba(167, 213, 255, 0.15);
+    border: 1px solid rgb(167 213 255 / 0.15);
     border-radius: 8px;
     padding: 10px 14px;
     margin-bottom: 8px;
     font-family: inherit;
     font-size: 0.95rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 input.glass-input.correct-input {
-    border-left: 4px solid #4CAF50 !important;
+    border-left: 4px solid #4caf50 !important;
 }
 
 input.glass-input.d-input {
-    border-left: 4px solid #F44336 !important;
+    border-left: 4px solid #f44336 !important;
 }
 
 /* =============================== */
@@ -172,12 +177,12 @@ input.glass-input.d-input {
 /* =============================== */
 
 .glass-input.input-error {
-    border-color: rgba(244, 67, 54, 0.6) !important;
-    box-shadow: 0 0 8px rgba(244, 67, 54, 0.2) !important;
+    border-color: rgb(244 67 54 / 0.6) !important;
+    box-shadow: 0 0 8px rgb(244 67 54 / 0.2) !important;
 }
 
 .glass-input.input-error::placeholder {
-    color: rgba(244, 67, 54, 0.8) !important;
+    color: rgb(244 67 54 / 0.8) !important;
     font-style: italic;
 }
 
@@ -186,12 +191,12 @@ input.glass-input.d-input {
 /* =============================== */
 
 .progress-bar {
-    background: rgba(255, 255, 255, 0.08);
-    height: 12px; 
-    border-radius: 12px; 
+    background: rgb(255 255 255 / 0.08);
+    height: 12px;
+    border-radius: 12px;
     margin-top: 24px;
-    overflow: hidden; 
-    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    box-shadow: inset 0 1px 4px rgb(0 0 0 / 0.4);
 }
 
 .progress {
@@ -199,25 +204,28 @@ input.glass-input.d-input {
     background-size: 300% 100%;
     border-radius: 12px;
     height: 100%;
-    width: 0%; 
+    width: 0%;
     transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     animation: progress-streak-pulse 4s infinite ease-in-out;
 }
 
 @keyframes progress-streak-pulse {
     0% {
-        background-position: 100% 0; 
-        box-shadow: 0 0 4px rgba(126, 182, 230, 0.4);
+        background-position: 100% 0;
+        box-shadow: 0 0 4px rgb(126 182 230 / 0.4);
         filter: brightness(1);
     }
-    50%, 100% {
-        background-position: 0 0; 
-        box-shadow: 0 0 4px rgba(126, 182, 230, 0.4);
+    50%,
+    100% {
+        background-position: 0 0;
+        box-shadow: 0 0 4px rgb(126 182 230 / 0.4);
         filter: brightness(1);
     }
     75% {
-        background-position: 0 0; 
-        box-shadow: 0 0 16px 2px rgba(126, 182, 230, 0.95), 0 0 40px 4px rgba(126, 182, 230, 0.7);
+        background-position: 0 0;
+        box-shadow:
+            0 0 16px 2px rgb(126 182 230 / 0.95),
+            0 0 40px 4px rgb(126 182 230 / 0.7);
         filter: brightness(1.4);
     }
 }
@@ -231,7 +239,7 @@ input.glass-input.d-input {
     font-size: 0.85rem;
     font-style: italic;
     margin-top: -8px;
-    opacity: 0; 
+    opacity: 0;
     transition: opacity 0.3s ease;
 }
 
@@ -250,7 +258,7 @@ input.glass-input.d-input {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 700;
-    opacity: 1; 
+    opacity: 1;
 }
 
 #bulk-import-status {
@@ -265,18 +273,18 @@ input.glass-input.d-input {
 
 .format-guide {
     width: 100%;
-    max-width: 185px; 
-    margin-top: -8px; 
+    max-width: 185px;
+    margin-top: -8px;
     text-align: left;
-    background: rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(167, 213, 255, 0.15);
+    background: rgb(0 0 0 / 0.15);
+    border: 1px solid rgb(167 213 255 / 0.15);
     border-radius: 12px;
     overflow: hidden;
     transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .format-guide[open] {
-    max-width: 480px; 
+    max-width: 480px;
 }
 
 .format-guide summary {
@@ -285,11 +293,11 @@ input.glass-input.d-input {
     align-items: center;
     padding: 8px 16px;
     color: #a7d5ff;
-    font-size: 0.70rem;
+    font-size: 0.7rem;
     font-weight: 500;
     font-style: italic;
     cursor: pointer;
-    list-style: none; 
+    list-style: none;
 }
 
 .format-guide summary::-webkit-details-marker {
@@ -297,8 +305,8 @@ input.glass-input.d-input {
 }
 
 .format-guide summary::after {
-    content: '+';
-    font-size: .70rem;
+    content: "+";
+    font-size: 0.7rem;
     font-weight: 300;
     transition: transform 0.3s ease;
 }
@@ -320,8 +328,8 @@ input.glass-input.d-input {
 }
 
 .guide-content pre {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px inset rgba(255, 255, 255, 0.05);
+    background: rgb(0 0 0 / 0.4);
+    border: 1px inset rgb(255 255 255 / 0.05);
     border-radius: 8px;
     padding: 12px;
     margin-bottom: 16px;
@@ -329,8 +337,8 @@ input.glass-input.d-input {
 }
 
 .guide-content code {
-    color: #6ee7b7; 
-    font-family: 'Courier New', Courier, monospace;
+    color: #6ee7b7;
+    font-family: "Courier New", Courier, monospace;
     font-size: 0.75rem;
 }
 
@@ -351,6 +359,7 @@ input.glass-input.d-input {
     text-decoration: underline;
 }
 
-#accordion_btn {
+#accordion_btn_txt,
+#accordion_btn_json {
     font-family: sans-serif;
 }

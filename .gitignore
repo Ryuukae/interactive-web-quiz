@@ -12,36 +12,73 @@
 !src/js/utils/
 !tests/
 !tests/unit/
+!tests/integration/
+!tests/e2e/
 !.github/
 !.github/workflows/
+!.husky/
+!.github/ISSUE_TEMPLATE/
+
 
 # Only allow certain files
 !.gitignore
+!.gitattributes
+!.github/PULL_REQUEST_TEMPLATE.md
+!CHANGELOG.md
+!README.md
+!CONTRIBUTING.md
+!SECURITY.md
+!CODE_OF_CONDUCT.md
 !package.json
 !package-lock.json
 !jsconfig.json
+!.eslintrc.json
+!.htmlvalidate.json
+!.prettierrc
+!vite.config.js
+!playwright.config.js
+!.commitlintrc.json
+!.stylelintrc.json
+!.secretlintrc.json
+!.size-limit.json
+!.lighthouserc.json
+!.lintstagedrc.json
+!.husky/pre-commit
+!.husky/pre-push
+!.husky/commit-msg
+!.cspell.json
+!eslint.config.js
 
-# HTML
+# .HTML
 !index.html
 
-# JSON
+# .JSON
 !public/*.json
 
-# TXT
+# .TXT
 !public/*.txt
 
-#YML
+# .YML
+!.github/dependabot.yml
+!.github/labeler.yml
 !.github/workflows/*.yml
 
-# CSS
+# GitHub Config
+!.github/CODEOWNERS
+!.github/ISSUE_TEMPLATE/*.md
+
+# .CSS
 !src/css/*.css
 
-# JS
+# .JS
 !src/js/*.js
 !src/js/components/*.js
 !src/js/controllers/*.js
 !src/js/models/*.js
 !src/js/utils/*.js
 !tests/unit/*.js
+!tests/integration/*.js
 
+# .SPEC.JS
+!tests/e2e/*.spec.js
 

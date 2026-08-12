@@ -3,9 +3,9 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "target": "ES2022",
+    "lib": ["es2022", "dom"],
     "checkJs": true,
-    "strict": true,
-    "noImplicitAny": true
+    "strict": true
   },
   "include": ["src/**/*"]
 }
