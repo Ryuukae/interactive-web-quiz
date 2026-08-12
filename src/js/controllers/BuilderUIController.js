@@ -6,26 +6,25 @@ import BuilderCardComponent from "../components/BuilderCardComponent.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * Provides internal functionality.
  * @typedef {import('../models/BuilderState.js').default} BuilderStateType
  * @typedef {import('./QuizUIController.js').default} QuizUIControllerType
  * @typedef {import('./AppNavigationController.js').default} AppNavigationControllerType
  */
 
 /**
+ * Provides internal functionality.
  * @class BuilderUIController
  * @name BuilderUIController
  * @version 1.0.0
- * @author Adam Ross DeStafeno
- * @since 2026-08-09
- * @description
- * Architectural Responsibilities: Solely coordinates the Form Builder GUI. Maps UI actions (Add, Bulk Parse, Clear All) strictly to physical Component actions or logical Model mutations.
- *
- * Encapsulation Scope: Modulates `#creator-screen` capabilities comprehensively.
+ * @author Adam Ross DeStafeno Architectural Responsibilities: Solely coordinates the Form Builder GUI. Maps UI actions (Add, Bulk Parse, Clear All) strictly to physical Component actions or logical Model mutations. Encapsulation Scope: Modulates `#creator-screen` capabilities comprehensively.
  */
 export default class BuilderUIController {
     /**
-     * @param {string} id
-     * @returns {HTMLElement}
+     * Provides internal functionality.
+     * @param {string} id - The DOM element ID.
+     * @returns {HTMLElement} - The resolved DOM node.
+     * @throws {Error} - If the DOM node is not found.
      */
     getEl(id) {
         const el = document.getElementById(id);
@@ -35,12 +34,13 @@ export default class BuilderUIController {
     }
 
     /**
+     * Links physical nodes with Model authorities cleanly.
      * @name constructor
      * @public
-     * @description Links physical nodes with Model authorities cleanly.
      * @param {BuilderStateType} builderState - The central tracker modeling card components natively.
      * @param {QuizUIControllerType} quizUIController - Exposed for direct bypass assessment triggers explicitly.
      * @param {AppNavigationControllerType} appNavController - Coordinates manual routing assignments optimally.
+     * @throws {Error} If the bulk-import-text element is not found or not a textarea.
      */
     constructor(builderState, quizUIController, appNavController) {
         this.logger = createLogger("BuilderUIController");
@@ -72,9 +72,9 @@ export default class BuilderUIController {
     }
 
     /**
+     * Hooks physical actions explicitly to bounded component workflows and logical routines securely.
      * @name initializeEventListeners
      * @public
-     * @description Hooks physical actions explicitly to bounded component workflows and logical routines securely.
      * @returns {void} - Does not return a value.
      */
     initializeEventListeners() {
@@ -195,9 +195,9 @@ export default class BuilderUIController {
     }
 
     /**
+     * Safely forces the bulk import panel into a constrained CSS visibility state.
      * @name collapseBulkImport
      * @public
-     * @description Safely forces the bulk import panel into a constrained CSS visibility state.
      * @returns {void} - Does not return a value.
      */
     collapseBulkImport() {
@@ -209,9 +209,9 @@ export default class BuilderUIController {
     }
 
     /**
+     * Dynamically recalculates and applies the required height for the bulk import text area to ensure all content is fully visible without internal scrollbars.
      * @name adjustBulkImportTextareaHeight
      * @public
-     * @description Dynamically recalculates and applies the required height for the bulk import text area to ensure all content is fully visible without internal scrollbars.
      * @returns {void} - Does not return a value.
      */
     adjustBulkImportTextareaHeight() {
@@ -225,9 +225,9 @@ export default class BuilderUIController {
     }
 
     /**
+     * Locates the first validation error within the builder container and scrolls it smoothly into the viewport.
      * @name scrollToFirstError
      * @public
-     * @description Locates the first validation error within the builder container and scrolls it smoothly into the viewport.
      * @returns {void} - Does not return a value.
      */
     scrollToFirstError() {
@@ -253,9 +253,9 @@ export default class BuilderUIController {
     }
 
     /**
+     * Purges legacy artifacts completely, explicitly triggering primary baseline construction capabilities to guarantee a fresh logical execution state.
      * @name initializeBuilder
      * @public
-     * @description Purges legacy artifacts completely, explicitly triggering primary baseline construction capabilities to guarantee a fresh logical execution state.
      * @returns {void} - Does not return a value.
      */
     initializeBuilder() {
@@ -284,9 +284,9 @@ export default class BuilderUIController {
     }
 
     /**
+     * Safeguards validation protocols natively, collapsing active visual tracks, triggering strict node generation, and scrolling into bounded zones systematically.
      * @name handleAddQuestion
      * @public
-     * @description Safeguards validation protocols natively, collapsing active visual tracks, triggering strict node generation, and scrolling into bounded zones systematically.
      * @returns {void} - Does not return a value.
      */
     handleAddQuestion() {
@@ -335,9 +335,9 @@ export default class BuilderUIController {
     }
 
     /**
+     * Processes isolated text payloads dynamically against external data layers, securely extracting arrays, iterating instantiations, and resolving UI cues actively.
      * @name handleBulkImport
      * @public
-     * @description Processes isolated text payloads dynamically against external data layers, securely extracting arrays, iterating instantiations, and resolving UI cues actively.
      * @returns {void} - Does not return a value.
      */
     handleBulkImport() {
@@ -415,9 +415,9 @@ export default class BuilderUIController {
     }
 
     /**
+     * Manages error interception cleanly and delegates custom payload parsing natively to the external testing controller bypass function natively.
      * @name startBuilderQuiz
      * @public
-     * @description Manages error interception cleanly and delegates custom payload parsing natively to the external testing controller bypass function natively.
      * @returns {void} - Does not return a value.
      */
     startBuilderQuiz() {
@@ -461,9 +461,9 @@ export default class BuilderUIController {
     }
 
     /**
+     * Scrapes localized logical states explicitly against output algorithms seamlessly physically.
      * @name exportBuilderQuiz
      * @public
-     * @description Scrapes localized logical states explicitly against output algorithms seamlessly physically.
      * @returns {void} - Does not return a value.
      */
     exportBuilderQuiz() {
