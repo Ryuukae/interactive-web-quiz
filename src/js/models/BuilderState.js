@@ -5,34 +5,30 @@
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * Provides internal functionality.
  * @typedef {import('../components/BuilderCardComponent.js').default} BuilderCardComponentType
  * @typedef {import('./QuizState.js').QuestionType} QuestionType
- *
  */
 
 /**
+ * Provides internal functionality.
  * @class BuilderState
  * @name BuilderState
  * @version 1.0.0
  * @author Adam Ross DeStafeno
- * @since 2026-08-09
- * @property {BuilderCardComponentType[]} cards - Live array of instantiated builder components.
- * @description
- * Architectural Responsibilities: Manages the active form building session. Retains a live array of BuilderCardComponent instances in memory to act as the definitive source of truth, completely detaching data from the physical DOM layout.
- *
- *
+ * @property {BuilderCardComponentType[]} cards - Live array of instantiated builder components. Architectural Responsibilities: Manages the active form building session. Retains a live array of BuilderCardComponent instances in memory to act as the definitive source of truth, completely detaching data from the physical DOM layout.
  */
 export default class BuilderState {
     /**
-     * @type {BuilderCardComponentType[]}
-     * @description Array of active builder card components.
+     * Provides internal functionality.
+     * @type {BuilderCardComponentType[]} Array of active builder card components.
      */
     cards = [];
 
     /**
+     * Initializes an empty internal array to track active builder components.
      * @name constructor
      * @public
-     * @description Initializes an empty internal array to track active builder components.
      */
     constructor() {
         this.logger = createLogger("BuilderState");
@@ -44,9 +40,9 @@ export default class BuilderState {
     }
 
     /**
+     * Appends a new BuilderCardComponent instance to the active tracking array.
      * @name addCard
      * @public
-     * @description Appends a new BuilderCardComponent instance to the active tracking array.
      * @param {BuilderCardComponentType} card - The initialized component instance.
      * @returns {void} - Does not return a value.
      */
@@ -62,9 +58,9 @@ export default class BuilderState {
     }
 
     /**
+     * Evaluates the internal array to locate and purge the specific component instance, triggering its physical DOM destruction.
      * @name removeCard
      * @public
-     * @description Evaluates the internal array to locate and purge the specific component instance, triggering its physical DOM destruction.
      * @param {BuilderCardComponentType} card - The specific component instance to purge.
      * @returns {void} - Does not return a value.
      */
@@ -87,9 +83,9 @@ export default class BuilderState {
     }
 
     /**
+     * Forces the destruction of all tracked components and resets the internal tracking array to its baseline.
      * @name clearAll
      * @public
-     * @description Forces the destruction of all tracked components and resets the internal tracking array to its baseline.
      * @returns {void} - Does not return a value.
      */
     clearAll() {
@@ -107,9 +103,9 @@ export default class BuilderState {
     }
 
     /**
+     * Loops through all tracked components and forces them into a collapsed visual state to conserve viewport real estate.
      * @name collapseAllCards
      * @public
-     * @description Loops through all tracked components and forces them into a collapsed visual state to conserve viewport real estate.
      * @returns {void} - Does not return a value.
      */
     collapseAllCards() {
@@ -126,9 +122,9 @@ export default class BuilderState {
     }
 
     /**
+     * Evaluates every active component to guarantee all structural requirements are met.
      * @name validateAllCards
      * @public
-     * @description Evaluates every active component to guarantee all structural requirements are met.
      * @returns {boolean} - True if all components report a valid state; otherwise false.
      */
     validateAllCards() {
@@ -158,9 +154,9 @@ export default class BuilderState {
     }
 
     /**
+     * Iterates across the entire memory stack, commanding each component to scrape its local data into a unified array object.
      * @name getSerializedPayload
      * @public
-     * @description Iterates across the entire memory stack, commanding each component to scrape its local data into a unified array object.
      * @returns {QuestionType[]} - The fully assembled assessment JSON.
      */
     getSerializedPayload() {
