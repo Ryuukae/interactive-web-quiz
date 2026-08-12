@@ -1,20 +1,16 @@
 import { createLogger } from "./logger.js";
 
 /**
+ * Provides internal functionality.
  * @module templates
  * @version 1.0.0
- * @author Adam Ross DeStafeno
- * @since 2026-08-08
- * @description
- * Architectural Responsibilities: Houses static string payloads for injection into user-facing text areas to assist with syntax formatting.
- *
- * Encapsulation Scope: Global utility. Provides read-only data string generation natively.
+ * @author Adam Ross DeStafeno Architectural Responsibilities: Houses static string payloads for injection into user-facing text areas to assist with syntax formatting. Encapsulation Scope: Global utility. Provides read-only data string generation natively.
  */
 
 /**
+ * Generates a structural JSON template payload dynamically.
  * @name getJsonTemplate
  * @public
- * @description Generates a structural JSON template payload dynamically.
  * @returns {string} - The formatted JSON blueprint natively.
  */
 export function getJsonTemplate() {
@@ -26,9 +22,9 @@ export function getJsonTemplate() {
 }
 
 /**
+ * Generates a structural plain-text QAD template payload dynamically.
  * @name getTxtTemplate
  * @public
- * @description Generates a structural plain-text QAD template payload dynamically.
  * @returns {string} - The formatted TXT blueprint natively.
  */
 export function getTxtTemplate() {
