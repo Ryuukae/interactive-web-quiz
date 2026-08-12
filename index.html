@@ -27,7 +27,7 @@
       Acts as the primary wrapper for the application layout. Confines the UI bounds
       and provides a stable backdrop for the glassmorphism rendering.
     -->
-        <div class="container">
+        <main class="container">
             <!-- ============================================= -->
             <!-- --- STAGE 1: START SCREEN (INITIAL STATE) --- -->
             <!-- ============================================= -->
@@ -100,7 +100,7 @@
                 <!-- QUIZ HEADER: Houses the dynamic question text and real-time metadata -->
                 <div class="quiz-header">
                     <!-- Text node updated dynamically by QuizState progression -->
-                    <h2 id="question-text">Question goes here...</h2>
+                    <h1 id="question-text">Question goes here...</h1>
 
                     <!-- Metadata container: Tracks chronological progress and current scoring -->
                     <div class="quiz-info">
@@ -462,7 +462,7 @@ q=Which protocol is considered secure?
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
 
         <!-- ============================== -->
         <!-- --- SCRIPT DEPENDENCY TREE --- -->
