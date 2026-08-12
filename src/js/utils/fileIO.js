@@ -1,20 +1,16 @@
 import { createLogger } from "./logger.js";
 
 /**
+ * Provides internal functionality.
  * @module fileIO
  * @version 1.0.0
- * @author Adam Ross DeStafeno
- * @since 2026-08-08
- * @description
- * Architectural Responsibilities: Encapsulates all browser-native file generation and download triggers, as well as local file reading explicitly.
- *
- * Encapsulation Scope: Global utility. Completely agnostic to application state or physical DOM structures inherently.
+ * @author Adam Ross DeStafeno Architectural Responsibilities: Encapsulates all browser-native file generation and download triggers, as well as local file reading explicitly. Encapsulation Scope: Global utility. Completely agnostic to application state or physical DOM structures inherently.
  */
 
 /**
+ * Converts a JavaScript payload into a formatted JSON file and triggers a client browser download globally.
  * @name exportJSON
  * @public
- * @description Converts a JavaScript payload into a formatted JSON file and triggers a client browser download globally.
  * @param {any[] | object} payload - The compiled data logic to serialize cleanly.
  * @param {string} filename - The designated output file name strictly.
  * @returns {void} - Does not return a value.
@@ -58,9 +54,9 @@ export function exportJSON(payload, filename = "quizset_template.json") {
 }
 
 /**
+ * Extracts text contents from a physical File object securely seamlessly.
  * @name readFile
  * @public
- * @description Extracts text contents from a physical File object securely seamlessly.
  * @param {File} file - The file object explicitly selected by the user.
  * @returns {Promise<string>} - Resolves seamlessly with the raw text payload.
  */
