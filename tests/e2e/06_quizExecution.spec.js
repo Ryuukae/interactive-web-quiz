@@ -36,13 +36,13 @@ test.describe('E2E Spec 6: Complete Interactive Quiz Execution Flow', () => {
         
         while (!(await resultScreen.evaluate(node => node.classList.contains('active')))) {
             // Wait for answer buttons to be available and enabled
-            const firstAnswerButton = page.locator('#answers-container .answer-btn').first();
-            await firstAnswerButton.waitFor({ state: 'visible' });
+            const correctAnswerButton = page.locator('#answers-container .answer-btn[data-correct="true"]');
+            await correctAnswerButton.waitFor({ state: 'visible' });
             
             // Only click if the button is not disabled
-            const isDisabled = await firstAnswerButton.evaluate(node => node.disabled);
+            const isDisabled = await correctAnswerButton.evaluate(node => node.disabled);
             if (!isDisabled) {
-                await firstAnswerButton.click();
+                await correctAnswerButton.click();
             }
             
             // Wait a short tick before checking again
