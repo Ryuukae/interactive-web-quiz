@@ -1,33 +1,31 @@
 import { createLogger } from "./logger.js";
 
 /**
+ * Provides internal functionality.
  * @module qadParser
  * @version 1.0.0
- * @author Adam Ross DeStafeno
- * @since 2026-08-09
- * @description
- * Architectural Responsibilities: Responsible for ingesting raw QAD formatted text strings, normalizing line endings, and executing parsing loops to assemble valid question objects. Enforces strict schema rules (1 Question, 1 Answer, 1-6 Distractors).
- *
- * Encapsulation Scope: Strictly isolated to data formatting. It does not interact with the DOM, nor does it mutate global states.
+ * @author Adam Ross DeStafeno Architectural Responsibilities: Responsible for ingesting raw QAD formatted text strings, normalizing line endings, and executing parsing loops to assemble valid question objects. Enforces strict schema rules (1 Question, 1 Answer, 1-6 Distractors). Encapsulation Scope: Strictly isolated to data formatting. It does not interact with the DOM, nor does it mutate global states.
  */
 
 /**
+ * Provides internal functionality.
  * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
  * @typedef {import('../models/QuizState.js').AnswerType} AnswerType
  */
 
 /**
- * @param {string} question
- * @returns {QuestionType}
+ * Provides internal functionality.
+ * @param {string} question - The text of the question.
+ * @returns {QuestionType} - The initialized question object.
  */
 function createQuestionBlock(question) {
     return { question, answers: [] };
 }
 
 /**
+ * Parses custom QAD text files exclusively into a standardized JSON array optimally for the application natively.
  * @name parseQADFormat
  * @public
- * @description Parses custom QAD text files exclusively into a standardized JSON array optimally for the application natively.
  * @param {string} rawText - The raw text payload string from the optimally uploaded file or physically typed textarea.
  * @returns {QuestionType[]} - Formatted question objects sequentially ready for state ingestion globally.
  * @throws {Error} - Throws an explicit string error conclusively if structural formatting bounds are violated natively.
@@ -43,9 +41,15 @@ export function parseQADFormat(rawText) {
     const lines = normalizedText.split("\n");
     logger.debug("Normalized raw text into lines", { lineCount: lines.length });
 
-    /** @type {QuestionType[]} */
+    /**
+     * Provides internal functionality.
+     * @type {QuestionType[]}
+     */
     const questions = [];
-    /** @type {QuestionType | null} */
+    /**
+     * Provides internal functionality.
+     * @type {QuestionType | null}
+     */
     let currentQuestion = null;
     let answerCount = 0;
     let distractorCount = 0;
@@ -161,9 +165,9 @@ export function parseQADFormat(rawText) {
 }
 
 /**
+ * Helper method to validate that a parsed QAD block meets strict structural requirements.
  * @name validateBlock
  * @private
- * @description Helper method to validate that a parsed QAD block meets strict structural requirements.
  * @param {QuestionType} block - The question object being assembled.
  * @param {number} answers - Count of correct answers found.
  * @param {number} distractors - Count of distractors found.
