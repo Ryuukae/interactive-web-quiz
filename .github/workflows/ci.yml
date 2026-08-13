@@ -42,7 +42,7 @@ jobs:
       
     - name: Report Code Coverage
       uses: davelosert/vitest-coverage-report-action@v2
-      if: always()
+      if: success()
       
     - name: Production Build
       run: npm run build

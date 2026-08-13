@@ -5,7 +5,9 @@
     "target": "ES2022",
     "lib": ["es2022", "dom"],
     "checkJs": true,
-    "strict": true
+    "strict": true,
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "coverage", "dist"]
 }
