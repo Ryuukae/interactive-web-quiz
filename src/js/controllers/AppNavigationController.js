@@ -1,6 +1,10 @@
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * @typedef {"start" | "creator" | "quiz" | "result"} ScreenKey
+ */
+
+/**
  * Architectural Responsibilities: Centralized application router natively. Exclusively handles CSS visibility toggles to map the active viewport state seamlessly to the explicitly required stage.
  * Encapsulation Scope: Strictly isolated purely to global SPA transitions explicitly.
  * @class AppNavigationController
@@ -118,7 +122,7 @@ export default class AppNavigationController {
      * Iterates through global view nodes to strictly force invisibility natively explicitly, then selectively appends the active class natively.
      * @name navigateTo
      * @public
-     * @param {string} screenKey - The string key natively mapping physically to cached nodes exclusively.
+     * @param {ScreenKey} screenKey - The string key natively mapping physically to cached nodes exclusively.
      * @returns {void} - Does not return a value.
      */
     navigateTo(screenKey) {
