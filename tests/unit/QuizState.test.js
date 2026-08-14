@@ -74,4 +74,19 @@ describe("QuizState Model Unit Tests", () => {
         state.evaluateAnswer(true);
         expect(state.score).toBe(scoreAfterFirst + 1);
     });
+
+    it("should calculate grade percentage accurately", () => {
+        const state = new QuizState(sampleData);
+        state.score = 1;
+        expect(state.getGradePercentage()).toBe(50);
+    });
+
+    it("should shuffle quiz data appropriately", () => {
+        const state = new QuizState(sampleData);
+        const data = [{ q: 1, answers: [{a:1}] }, { q: 2, answers: [{a:1}] }, { q: 3, answers: [{a:1}] }];
+        const result = state.randomizeDeck([...data]);
+        expect(result.length).toBe(3);
+        // It shuffles answers too
+        expect(result[0].answers.length).toBe(1);
+    });
 });
