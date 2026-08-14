@@ -510,7 +510,7 @@ export default class BuilderUIController {
         this.logger.info("Builder quiz payload ready", {
             questionCount: payload.length
         });
-        this.quizUIController.loadCustomQuiz(payload);
+        this.quizUIController.loadCustomQuiz(payload, true);
     }
 
     /**
