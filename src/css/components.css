@@ -382,3 +382,16 @@ input.glass-input.d-input {
 #accordion_btn_json {
     font-family: sans-serif;
 }
+
+/* =========================== */
+/* --- QUIZ ABORT STATE --- */
+/* =========================== */
+
+#quiz-action-stack {
+    display: none;
+    margin-top: 24px;
+}
+
+#quiz-abort-actions {
+    justify-content: center;
+}
