@@ -97,6 +97,21 @@ export default class AppNavigationController {
                 this.navigateTo("creator");
             });
         }
+
+        const quizReturnBuilderBtn = document.getElementById(
+            "quiz-return-builder-btn"
+        );
+        if (quizReturnBuilderBtn instanceof HTMLButtonElement) {
+            quizReturnBuilderBtn.addEventListener("click", () => {
+                this.logger.info(
+                    "bindGlobalNavigation: onQuizReturnBuilderClick event"
+                );
+                this.logger.info(
+                    "Navigation request: creator screen from aborted quiz test"
+                );
+                this.navigateTo("creator");
+            });
+        }
     }
 
     /**
