@@ -66,11 +66,63 @@ describe("AppNavigationController Unit Tests", () => {
 
     it("should return early if navigating to the currently active screen", () => {
         const nav = new AppNavigationController();
-
-        // First navigation sets the active state
         nav.navigateTo("quiz");
-
-        // Second navigation to the same screen should trigger the early-return branch
         expect(() => nav.navigateTo("quiz")).not.toThrow();
+    });
+
+    it("should route correctly on button clicks", () => {
+        let mockElements = {};
+        let activeScreenId = "start";
+        globalThis.document = {
+            getElementById: (id) => {
+                if (!mockElements[id]) {
+                    const isBtn = id.includes("btn");
+                    const el = isBtn ? new globalThis.HTMLButtonElement() : new globalThis.HTMLElement();
+                    el.id = id;
+                    el.classList = {
+                        add: () => { activeScreenId = id; },
+                        remove: () => {}
+                    };
+                    el.listeners = {};
+                    el.addEventListener = (evt, cb) => { el.listeners[evt] = cb; };
+                    mockElements[id] = el;
+                }
+                return mockElements[id];
+            }
+        };
+
+        const nav = new AppNavigationController();
+        
+        // Trigger clicks
+        mockElements["create-quizset-btn"].listeners["click"]();
+        expect(activeScreenId).toBe("creator-screen");
+        
+        mockElements["btn-cancel-create"].listeners["click"]();
+        expect(activeScreenId).toBe("start-screen");
+        
+        mockElements["return-start-btn"].listeners["click"]();
+        expect(activeScreenId).toBe("start-screen");
+
+        mockElements["return-builder-btn"].listeners["click"]();
+        expect(activeScreenId).toBe("creator-screen");
+    });
+
+    it("should ignore missing or invalid button elements cleanly", () => {
+        globalThis.document = {
+            getElementById: (id) => null
+        };
+        const nav = new AppNavigationController();
+        expect(nav).toBeDefined();
+        nav.navigateTo("quiz"); // Hits the if (screen) false branch
+
+        globalThis.document = {
+            getElementById: (id) => {
+                const el = new globalThis.HTMLElement();
+                el.id = id;
+                return el;
+            }
+        };
+        const nav2 = new AppNavigationController();
+        expect(nav2).toBeDefined();
     });
 });
