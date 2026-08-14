@@ -259,6 +259,13 @@ export default class QuizUIController {
         this.quizState.resetQuiz();
         this.scoreSpan.textContent = String(this.quizState.score);
 
+        const quizActionStack = document.getElementById("quiz-action-stack");
+        if (quizActionStack) {
+            quizActionStack.style.display = this.isBuilderSource
+                ? "flex"
+                : "none";
+        }
+
         this.appNavController.navigateTo("quiz");
         this.showQuestion();
         this.logger.info("Quiz session started", {
