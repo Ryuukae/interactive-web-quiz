@@ -84,6 +84,19 @@ export default class AppNavigationController {
                 this.navigateTo("start");
             });
         }
+
+        const returnBuilderBtn = document.getElementById("return-builder-btn");
+        if (returnBuilderBtn instanceof HTMLButtonElement) {
+            returnBuilderBtn.addEventListener("click", () => {
+                this.logger.info(
+                    "bindGlobalNavigation: onReturnBuilderClick event"
+                );
+                this.logger.info(
+                    "Navigation request: creator screen from result"
+                );
+                this.navigateTo("creator");
+            });
+        }
     }
 
     /**
