@@ -9,6 +9,9 @@ on:
 jobs:
   merge-conflict-labeler:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
     steps:
       - uses: eps1lon/actions-label-merge-conflict@v3
         with:
