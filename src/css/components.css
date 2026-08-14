@@ -393,5 +393,14 @@ input.glass-input.d-input {
 }
 
 #quiz-abort-actions {
+    display: flex;
     justify-content: center;
+    width: 100%;
+}
+
+#quiz-return-builder-btn {
+    width: 100%;
+    max-width: 240px;
+    border: none;
+    opacity: 0.7;
 }
