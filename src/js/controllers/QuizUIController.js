@@ -1,4 +1,4 @@
-import { readFile } from "../utils/fileIO.js";
+import { readFile, exportJSON } from "../utils/fileIO.js";
 import { parseAndValidateRawText } from "../utils/schemaValidator.js";
 import QuizState from "../models/QuizState.js";
 import { createLogger } from "../utils/logger.js";
@@ -23,6 +23,12 @@ export default class QuizUIController {
      * @type {QuestionType[] | null}
      */
     customPayload;
+
+    /**
+     * Tracks whether the quiz originated from the builder to dictate contextual routing.
+     * @type {boolean}
+     */
+    isBuilderSource;
 
     /**
      * Provides internal functionality.
@@ -68,6 +74,7 @@ export default class QuizUIController {
         this.progressBar = this.getEl("progress");
 
         this.customPayload = null;
+        this.isBuilderSource = false;
 
         this.logger.info("Quiz UI controller initialized");
 
@@ -107,6 +114,18 @@ export default class QuizUIController {
             );
             this.handleFileUpload(e, "result-file-status");
         });
+
+        const exportBtn = document.getElementById("btn-export-results");
+        if (exportBtn instanceof HTMLButtonElement) {
+            exportBtn.addEventListener("click", () => {
+                this.logger.info(
+                    "bindEventListeners: onExportResultsClick event"
+                );
+                if (this.quizState && this.quizState.questionData) {
+                    exportJSON(this.quizState.questionData, "quizset.json");
+                }
+            });
+        }
     }
 
     /**
@@ -161,6 +180,7 @@ export default class QuizUIController {
             const parsedData = parseAndValidateRawText(rawText);
 
             this.customPayload = parsedData;
+            this.isBuilderSource = false;
 
             this.logger.info("File upload parsed successfully", {
                 fileName: file.name,
@@ -188,17 +208,20 @@ export default class QuizUIController {
      * @name loadCustomQuiz
      * @public
      * @param {QuestionType[]} payload - Assessment question objects
+     * @param {boolean} [isBuilderSource] - Context flag for routing
      * @returns {void} - Does not return a value.
      */
-    loadCustomQuiz(payload) {
+    loadCustomQuiz(payload, isBuilderSource = false) {
         this.logger.info("loadCustomQuiz called", {
             payload,
-            questionCount: payload ? payload.length : 0
+            questionCount: payload ? payload.length : 0,
+            isBuilderSource
         });
         this.logger.info("Loading custom quiz payload", {
             questionCount: payload.length
         });
         this.customPayload = payload;
+        this.isBuilderSource = isBuilderSource;
         this.startQuiz();
     }
 
@@ -235,6 +258,13 @@ export default class QuizUIController {
 
         this.quizState.resetQuiz();
         this.scoreSpan.textContent = String(this.quizState.score);
+
+        const quizActionStack = document.getElementById("quiz-action-stack");
+        if (quizActionStack) {
+            quizActionStack.style.display = this.isBuilderSource
+                ? "flex"
+                : "none";
+        }
 
         this.appNavController.navigateTo("quiz");
         this.showQuestion();
@@ -356,10 +386,32 @@ export default class QuizUIController {
         this.finalScoreSpan.textContent = String(this.quizState.score);
         const percentage = this.quizState.getGradePercentage();
         this.resultMessage.textContent = percentage + "%";
+
+        const uploadBtnNode =
+            this.getEl("result-file-input").nextElementSibling;
+        const uploadBtn =
+            uploadBtnNode instanceof HTMLElement ? uploadBtnNode : null;
+        const returnStartBtn = this.getEl("return-start-btn");
+        const returnBuilderBtn = this.getEl("return-builder-btn");
+        const exportBtn = this.getEl("btn-export-results");
+
+        if (this.isBuilderSource) {
+            if (uploadBtn) uploadBtn.style.display = "none";
+            returnStartBtn.style.display = "none";
+            returnBuilderBtn.style.display = "inline-flex";
+            exportBtn.style.display = "inline-flex";
+        } else {
+            if (uploadBtn) uploadBtn.style.display = "inline-flex";
+            returnStartBtn.style.display = "inline-flex";
+            returnBuilderBtn.style.display = "none";
+            exportBtn.style.display = "none";
+        }
+
         this.logger.info("Quiz results displayed", {
             score: this.quizState.score,
             totalQuestions: this.quizState.questionData.length,
-            percentage
+            percentage,
+            isBuilderSource: this.isBuilderSource
         });
     }
 }
