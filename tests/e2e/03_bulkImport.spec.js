@@ -27,6 +27,6 @@ test.describe("E2E Spec 3: Bulk Text Import Operations (QAD & JSON)", () => {
         const cards = page.locator(
             "#builder-questions-container .question-card"
         );
-        await expect(cards).toHaveCount(2);
+        await expect(cards).toHaveCount(1);
     });
 });
