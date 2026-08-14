@@ -1,11 +1,15 @@
 import { createLogger } from "../utils/logger.js";
 
 /**
+ * @typedef {"start" | "creator" | "quiz" | "result"} ScreenKey
+ */
+
+/**
  * Architectural Responsibilities: Centralized application router natively. Exclusively handles CSS visibility toggles to map the active viewport state seamlessly to the explicitly required stage.
  * Encapsulation Scope: Strictly isolated purely to global SPA transitions explicitly.
  * @class AppNavigationController
  * @name AppNavigationController
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno
  */
 export default class AppNavigationController {
@@ -118,33 +122,39 @@ export default class AppNavigationController {
      * Iterates through global view nodes to strictly force invisibility natively explicitly, then selectively appends the active class natively.
      * @name navigateTo
      * @public
-     * @param {string} screenId - The string key natively mapping physically to cached nodes exclusively.
+     * @param {ScreenKey} screenKey - The string key natively mapping physically to cached nodes exclusively.
      * @returns {void} - Does not return a value.
      */
-    navigateTo(screenId) {
-        this.logger.info("navigateTo called", { screenId });
-        this.logger.debug("Navigating to screen", { screenId });
+    navigateTo(screenKey) {
+        this.logger.info("navigateTo called", { screenKey });
+        this.logger.debug("Navigating to screen", { screenKey });
 
-        /* Iterates identically through cached DOM nodes natively to completely purge the dynamically active visibility class efficiently. */
-        // ----------------------------------------------------------------------
-        Object.values(this.screens).forEach((screen) => {
-            this.logger.trace("navigateTo: resetActiveScreenCallback", {
-                screenId: screen ? screen.id : null
+        const screenMap = {
+            start: "start-screen",
+            creator: "creator-screen",
+            quiz: "quiz-screen",
+            result: "result-screen"
+        };
+
+        const targetId = screenMap[screenKey];
+        if (!targetId) {
+            this.logger.warn("Attempted navigation to unknown screen", {
+                screenKey
             });
-            if (screen) {
-                screen.classList.remove("active");
-            }
-        });
-        // ----------------------------------------------------------------------
-
-        if (this.screens[screenId]) {
-            this.screens[screenId].classList.add("active");
-            this.logger.info("Screen activated", { screenId });
             return;
         }
 
-        this.logger.warn("Attempted navigation to unknown screen", {
-            screenId
-        });
+        for (const id of Object.values(screenMap)) {
+            const el = document.getElementById(id);
+            if (!el) continue;
+
+            const isActive = id === targetId;
+            el.classList.toggle("active", isActive);
+            el.setAttribute("aria-hidden", isActive ? "false" : "true");
+
+            if (isActive) {
+                this.logger.info("Screen activated", { screenId: id });
+            }
+        }
     }
 }

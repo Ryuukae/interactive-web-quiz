@@ -1,12 +1,18 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
     exportJSON,
+    exportQAD,
     downloadQuizTxt,
     readFile
 } from "../../src/js/utils/fileIO.js";
 
+let capturedBlobContent = null;
+let capturedBlobType = null;
+
 describe("fileIO Utility Unit Tests", () => {
     beforeEach(() => {
+        capturedBlobContent = null;
+        capturedBlobType = null;
         globalThis.document = {
             createElement: () => ({
                 href: "",
@@ -26,8 +32,33 @@ describe("fileIO Utility Unit Tests", () => {
             constructor(content, options) {
                 this.content = content;
                 this.options = options;
+                capturedBlobContent = content[0];
+                capturedBlobType = options?.type;
             }
         };
+    });
+
+    it("should correctly export QAD data and generate a text/plain Blob", () => {
+        const mockData = [
+            {
+                question: "Test QAD?",
+                answers: [
+                    { text: "Correct", correct: true },
+                    { text: "Wrong", correct: false }
+                ]
+            }
+        ];
+        
+        expect(() => exportQAD(mockData, "test.txt")).not.toThrow();
+        expect(capturedBlobType).toBe("text/plain");
+        expect(capturedBlobContent).toContain("Q=Test QAD?");
+        expect(capturedBlobContent).toContain("A=Correct");
+        expect(capturedBlobContent).toContain("D=Wrong");
+    });
+
+    it("should abort QAD export if payload is empty", () => {
+        expect(() => exportQAD([], "test.txt")).not.toThrow();
+        expect(capturedBlobContent).toBeNull();
     });
 
     it("should export JSON data without crashing", () => {
