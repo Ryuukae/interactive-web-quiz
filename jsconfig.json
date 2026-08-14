@@ -4,6 +4,7 @@
     "moduleResolution": "Node",
     "target": "ES2022",
     "lib": ["es2022", "dom"],
+    "allowJs": true,
     "checkJs": true,
     "strict": true,
     "skipLibCheck": true
