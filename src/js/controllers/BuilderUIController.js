@@ -279,6 +279,7 @@ export default class BuilderUIController {
         this.logger.info("initializeBuilder called");
         this.logger.info("Initializing builder workspace");
         this.builderState.clearAll();
+        this.builderContainer.innerHTML = "";
 
         /** @type {import('../models/QuizState.js').QuestionType[] | null} */
         const cachedData = StorageService.load("quiz-builder-cache");
@@ -416,6 +417,18 @@ export default class BuilderUIController {
             this.logger.info("Bulk import parsed successfully", {
                 questionCount: parsedData.length
             });
+
+            if (this.builderState.cards.length === 1) {
+                const firstCard = this.builderState.cards[0];
+                if (
+                    firstCard &&
+                    firstCard.qInput &&
+                    firstCard.qInput.value.trim() === ""
+                ) {
+                    this.builderState.clearAll();
+                    this.builderContainer.innerHTML = "";
+                }
+            }
 
             parsedData.forEach((q) => {
                 this.logger.trace("handleBulkImport: appendCardCallback", {
