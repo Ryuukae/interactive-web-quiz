@@ -1,6 +1,6 @@
 import { getTxtTemplate, getJsonTemplate } from "../utils/templates.js";
 import { confirmAction, alertAction } from "../utils/prompts.js";
-import { exportJSON } from "../utils/fileIO.js";
+import { exportQAD } from "../utils/fileIO.js";
 import { parseAndValidateRawText } from "../utils/schemaValidator.js";
 import BuilderCardComponent from "../components/BuilderCardComponent.js";
 import StorageService from "../utils/StorageService.js";
@@ -538,7 +538,7 @@ export default class BuilderUIController {
         }
 
         const payload = this.builderState.getSerializedPayload();
-        exportJSON(payload, "custom_quizset.json");
+        exportQAD(payload, "custom_quizset.txt");
         StorageService.clear("quiz-builder-cache");
         this.logger.info("Builder quiz export completed and cache cleared", {
             questionCount: payload.length
