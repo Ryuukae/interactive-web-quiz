@@ -5,7 +5,7 @@ import { createLogger } from "../utils/logger.js";
  * Encapsulation Scope: Strictly isolated purely to global SPA transitions explicitly.
  * @class AppNavigationController
  * @name AppNavigationController
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno
  */
 export default class AppNavigationController {
