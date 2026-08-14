@@ -1,6 +1,6 @@
 import { getTxtTemplate, getJsonTemplate } from "../utils/templates.js";
 import { confirmAction, alertAction } from "../utils/prompts.js";
-import { exportJSON } from "../utils/fileIO.js";
+import { exportQAD } from "../utils/fileIO.js";
 import { parseAndValidateRawText } from "../utils/schemaValidator.js";
 import BuilderCardComponent from "../components/BuilderCardComponent.js";
 import StorageService from "../utils/StorageService.js";
@@ -279,6 +279,7 @@ export default class BuilderUIController {
         this.logger.info("initializeBuilder called");
         this.logger.info("Initializing builder workspace");
         this.builderState.clearAll();
+        this.builderContainer.innerHTML = "";
 
         /** @type {import('../models/QuizState.js').QuestionType[] | null} */
         const cachedData = StorageService.load("quiz-builder-cache");
@@ -417,6 +418,18 @@ export default class BuilderUIController {
                 questionCount: parsedData.length
             });
 
+            if (this.builderState.cards.length === 1) {
+                const firstCard = this.builderState.cards[0];
+                if (
+                    firstCard &&
+                    firstCard.qInput &&
+                    firstCard.qInput.value.trim() === ""
+                ) {
+                    this.builderState.clearAll();
+                    this.builderContainer.innerHTML = "";
+                }
+            }
+
             parsedData.forEach((q) => {
                 this.logger.trace("handleBulkImport: appendCardCallback", {
                     question: q.question
@@ -538,7 +551,7 @@ export default class BuilderUIController {
         }
 
         const payload = this.builderState.getSerializedPayload();
-        exportJSON(payload, "custom_quizset.json");
+        exportQAD(payload, "custom_quizset.txt");
         StorageService.clear("quiz-builder-cache");
         this.logger.info("Builder quiz export completed and cache cleared", {
             questionCount: payload.length

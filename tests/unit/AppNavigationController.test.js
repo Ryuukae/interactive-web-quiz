@@ -17,9 +17,11 @@ describe("AppNavigationController Unit Tests", () => {
                 el.id = id;
                 el.classList = {
                     add: () => {},
-                    remove: () => {}
+                    remove: () => {},
+                    toggle: () => {}
                 };
                 el.addEventListener = () => {};
+                el.setAttribute = () => {};
                 return el;
             }
         };
@@ -43,9 +45,13 @@ describe("AppNavigationController Unit Tests", () => {
                     add: () => {
                         activeScreenId = id;
                     },
-                    remove: () => {}
+                    remove: () => {},
+                    toggle: (className, force) => {
+                        if (force) activeScreenId = id;
+                    }
                 };
                 el.addEventListener = () => {};
+                el.setAttribute = () => {};
                 return el;
             }
         };
@@ -81,10 +87,14 @@ describe("AppNavigationController Unit Tests", () => {
                     el.id = id;
                     el.classList = {
                         add: () => { activeScreenId = id; },
-                        remove: () => {}
+                        remove: () => {},
+                        toggle: (className, force) => {
+                            if (force) activeScreenId = id;
+                        }
                     };
                     el.listeners = {};
                     el.addEventListener = (evt, cb) => { el.listeners[evt] = cb; };
+                    el.setAttribute = () => {};
                     mockElements[id] = el;
                 }
                 return mockElements[id];
@@ -119,6 +129,7 @@ describe("AppNavigationController Unit Tests", () => {
             getElementById: (id) => {
                 const el = new globalThis.HTMLElement();
                 el.id = id;
+                el.setAttribute = () => {};
                 return el;
             }
         };

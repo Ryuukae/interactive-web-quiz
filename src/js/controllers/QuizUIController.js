@@ -1,4 +1,4 @@
-import { readFile, exportJSON } from "../utils/fileIO.js";
+import { readFile, exportQAD } from "../utils/fileIO.js";
 import { parseAndValidateRawText } from "../utils/schemaValidator.js";
 import QuizState from "../models/QuizState.js";
 import { createLogger } from "../utils/logger.js";
@@ -122,7 +122,7 @@ export default class QuizUIController {
                     "bindEventListeners: onExportResultsClick event"
                 );
                 if (this.quizState && this.quizState.questionData) {
-                    exportJSON(this.quizState.questionData, "quizset.json");
+                    exportQAD(this.quizState.questionData, "quizset.txt");
                 }
             });
         }

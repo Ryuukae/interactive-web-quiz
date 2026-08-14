@@ -34,11 +34,11 @@ test.describe("E2E Spec 7: Result Summary & Restart Flow", () => {
         const resultScreen = page.locator("#result-screen");
         await expect(resultScreen).toHaveClass(/active/);
 
-        // Click "Back to Start" button (#return-start-btn)
-        await page.click("#return-start-btn");
+        // Click "Back to Builder" button (#return-builder-btn)
+        await page.click("#return-builder-btn");
 
-        // Verify #start-screen is active
-        const startScreen = page.locator("#start-screen");
-        await expect(startScreen).toHaveClass(/active/);
+        // Verify #creator-screen is active
+        const creatorScreen = page.locator("#creator-screen");
+        await expect(creatorScreen).toHaveClass(/active/);
     });
 });
