@@ -78,7 +78,7 @@ export default [
       'jsdoc/empty-tags': 'error',
 
       // Allow blank lines between tags for better readability if desired
-      'jsdoc/tag-lines': ['error', 'any', { startLines: 0 }]
+      "jsdoc/tag-lines": ["error", "never", { startLines: null }]
     },
   }
 ];

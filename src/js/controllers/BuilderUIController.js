@@ -7,22 +7,31 @@ import StorageService from "../utils/StorageService.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
- * Provides internal functionality.
+ * Core type dependencies for the builder controller.
  * @typedef {import('../models/BuilderState.js').default} BuilderStateType
  * @typedef {import('./QuizUIController.js').default} QuizUIControllerType
  * @typedef {import('./AppNavigationController.js').default} AppNavigationControllerType
  */
 
 /**
- * Provides internal functionality.
+ * UI controller coordinating the form builder interface.
+ * Maps UI actions (add, bulk parse, clear) to component updates and model mutations.
+ *
  * @class BuilderUIController
  * @name BuilderUIController
  * @version 1.3.1
- * @author Adam Ross DeStafeno Architectural Responsibilities: Solely coordinates the Form Builder GUI. Maps UI actions (Add, Bulk Parse, Clear All) strictly to physical Component actions or logical Model mutations. Encapsulation Scope: Modulates `#creator-screen` capabilities comprehensively.
+ * @author Adam Ross DeStafeno
+ * @property {BuilderStateType} builderState - The central tracker modeling card components.
+ * @property {QuizUIControllerType} quizUIController - Controller for launching quiz previews.
+ * @property {AppNavigationControllerType} appNavController - Controller for screen transitions.
+ * @property {HTMLElement} builderContainer - DOM container housing the question cards.
+ * @property {HTMLElement} bulkImportPanel - DOM container for the bulk import UI.
+ * @property {HTMLTextAreaElement} bulkImportText - DOM input for bulk question payloads.
+ * @property {HTMLElement} bulkImportStatus - DOM element for displaying bulk import errors.
  */
 export default class BuilderUIController {
     /**
-     * Provides internal functionality.
+     * Safely retrieves a DOM element by ID.
      * @param {string} id - The DOM element ID.
      * @returns {HTMLElement} - The resolved DOM node.
      * @throws {Error} - If the DOM node is not found.

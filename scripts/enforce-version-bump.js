@@ -1,3 +1,10 @@
+/**
+ * Utility script to enforce strict version synchronization across JS files.
+ * Replaces the `@version` JSDoc tag in staged files with the `package.json` version.
+ * 
+ * @module scripts/enforce-version-bump
+ */
+
 import fs from 'fs';
 import path from 'path';
 
