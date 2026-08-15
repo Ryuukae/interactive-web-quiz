@@ -5,16 +5,18 @@ import { createLogger } from "../utils/logger.js";
  */
 
 /**
- * Architectural Responsibilities: Centralized application router natively. Exclusively handles CSS visibility toggles to map the active viewport state seamlessly to the explicitly required stage.
- * Encapsulation Scope: Strictly isolated purely to global SPA transitions explicitly.
+ * Centralized application router natively handling CSS visibility toggles.
+ * Maps the active viewport state seamlessly to the explicitly required stage.
+ *
  * @class AppNavigationController
  * @name AppNavigationController
  * @version 1.3.1
  * @author Adam Ross DeStafeno
+ * @property {Record<string, HTMLElement | null>} screens - Cached DOM references for routing.
  */
 export default class AppNavigationController {
     /**
-     * Provides internal functionality.
+     * Cached application screen nodes for rapid visibility toggling.
      * @type {Record<string, HTMLElement | null>}
      */
     screens;

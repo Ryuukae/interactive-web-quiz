@@ -5,10 +5,9 @@ import { createLogger } from "./logger.js";
  */
 
 /**
- * Architectural Responsibilities: Encapsulates all browser-native file
- * generation and download triggers, as well as local file reading explicitly.
- * Encapsulation Scope: Global utility. Completely agnostic to application
- * state or physical DOM structures inherently.
+ * Global utility encapsulating browser-native file generation and download triggers.
+ * Agnostic to application state and physical DOM structures.
+ *
  * @module fileIO
  * @version 1.3.1
  * @author Adam Ross DeStafeno

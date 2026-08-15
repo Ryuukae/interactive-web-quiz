@@ -1,3 +1,10 @@
+/**
+ * CI utility script to verify all JS files contain an accurate `@version` tag.
+ * Fails the build if any drift from `package.json` is detected.
+ * 
+ * @module scripts/verify-versions
+ */
+
 import fs from 'fs';
 import path from 'path';
 

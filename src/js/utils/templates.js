@@ -1,10 +1,12 @@
 import { createLogger } from "./logger.js";
 
 /**
- * Provides internal functionality.
+ * Global utility module housing static string payloads.
+ * Provides read-only template generation for injection into user-facing text areas.
+ *
  * @module templates
  * @version 1.3.1
- * @author Adam Ross DeStafeno Architectural Responsibilities: Houses static string payloads for injection into user-facing text areas to assist with syntax formatting. Encapsulation Scope: Global utility. Provides read-only data string generation natively.
+ * @author Adam Ross DeStafeno
  */
 
 /**
