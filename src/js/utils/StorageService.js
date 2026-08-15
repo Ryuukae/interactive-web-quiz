@@ -4,7 +4,7 @@ import { createLogger } from "./logger.js";
  * Architectural Responsibilities: Encapsulates all interactions with the browser's native localStorage API.
  * Encapsulation Scope: Provides a decoupled service layer for state models to persist data across page reloads.
  * @class StorageService
- * @version 1.0.0
+ * @version 1.3.1
  */
 export default class StorageService {
     static logger = createLogger("StorageService");

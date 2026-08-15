@@ -3,7 +3,7 @@ import { createLogger } from "./logger.js";
 /**
  * Provides internal functionality.
  * @module qadParser
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno Architectural Responsibilities: Responsible for ingesting raw QAD formatted text strings, normalizing line endings, and executing parsing loops to assemble valid question objects. Enforces strict schema rules (1 Question, 1 Answer, 1-6 Distractors). Encapsulation Scope: Strictly isolated to data formatting. It does not interact with the DOM, nor does it mutate global states.
  */
 

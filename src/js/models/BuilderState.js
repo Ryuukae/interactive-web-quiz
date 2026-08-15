@@ -14,7 +14,7 @@ import { createLogger } from "../utils/logger.js";
  * Provides internal functionality.
  * @class BuilderState
  * @name BuilderState
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno
  * @property {BuilderCardComponentType[]} cards - Live array of instantiated builder components. Architectural Responsibilities: Manages the active form building session. Retains a live array of BuilderCardComponent instances in memory to act as the definitive source of truth, completely detaching data from the physical DOM layout.
  */
