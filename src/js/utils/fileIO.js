@@ -9,7 +9,7 @@ import { createLogger } from "./logger.js";
  * Agnostic to application state and physical DOM structures.
  *
  * @module fileIO
- * @version 1.3.1
+ * @version 1.5.1
  * @author Adam Ross DeStafeno
  */
 

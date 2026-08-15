@@ -16,7 +16,7 @@ import { createLogger } from "../utils/logger.js";
  *
  * @class QuizUIController
  * @name QuizUIController
- * @version 1.3.1
+ * @version 1.5.1
  * @author Adam Ross DeStafeno
  * @property {QuestionType[] | null} customPayload - Active question dataset loaded into memory.
  * @property {boolean} isBuilderSource - Flag indicating if the quiz was launched from the builder.

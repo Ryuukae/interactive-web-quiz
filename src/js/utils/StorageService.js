@@ -4,7 +4,7 @@ import { createLogger } from "./logger.js";
  * Provides a decoupled service layer encapsulating all interactions with the native localStorage API.
  *
  * @class StorageService
- * @version 1.3.1
+ * @version 1.5.1
  * @author Adam Ross DeStafeno
  */
 export default class StorageService {
