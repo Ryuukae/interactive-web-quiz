@@ -10,7 +10,7 @@ import { createLogger } from "./logger.js";
  * Encapsulation Scope: Global utility. Completely agnostic to application
  * state or physical DOM structures inherently.
  * @module fileIO
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno
  */
 

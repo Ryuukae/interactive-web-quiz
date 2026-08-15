@@ -18,7 +18,7 @@ import { createLogger } from "../utils/logger.js";
  * Provides internal functionality.
  * @class BuilderCardComponent
  * @name BuilderCardComponent
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno Architectural Responsibilities: A dedicated UI Component that encapsulates its own physical DOM node, string template rendering, localized event listeners, and physical validation states. Encapsulation Scope: Extremely confined logic strictly tied to one specific question entry block.
  * @property {HTMLElement} node - The root DOM node of the component.
  * @property {HTMLInputElement} [qInput] - The question prompt input field.

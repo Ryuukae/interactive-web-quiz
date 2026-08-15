@@ -13,7 +13,7 @@ import { createLogger } from "./utils/logger.js";
  * Architectural Responsibilities: Application Entry Point. Orchestrates state instantiation and controller initialization.
  * Encapsulation Scope: Serves as the composition root where dependencies are physically wired together correctly.
  * @module script
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno
  */
 
