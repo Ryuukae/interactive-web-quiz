@@ -18,7 +18,7 @@ const STORAGE_KEY = "interactive-web-quiz:logLevel";
 const DEFAULT_LEVEL = "info";
 
 /**
- * Provides internal functionality.
+ * Normalizes an arbitrary string into a valid log level.
  * @param {string | undefined | null} level - The log level to normalize
  * @returns {LogLevel} - The normalized log level
  */
@@ -38,7 +38,7 @@ function normalizeLevel(level) {
 }
 
 /**
- * Provides internal functionality.
+ * Retrieves the currently active log level from local storage.
  * @returns {LogLevel} - The active log level
  */
 function getActiveLevel() {
@@ -53,7 +53,7 @@ function getActiveLevel() {
 }
 
 /**
- * Provides internal functionality.
+ * Determines if a given log level meets the active threshold.
  * @param {LogLevel} level - The log level to check
  * @returns {boolean} - Whether logging should occur
  */
@@ -62,7 +62,7 @@ function shouldLog(level) {
 }
 
 /**
- * Provides internal functionality.
+ * Safely serializes objects and errors for console output.
  * @param {any} value - The value to serialize
  * @returns {any} - The serialized value
  */
@@ -93,7 +93,7 @@ function serializeValue(value) {
 }
 
 /**
- * Provides internal functionality.
+ * Formats and outputs the log message to the appropriate console method.
  * @param {LogLevel} level - The log level
  * @param {string} scope - The logger scope
  * @param {string} message - The log message
@@ -136,14 +136,14 @@ function emit(level, scope, message, details) {
 }
 
 /**
- * Provides internal functionality.
+ * Creates a scoped logger instance.
  * @param {string} scope - The scope of the logger
  * @returns {Record<string, Function>} - The logger instance
  */
 export function createLogger(scope) {
     return {
         /**
-         * Provides internal functionality.
+         * Emits a trace level log.
          * @param {string} message - The log message
          * @param {any} [details] - Optional log details
          */
@@ -151,7 +151,7 @@ export function createLogger(scope) {
             emit("trace", scope, message, details);
         },
         /**
-         * Provides internal functionality.
+         * Emits a debug level log.
          * @param {string} message - The log message
          * @param {any} [details] - Optional log details
          */
@@ -159,7 +159,7 @@ export function createLogger(scope) {
             emit("debug", scope, message, details);
         },
         /**
-         * Provides internal functionality.
+         * Emits an info level log.
          * @param {string} message - The log message
          * @param {any} [details] - Optional log details
          */
@@ -167,7 +167,7 @@ export function createLogger(scope) {
             emit("info", scope, message, details);
         },
         /**
-         * Provides internal functionality.
+         * Emits a warn level log.
          * @param {string} message - The log message
          * @param {any} [details] - Optional log details
          */
@@ -175,7 +175,7 @@ export function createLogger(scope) {
             emit("warn", scope, message, details);
         },
         /**
-         * Provides internal functionality.
+         * Emits an error level log.
          * @param {string} message - The log message
          * @param {any} [details] - Optional log details
          */
@@ -183,7 +183,7 @@ export function createLogger(scope) {
             emit("error", scope, message, details);
         },
         /**
-         * Provides internal functionality.
+         * Creates a nested child logger from the current scope.
          * @param {string} childScope - The child scope
          * @returns {object} - A child logger instance
          */
@@ -194,7 +194,7 @@ export function createLogger(scope) {
 }
 
 /**
- * Provides internal functionality.
+ * Returns the currently active log level.
  * @returns {LogLevel} - The current log level
  */
 export function getLogLevel() {
@@ -202,7 +202,7 @@ export function getLogLevel() {
 }
 
 /**
- * Provides internal functionality.
+ * Persists a new active log level to local storage.
  * @param {string} level - The log level to set
  * @returns {LogLevel} - The normalized set log level
  */

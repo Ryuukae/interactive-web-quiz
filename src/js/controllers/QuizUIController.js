@@ -4,22 +4,38 @@ import QuizState from "../models/QuizState.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
- * Provides internal functionality.
+ * Core type dependencies for the quiz controller.
  * @typedef {import('../models/QuizState.js').default} QuizStateType
  * @typedef {import('./AppNavigationController.js').default} AppNavigationControllerType
  * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
  */
 
 /**
- * Provides internal functionality.
+ * UI controller coordinating active quiz sessions.
+ * Manages dynamic rendering of questions, progress tracking, and interactive answer evaluation.
+ *
  * @class QuizUIController
  * @name QuizUIController
  * @version 1.3.1
- * @author Adam Ross DeStafeno Architectural Responsibilities: Commands the execution of live assessments. Renders test nodes dynamically, updates progress and score metrics, and handles interactive answer evaluation. Encapsulation Scope: Strictly isolated to active test session DOM manipulation.
+ * @author Adam Ross DeStafeno
+ * @property {QuestionType[] | null} customPayload - Active question dataset loaded into memory.
+ * @property {boolean} isBuilderSource - Flag indicating if the quiz was launched from the builder.
+ * @property {QuizStateType} quizState - State model instance managing the quiz logic.
+ * @property {AppNavigationControllerType} appNavController - Controller for screen routing.
+ * @property {HTMLButtonElement} startButton - DOM button to begin the quiz.
+ * @property {HTMLElement} questionText - DOM element displaying the current question text.
+ * @property {HTMLElement} answersContainer - DOM container for multiple-choice buttons.
+ * @property {HTMLElement} currentQuestionSpan - DOM element showing the current question index.
+ * @property {HTMLElement} totalQuestionsSpan - DOM element showing total question count.
+ * @property {HTMLElement} scoreSpan - DOM element displaying the live score.
+ * @property {HTMLElement} finalScoreSpan - DOM element displaying the final test score.
+ * @property {HTMLElement} maxScoreSpan - DOM element displaying the maximum possible score.
+ * @property {HTMLElement} resultMessage - DOM element displaying the final grade percentage.
+ * @property {HTMLElement} progressBar - DOM element representing visual progress.
  */
 export default class QuizUIController {
     /**
-     * Provides internal functionality.
+     * Active question dataset loaded into memory.
      * @type {QuestionType[] | null}
      */
     customPayload;
@@ -31,7 +47,7 @@ export default class QuizUIController {
     isBuilderSource;
 
     /**
-     * Provides internal functionality.
+     * Safely retrieves a DOM element by ID.
      * @param {string} id - The DOM element ID.
      * @returns {HTMLElement} - The resolved DOM element.
      * @throws {Error} - If the DOM node is missing.
