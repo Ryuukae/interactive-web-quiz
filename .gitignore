@@ -49,6 +49,7 @@
 !.husky/commit-msg
 !.cspell.json
 !eslint.config.js
+!.releaserc.json
 
 # .HTML
 !index.html

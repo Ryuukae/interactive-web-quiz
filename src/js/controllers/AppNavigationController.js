@@ -10,7 +10,7 @@ import { createLogger } from "../utils/logger.js";
  *
  * @class AppNavigationController
  * @name AppNavigationController
- * @version 1.3.1
+ * @version 1.5.1
  * @author Adam Ross DeStafeno
  * @property {Record<string, HTMLElement | null>} screens - Cached DOM references for routing.
  */

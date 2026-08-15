@@ -1,7 +1,7 @@
 /**
  * Centralized logging utility for consistent, structured console output across the application.
  * @module logger
- * @version 1.3.1
+ * @version 1.5.1
  * @typedef {"trace"|"debug"|"info"|"warn"|"error"|"silent"} LogLevel
  */
 
