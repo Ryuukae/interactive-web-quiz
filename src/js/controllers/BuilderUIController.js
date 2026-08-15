@@ -17,7 +17,7 @@ import { createLogger } from "../utils/logger.js";
  * Provides internal functionality.
  * @class BuilderUIController
  * @name BuilderUIController
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno Architectural Responsibilities: Solely coordinates the Form Builder GUI. Maps UI actions (Add, Bulk Parse, Clear All) strictly to physical Component actions or logical Model mutations. Encapsulation Scope: Modulates `#creator-screen` capabilities comprehensively.
  */
 export default class BuilderUIController {
