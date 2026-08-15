@@ -1,3 +1,11 @@
+## [1.5.1](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.5.0...v1.5.1) (2026-08-15)
+
+
+### Bug Fixes
+
+* **build:** correct version number ([f2f641f](https://github.com/Ryuukae/interactive-web-quiz/commit/f2f641f3741b8928c97cc824254348eb1abf36f5))
+* **build:** update version tags ([76adfe8](https://github.com/Ryuukae/interactive-web-quiz/commit/76adfe892bdce47c8755b060409fc1e361b1a4d3))
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
