@@ -1,27 +1,37 @@
 import { getTxtTemplate, getJsonTemplate } from "../utils/templates.js";
 import { confirmAction, alertAction } from "../utils/prompts.js";
-import { exportJSON } from "../utils/fileIO.js";
+import { exportQAD } from "../utils/fileIO.js";
 import { parseAndValidateRawText } from "../utils/schemaValidator.js";
 import BuilderCardComponent from "../components/BuilderCardComponent.js";
+import StorageService from "../utils/StorageService.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
- * Provides internal functionality.
+ * Core type dependencies for the builder controller.
  * @typedef {import('../models/BuilderState.js').default} BuilderStateType
  * @typedef {import('./QuizUIController.js').default} QuizUIControllerType
  * @typedef {import('./AppNavigationController.js').default} AppNavigationControllerType
  */
 
 /**
- * Provides internal functionality.
+ * UI controller coordinating the form builder interface.
+ * Maps UI actions (add, bulk parse, clear) to component updates and model mutations.
+ *
  * @class BuilderUIController
  * @name BuilderUIController
- * @version 1.0.0
- * @author Adam Ross DeStafeno Architectural Responsibilities: Solely coordinates the Form Builder GUI. Maps UI actions (Add, Bulk Parse, Clear All) strictly to physical Component actions or logical Model mutations. Encapsulation Scope: Modulates `#creator-screen` capabilities comprehensively.
+ * @version 1.3.1
+ * @author Adam Ross DeStafeno
+ * @property {BuilderStateType} builderState - The central tracker modeling card components.
+ * @property {QuizUIControllerType} quizUIController - Controller for launching quiz previews.
+ * @property {AppNavigationControllerType} appNavController - Controller for screen transitions.
+ * @property {HTMLElement} builderContainer - DOM container housing the question cards.
+ * @property {HTMLElement} bulkImportPanel - DOM container for the bulk import UI.
+ * @property {HTMLTextAreaElement} bulkImportText - DOM input for bulk question payloads.
+ * @property {HTMLElement} bulkImportStatus - DOM element for displaying bulk import errors.
  */
 export default class BuilderUIController {
     /**
-     * Provides internal functionality.
+     * Safely retrieves a DOM element by ID.
      * @param {string} id - The DOM element ID.
      * @returns {HTMLElement} - The resolved DOM node.
      * @throws {Error} - If the DOM node is not found.
@@ -189,8 +199,24 @@ export default class BuilderUIController {
                     "Are you sure you want to clear all questions? This action cannot be undone."
                 )
             ) {
+                StorageService.clear("quiz-builder-cache");
                 this.builderState.clearAll();
+                this.initializeBuilder(); // Reinitialize with an empty card
             }
+        });
+
+        // 10-second highly performant debounce auto-save
+        /** @type {number | ReturnType<typeof setTimeout>} */
+        let saveTimeout;
+        this.builderContainer.addEventListener("input", () => {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                this.logger.info(
+                    "Auto-saving builder state after 10s debounce"
+                );
+                const payload = this.builderState.getSerializedPayload();
+                StorageService.save("quiz-builder-cache", payload);
+            }, 10000);
         });
     }
 
@@ -262,22 +288,59 @@ export default class BuilderUIController {
         this.logger.info("initializeBuilder called");
         this.logger.info("Initializing builder workspace");
         this.builderState.clearAll();
+        this.builderContainer.innerHTML = "";
 
-        const newCard = new BuilderCardComponent(
-            null,
-            (card) => {
-                this.logger.info("initializeBuilder: removeCardCallback", {
-                    card
-                });
-                this.builderState.removeCard(card);
-            },
-            () => {
-                this.logger.info("initializeBuilder: expandCallback");
-                this.collapseBulkImport();
-            }
-        );
-        this.builderState.addCard(newCard);
-        this.builderContainer.appendChild(newCard.node);
+        /** @type {import('../models/QuizState.js').QuestionType[] | null} */
+        const cachedData = StorageService.load("quiz-builder-cache");
+
+        if (cachedData && cachedData.length > 0) {
+            this.logger.info("Restoring cached builder state", {
+                count: cachedData.length
+            });
+            cachedData.forEach((q) => {
+                const newCard = new BuilderCardComponent(
+                    q,
+                    (card) => {
+                        this.logger.info(
+                            "initializeBuilder: removeCardCallback",
+                            { card }
+                        );
+                        this.builderState.removeCard(card);
+                        StorageService.save(
+                            "quiz-builder-cache",
+                            this.builderState.getSerializedPayload()
+                        );
+                    },
+                    () => {
+                        this.logger.info("initializeBuilder: expandCallback");
+                        this.collapseBulkImport();
+                    }
+                );
+                this.builderState.addCard(newCard);
+                this.builderContainer.appendChild(newCard.node);
+            });
+        } else {
+            const newCard = new BuilderCardComponent(
+                null,
+                (card) => {
+                    this.logger.info("initializeBuilder: removeCardCallback", {
+                        card
+                    });
+                    this.builderState.removeCard(card);
+                    StorageService.save(
+                        "quiz-builder-cache",
+                        this.builderState.getSerializedPayload()
+                    );
+                },
+                () => {
+                    this.logger.info("initializeBuilder: expandCallback");
+                    this.collapseBulkImport();
+                }
+            );
+            this.builderState.addCard(newCard);
+            this.builderContainer.appendChild(newCard.node);
+        }
+
         this.logger.info("Builder workspace initialized", {
             cardCount: this.builderState.cards.length
         });
@@ -363,6 +426,18 @@ export default class BuilderUIController {
             this.logger.info("Bulk import parsed successfully", {
                 questionCount: parsedData.length
             });
+
+            if (this.builderState.cards.length === 1) {
+                const firstCard = this.builderState.cards[0];
+                if (
+                    firstCard &&
+                    firstCard.qInput &&
+                    firstCard.qInput.value.trim() === ""
+                ) {
+                    this.builderState.clearAll();
+                    this.builderContainer.innerHTML = "";
+                }
+            }
 
             parsedData.forEach((q) => {
                 this.logger.trace("handleBulkImport: appendCardCallback", {
@@ -457,7 +532,7 @@ export default class BuilderUIController {
         this.logger.info("Builder quiz payload ready", {
             questionCount: payload.length
         });
-        this.quizUIController.loadCustomQuiz(payload);
+        this.quizUIController.loadCustomQuiz(payload, true);
     }
 
     /**
@@ -485,8 +560,9 @@ export default class BuilderUIController {
         }
 
         const payload = this.builderState.getSerializedPayload();
-        exportJSON(payload, "custom_quizset.json");
-        this.logger.info("Builder quiz export completed", {
+        exportQAD(payload, "custom_quizset.txt");
+        StorageService.clear("quiz-builder-cache");
+        this.logger.info("Builder quiz export completed and cache cleared", {
             questionCount: payload.length
         });
     }

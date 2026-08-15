@@ -75,7 +75,10 @@ export default [
       'jsdoc/valid-types': 'error',
 
       // Prevent JSDoc blocks from being completely empty
-      'jsdoc/empty-tags': 'error'
+      'jsdoc/empty-tags': 'error',
+
+      // Allow blank lines between tags for better readability if desired
+      "jsdoc/tag-lines": ["error", "never", { startLines: null }]
     },
   }
 ];

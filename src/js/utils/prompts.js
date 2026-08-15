@@ -1,10 +1,12 @@
 import { createLogger } from "./logger.js";
 
 /**
- * Provides internal functionality.
+ * Utility module wrapping native browser dialogs for protective user interactions.
+ * Provides a unified interface for confirmation and alert prompts.
+ *
  * @module prompts
- * @version 1.0.0
- * @author Adam Ross DeStafeno Architectural Responsibilities: Encapsulates user confirmation interactions securely, providing a unified interface for protective warnings before destructive actions globally. Encapsulation Scope: Global utility explicitly wrapping native browser dialogs seamlessly.
+ * @version 1.3.1
+ * @author Adam Ross DeStafeno
  */
 
 /**

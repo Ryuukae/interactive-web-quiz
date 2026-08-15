@@ -129,6 +129,18 @@
                 <div class="progress-bar">
                     <div id="progress" class="progress"></div>
                 </div>
+
+                <div class="action-stack" id="quiz-action-stack">
+                    <div class="secondary-actions" id="quiz-abort-actions">
+                        <button
+                            type="button"
+                            id="quiz-return-builder-btn"
+                            class="secondary-btn"
+                        >
+                            Back to Builder
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- ================================================ -->
@@ -153,28 +165,39 @@
 
                 <!-- Implements the action-stack class, similar to the start screen -->
                 <div class="action-stack">
-                    <!-- RESET TRIGGER -->
-                    <button type="button" id="restart-btn">Restart Quiz</button>
-                    <!-- SECONDARY FILE UPLOAD ARCHITECTURE -->
-                    <input
-                        type="file"
-                        id="result-file-input"
-                        accept=".json, .txt, .text, .doc, .docx"
-                        hidden
-                    />
-                    <label for="result-file-input" class="secondary-btn"
-                        >Upload New Quizset</label
-                    >
-                    <span id="result-file-status" class="file-status"></span>
+                    <div class="secondary-actions">
+                        <!-- RESET TRIGGER -->
+                        <button type="button" id="restart-btn">
+                            Restart Quiz
+                        </button>
 
-                    <!-- Navigation trigger to abort and return to the main menu -->
-                    <button
-                        type="button"
-                        id="return-start-btn"
-                        class="secondary-btn"
-                    >
-                        Back to Start
-                    </button>
+                        <!-- Navigation trigger to abort and return to the builder -->
+                        <button
+                            type="button"
+                            id="return-builder-btn"
+                            class="secondary-btn"
+                        >
+                            Back to Builder
+                        </button>
+
+                        <!-- Action trigger to download the active quiz data -->
+                        <button
+                            type="button"
+                            id="btn-export-results"
+                            class="secondary-btn"
+                        >
+                            Download
+                        </button>
+
+                        <!-- Navigation trigger to abort and return to the main menu -->
+                        <button
+                            type="button"
+                            id="return-start-btn"
+                            class="secondary-btn"
+                        >
+                            Back to Start
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -437,10 +460,10 @@ q=Which protocol is considered secure?
 
                     <div class="action-row">
                         <button type="button" id="btn-run-builder-quiz">
-                            Start Quiz
+                            Preview Quiz
                         </button>
                         <button type="submit" id="btn-export-quiz">
-                            Download JSON
+                            Download
                         </button>
                     </div>
 

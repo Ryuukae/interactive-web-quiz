@@ -4,15 +4,15 @@ import { createLogger } from "./logger.js";
 const logger = createLogger("schemaValidator");
 
 /**
- * Architectural Responsibilities: Responsible for enforcing the structural bounds of quiz assessment arrays. Validates proper JSON shapes.
- * Encapsulation Scope: Strictly isolated to pure mathematical array evaluation globally.
+ * Utility responsible for enforcing the structural bounds of quiz assessment arrays.
+ *
  * @module schemaValidator
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno
  */
 
 /**
- * Provides internal functionality.
+ * Core type dependencies for schema validation.
  * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
  */
 

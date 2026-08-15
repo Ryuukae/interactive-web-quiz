@@ -18,6 +18,7 @@
 !.github/workflows/
 !.husky/
 !.github/ISSUE_TEMPLATE/
+!scripts/
 
 
 # Only allow certain files
@@ -78,6 +79,7 @@
 !src/js/utils/*.js
 !tests/unit/*.js
 !tests/integration/*.js
+!scripts/*.js
 
 # .SPEC.JS
 !tests/e2e/*.spec.js

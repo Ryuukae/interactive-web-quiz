@@ -1,20 +1,22 @@
 import { createLogger } from "./logger.js";
 
 /**
- * Provides internal functionality.
+ * Parses raw QAD formatted text strings into valid question objects.
+ * Enforces strict schema rules: 1 Question, 1 Answer, and 1-6 Distractors.
+ *
  * @module qadParser
- * @version 1.0.0
- * @author Adam Ross DeStafeno Architectural Responsibilities: Responsible for ingesting raw QAD formatted text strings, normalizing line endings, and executing parsing loops to assemble valid question objects. Enforces strict schema rules (1 Question, 1 Answer, 1-6 Distractors). Encapsulation Scope: Strictly isolated to data formatting. It does not interact with the DOM, nor does it mutate global states.
+ * @version 1.3.1
+ * @author Adam Ross DeStafeno
  */
 
 /**
- * Provides internal functionality.
+ * Core type dependencies for QAD parsing.
  * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
  * @typedef {import('../models/QuizState.js').AnswerType} AnswerType
  */
 
 /**
- * Provides internal functionality.
+ * Initializes a new question block object.
  * @param {string} question - The text of the question.
  * @returns {QuestionType} - The initialized question object.
  */
@@ -42,12 +44,12 @@ export function parseQADFormat(rawText) {
     logger.debug("Normalized raw text into lines", { lineCount: lines.length });
 
     /**
-     * Provides internal functionality.
+     * Array of successfully parsed question blocks.
      * @type {QuestionType[]}
      */
     const questions = [];
     /**
-     * Provides internal functionality.
+     * The current question block being assembled.
      * @type {QuestionType | null}
      */
     let currentQuestion = null;

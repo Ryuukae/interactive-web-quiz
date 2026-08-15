@@ -5,26 +5,31 @@
 import { createLogger } from "../utils/logger.js";
 
 /**
- * Provides internal functionality.
+ * Type definition for a single quiz answer.
  * @typedef {object} AnswerType
  * @property {string} text - The answer text.
  * @property {boolean} correct - Indicates if the answer is correct.
  */
 
 /**
- * Provides internal functionality.
+ * Type definition for a quiz question structure.
  * @typedef {object} QuestionType
  * @property {string} question - The question text.
  * @property {AnswerType[]} answers - Array of possible answers.
  */
 
 /**
- * Architectural Responsibilities: Manages the state and core logic for the interactive quiz application. Encapsulates the question dataset, scoring metrics, progression tracking, and interaction locks to strictly decouple business logic from the DOM manipulation layer.
- * Encapsulation Scope: Isolated execution state for a single active assessment.
+ * Manages the state and core logic for the interactive quiz application.
+ * Encapsulates the question dataset, scoring metrics, and progression tracking.
+ *
  * @class QuizState
  * @name QuizState
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno
+ * @property {QuestionType[]} questionData - The parsed array of question objects.
+ * @property {number} score - The user's current score.
+ * @property {number} index - The current active question index.
+ * @property {boolean} disabled - Indicates if interactions are locked during transitions.
  */
 export default class QuizState {
     /**

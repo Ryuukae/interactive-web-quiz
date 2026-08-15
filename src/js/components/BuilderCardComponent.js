@@ -2,24 +2,26 @@ import { confirmAction } from "../utils/prompts.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
- * Provides internal functionality.
+ * Core type dependencies for builder card component.
  * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
  * @typedef {import('../models/QuizState.js').AnswerType} AnswerType
  */
 
 /**
- * Provides internal functionality.
+ * Callback triggered by specific card actions.
  * @callback OnCardActionCallback
  * @param {BuilderCardComponent} card - The builder card component instance.
  * @returns {void} - Does not return a value.
  */
 
 /**
- * Provides internal functionality.
+ * UI component representing a single question entry block in the quiz builder.
+ * Manages its own DOM rendering, local event listeners, and validation state.
+ *
  * @class BuilderCardComponent
  * @name BuilderCardComponent
- * @version 1.0.0
- * @author Adam Ross DeStafeno Architectural Responsibilities: A dedicated UI Component that encapsulates its own physical DOM node, string template rendering, localized event listeners, and physical validation states. Encapsulation Scope: Extremely confined logic strictly tied to one specific question entry block.
+ * @version 1.3.1
+ * @author Adam Ross DeStafeno
  * @property {HTMLElement} node - The root DOM node of the component.
  * @property {HTMLInputElement} [qInput] - The question prompt input field.
  * @property {HTMLInputElement} [aInput] - The correct answer input field.

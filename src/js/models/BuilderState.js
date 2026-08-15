@@ -5,23 +5,25 @@
 import { createLogger } from "../utils/logger.js";
 
 /**
- * Provides internal functionality.
+ * Core type dependencies for builder state management.
  * @typedef {import('../components/BuilderCardComponent.js').default} BuilderCardComponentType
  * @typedef {import('./QuizState.js').QuestionType} QuestionType
  */
 
 /**
- * Provides internal functionality.
+ * Manages the active form building session.
+ * Retains a live array of BuilderCardComponent instances as the definitive source of truth.
+ *
  * @class BuilderState
  * @name BuilderState
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno
- * @property {BuilderCardComponentType[]} cards - Live array of instantiated builder components. Architectural Responsibilities: Manages the active form building session. Retains a live array of BuilderCardComponent instances in memory to act as the definitive source of truth, completely detaching data from the physical DOM layout.
+ * @property {BuilderCardComponentType[]} cards - Live array of instantiated builder components.
  */
 export default class BuilderState {
     /**
-     * Provides internal functionality.
-     * @type {BuilderCardComponentType[]} Array of active builder card components.
+     * Array of active builder card components.
+     * @type {BuilderCardComponentType[]}
      */
     cards = [];
 
