@@ -14,7 +14,7 @@ import { createLogger } from "../utils/logger.js";
  * Provides internal functionality.
  * @class QuizUIController
  * @name QuizUIController
- * @version 1.0.0
+ * @version 1.3.1
  * @author Adam Ross DeStafeno Architectural Responsibilities: Commands the execution of live assessments. Renders test nodes dynamically, updates progress and score metrics, and handles interactive answer evaluation. Encapsulation Scope: Strictly isolated to active test session DOM manipulation.
  */
 export default class QuizUIController {
