@@ -123,13 +123,6 @@ export default class QuizUIController {
             );
             this.handleFileUpload(e, "file-name-display");
         });
-        this.getEl("result-file-input").addEventListener("change", (e) => {
-            this.logger.info(
-                "bindEventListeners: onResultFileInputChange event",
-                { e }
-            );
-            this.handleFileUpload(e, "result-file-status");
-        });
 
         const exportBtn = document.getElementById("btn-export-results");
         if (exportBtn instanceof HTMLButtonElement) {
@@ -403,21 +396,15 @@ export default class QuizUIController {
         const percentage = this.quizState.getGradePercentage();
         this.resultMessage.textContent = percentage + "%";
 
-        const uploadBtnNode =
-            this.getEl("result-file-input").nextElementSibling;
-        const uploadBtn =
-            uploadBtnNode instanceof HTMLElement ? uploadBtnNode : null;
         const returnStartBtn = this.getEl("return-start-btn");
         const returnBuilderBtn = this.getEl("return-builder-btn");
         const exportBtn = this.getEl("btn-export-results");
 
         if (this.isBuilderSource) {
-            if (uploadBtn) uploadBtn.style.display = "none";
             returnStartBtn.style.display = "none";
             returnBuilderBtn.style.display = "inline-flex";
             exportBtn.style.display = "inline-flex";
         } else {
-            if (uploadBtn) uploadBtn.style.display = "inline-flex";
             returnStartBtn.style.display = "inline-flex";
             returnBuilderBtn.style.display = "none";
             exportBtn.style.display = "none";

@@ -82,9 +82,7 @@ describe("QuizUIController Unit Tests", () => {
         controller.isBuilderSource = false;
         controller.showResults();
 
-        expect(
-            mockElements["result-file-input"].nextElementSibling.style.display
-        ).toBe("inline-flex");
+
         expect(mockElements["return-start-btn"].style.display).toBe(
             "inline-flex"
         );
@@ -100,9 +98,7 @@ describe("QuizUIController Unit Tests", () => {
         controller.isBuilderSource = true;
         controller.showResults();
 
-        expect(
-            mockElements["result-file-input"].nextElementSibling.style.display
-        ).toBe("none");
+
         expect(mockElements["return-start-btn"].style.display).toBe("none");
         expect(mockElements["return-builder-btn"].style.display).toBe(
             "inline-flex"
