@@ -116,4 +116,13 @@ describe("schemaValidator Unit Tests", () => {
         ];
         expect(() => validateQuizSchema(badData)).toThrow();
     });
+
+    it("should reject empty payloads", () => {
+        expect(() => parseAndValidateRawText("")).toThrow("No valid question blocks detected.");
+        expect(() => parseAndValidateRawText("   ")).toThrow("No valid question blocks detected.");
+    });
+
+    it("should reject empty JSON arrays", () => {
+        expect(() => parseAndValidateRawText("[]")).toThrow("No valid QAD or JSON questions detected.");
+    });
 });
