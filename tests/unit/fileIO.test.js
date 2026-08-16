@@ -130,6 +130,10 @@ describe("fileIO Utility Unit Tests", () => {
         globalThis.FileReader = originalReader;
     });
 
+    it("should handle null file gracefully in initial logger trace and reject", async () => {
+        await expect(readFile(null)).rejects.toThrow();
+    });
+
     it("should abort JSON export if payload is null instead of an array", () => {
         expect(() => exportJSON(null, "test.json")).not.toThrow();
     });
@@ -140,5 +144,21 @@ describe("fileIO Utility Unit Tests", () => {
             answers: [{ text: "Yes", correct: true }]
         };
         expect(() => exportJSON(mockData, "test.json")).not.toThrow();
+    });
+
+    it("should handle malformed QAD payload arrays safely during export", () => {
+        const mockData = [
+            null, // Covers: if (!qObj)
+            { question: null }, // Covers: if (!qObj.question)
+            { question: "Q1", answers: null }, // Covers: if (Array.isArray(answers))
+            { question: "Q2", answers: [
+                null, // Covers: if (aObj)
+                { text: "Wrong" } // Hits the fallback distractor logic without a "correct" flag
+            ]}
+        ];
+        
+        expect(() => exportQAD(mockData, "test.txt")).not.toThrow();
+        expect(capturedBlobContent).toContain("Q=Q2");
+        expect(capturedBlobContent).toContain("D=Wrong");
     });
 });
