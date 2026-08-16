@@ -58,6 +58,7 @@ describe("QuizUIController Unit Tests", () => {
                 el.classList = { add: vi.fn() };
                 el.dataset = {};
                 el.addEventListener = vi.fn();
+                el.click = vi.fn();
                 return el;
             }
         };
@@ -108,7 +109,7 @@ describe("QuizUIController Unit Tests", () => {
         );
     });
 
-    it("should bind event listeners without error", () => {
+    it("should bind event listeners without error and trigger callbacks", () => {
         const controller = new QuizUIController(
             mockQuizState,
             mockAppNavController
@@ -118,6 +119,20 @@ describe("QuizUIController Unit Tests", () => {
         expect(
             mockElements["custom-file-input"].addEventListener
         ).toHaveBeenCalled();
+
+        // Trigger start-btn callback
+        const startCb = mockElements["start-btn"].addEventListener.mock.calls.find(c => c[0] === "click")[1];
+        startCb();
+
+        // Trigger restart-btn callback
+        const restartCb = mockElements["restart-btn"].addEventListener.mock.calls.find(c => c[0] === "click")[1];
+        restartCb();
+
+        // Trigger custom-file-input callback
+        const fileCb = mockElements["custom-file-input"].addEventListener.mock.calls.find(c => c[0] === "change")[1];
+        controller.handleFileUpload = vi.fn();
+        fileCb({ target: {} });
+        expect(controller.handleFileUpload).toHaveBeenCalled();
     });
 
     it("should start the quiz correctly", () => {
@@ -222,5 +237,120 @@ describe("QuizUIController Unit Tests", () => {
         mockElements["answers-container"].appendChild = vi.fn();
         controller.showQuestion();
         expect(mockElements["question-text"].textContent).toBe("Q");
+        
+        // Test the click listener on the generated answer button
+        const selectAnswerSpy = vi.spyOn(controller, "selectAnswer").mockImplementation(() => {});
+        const answerButton = mockElements["answers-container"].appendChild.mock.calls[0][0];
+        const clickHandler = answerButton.addEventListener.mock.calls.find(call => call[0] === "click")[1];
+        clickHandler({ target: answerButton });
+        expect(selectAnswerSpy).toHaveBeenCalled();
+    });
+
+    it("should abort showQuestion if no current question exists", () => {
+        const controller = new QuizUIController(
+            mockQuizState,
+            mockAppNavController
+        );
+        mockQuizState.getCurrentQuestion = vi.fn().mockReturnValue(null);
+        controller.showQuestion();
+        expect(mockElements["question-text"].textContent).not.toBe("Q");
+    });
+
+    it("should throw an error in getEl if the element does not exist", () => {
+        const originalGetElementById = globalThis.document.getElementById;
+        globalThis.document.getElementById = vi.fn().mockReturnValue(null);
+        expect(() => new QuizUIController(mockQuizState, mockAppNavController)).toThrow();
+        globalThis.document.getElementById = originalGetElementById;
+    });
+
+    it("should trigger exportQAD when export button is clicked", () => {
+        const originalGetElementById = globalThis.document.getElementById;
+        const originalBody = globalThis.document.body;
+        globalThis.document.body = { appendChild: vi.fn(), removeChild: vi.fn() };
+        
+        const exportBtn = new globalThis.HTMLButtonElement();
+        let exportClickHandler = null;
+        exportBtn.addEventListener = (event, handler) => {
+            if (event === "click") exportClickHandler = handler;
+        };
+
+        globalThis.document.getElementById = (id) => {
+            if (id === "btn-export-results") return exportBtn;
+            return originalGetElementById(id);
+        };
+
+        const controller = new QuizUIController(mockQuizState, mockAppNavController);
+        
+        // Populate quiz state with sample question data
+        controller.quizState.questionData = [{ question: "Q1", answers: [] }];
+        
+        if (exportClickHandler) exportClickHandler();
+        
+        globalThis.document.getElementById = originalGetElementById;
+        globalThis.document.body = originalBody;
+    });
+
+    it("should transition to showResults if the quiz is over after selecting an answer", () => {
+        const controller = new QuizUIController(
+            mockQuizState,
+            mockAppNavController
+        );
+        mockQuizState.disabled = false;
+        mockQuizState.isQuizOver = vi.fn().mockReturnValue(true);
+        mockQuizState.advanceQuestion = vi.fn();
+        mockQuizState.evaluateAnswer = vi.fn();
+
+        const btn = new globalThis.HTMLElement();
+        btn.dataset = { correct: "true" };
+
+        mockElements["answers-container"].children = [];
+        
+        vi.useFakeTimers();
+        const showResultsSpy = vi.spyOn(controller, "showResults");
+        controller.selectAnswer({ target: btn });
+        
+        vi.runAllTimers();
+        expect(showResultsSpy).toHaveBeenCalled();
+        vi.useRealTimers();
+    });
+
+    it("should abort handleFileUpload safely if files array is empty", async () => {
+        const controller = new QuizUIController(mockQuizState, mockAppNavController);
+        const target = new globalThis.HTMLInputElement();
+        target.files = []; // Empty array
+        const event = { target: target };
+        await controller.handleFileUpload(event, "file-name-display");
+        expect(controller.customPayload).toBe(null);
+    });
+
+    it("should handle file parsing errors securely and update the status node", async () => {
+        const controller = new QuizUIController(mockQuizState, mockAppNavController);
+        const file = new Blob(["invalid data"], {type: 'text/plain'});
+        file.name = "corrupted.txt";
+        
+        const target = new globalThis.HTMLInputElement();
+        target.files = [file];
+        
+        // Mock FileReader to return invalid data, forcing parseAndValidateRawText to throw
+        globalThis.FileReader = class {
+            readAsText() {
+                this.result = "invalid data";
+                if (this.onload) this.onload({ target: this });
+            }
+        };
+
+        const statusNode = new globalThis.HTMLElement();
+        statusNode.id = "status-node";
+        statusNode.classList = { add: vi.fn(), remove: vi.fn() };
+        const originalGetElementById = globalThis.document.getElementById;
+        globalThis.document.getElementById = (id) => id === "status-node" ? statusNode : originalGetElementById(id);
+
+        await controller.handleFileUpload({ target }, "status-node");
+        
+        expect(controller.customPayload).toBe(null);
+        expect(statusNode.classList.add).toHaveBeenCalledWith("error");
+        
+        // Cleanup
+        globalThis.document.getElementById = originalGetElementById;
     });
 });
