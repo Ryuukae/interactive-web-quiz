@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test';
 
 test.describe('UI Visual Regression Audits', () => {
 
-    // =====================================================================
-    // 1. GLOBAL SETUP: Engineer a deterministic environment
-    // =====================================================================
+    // ==================================================
+    // GLOBAL SETUP: Engineer a deterministic environment
+    // ==================================================
     test.beforeEach(async ({ page }) => {
         await page.goto('/');
 
@@ -25,9 +25,9 @@ test.describe('UI Visual Regression Audits', () => {
         });
     });
 
-    // =====================================================================
-    // 2. STATIC SCREENS: Baseline the primary views
-    // =====================================================================
+    // ==========================================
+    // STATIC SCREENS: Baseline the primary views
+    // ==========================================
     test('Start Screen Baseline', async ({ page }) => {
         const startContainer = page.locator('#start-screen');
         await expect(startContainer).toBeVisible();
@@ -46,9 +46,9 @@ test.describe('UI Visual Regression Audits', () => {
         await expect(creatorForm).toHaveScreenshot('creator-screen.png');
     });
 
-    // =====================================================================
-    // 3. INTERACTIVE COMPONENTS: Test isolated states
-    // =====================================================================
+    // ============================================
+    // INTERACTIVE COMPONENTS: Test isolated states
+    // ============================================
     test('Accordion Component - Format Guide Expanded', async ({ page }) => {
         // Navigate to the view where the accordion lives
         await page.click('#create-quizset-btn');
@@ -69,9 +69,9 @@ test.describe('UI Visual Regression Audits', () => {
         await expect(formatGuideAccordion).toHaveScreenshot('format-guide-expanded.png');
     });
 
-    // =====================================================================
-    // 4. DYNAMIC STATES: State injection (No clicking through manually)
-    // =====================================================================
+    // ==============================================================
+    // DYNAMIC STATES: State injection (No clicking through manually)
+    // ==============================================================
     test('Results Screen - Perfect Score Rendering', async ({ page }) => {
         // Professional suites don't waste CI minutes clicking through 10 questions.
         // They inject the exact required state directly into the browser.
