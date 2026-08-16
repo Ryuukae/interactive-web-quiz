@@ -4,13 +4,6 @@ import QuizState from "../models/QuizState.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
- * Core type dependencies for the quiz controller.
- * @typedef {import('../models/QuizState.js').default} QuizStateType
- * @typedef {import('./AppNavigationController.js').default} AppNavigationControllerType
- * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
- */
-
-/**
  * UI controller coordinating active quiz sessions.
  * Manages dynamic rendering of questions, progress tracking, and interactive answer evaluation.
  *
@@ -32,33 +25,12 @@ import { createLogger } from "../utils/logger.js";
  * @property {HTMLElement} maxScoreSpan - DOM element displaying the maximum possible score.
  * @property {HTMLElement} resultMessage - DOM element displaying the final grade percentage.
  * @property {HTMLElement} progressBar - DOM element representing visual progress.
+ * @typedef {import('../types.js').QuizStateType} QuizStateType
+ * @typedef {import('../types.js').AppNavigationControllerType} AppNavigationControllerType
+ * @typedef {import('../types.js').QuestionType} QuestionType
+ * @typedef {import('../types.js').AnswerType} AnswerType
  */
 export default class QuizUIController {
-    /**
-     * Active question dataset loaded into memory.
-     * @type {QuestionType[] | null}
-     */
-    customPayload;
-
-    /**
-     * Tracks whether the quiz originated from the builder to dictate contextual routing.
-     * @type {boolean}
-     */
-    isBuilderSource;
-
-    /**
-     * Safely retrieves a DOM element by ID.
-     * @param {string} id - The DOM element ID.
-     * @returns {HTMLElement} - The resolved DOM element.
-     * @throws {Error} - If the DOM node is missing.
-     */
-    getEl(id) {
-        const el = document.getElementById(id);
-        if (!(el instanceof HTMLElement))
-            throw new Error(`Missing DOM node: ${id}`);
-        return el;
-    }
-
     /**
      * Caches nodes securely and effectively properly physically correctly.
      * @name constructor
@@ -70,8 +42,13 @@ export default class QuizUIController {
     constructor(quizState, appNavController) {
         this.logger = createLogger("QuizUIController");
         this.logger.info("constructor called", { quizState, appNavController });
+
         this.quizState = quizState;
         this.appNavController = appNavController;
+
+        // Inline casting for the null payload
+        this.customPayload = /** @type {QuestionType[] | null} */ (null);
+        this.isBuilderSource = false;
 
         const startBtnNode = document.getElementById("start-btn");
         if (!(startBtnNode instanceof HTMLButtonElement)) {
@@ -89,12 +66,22 @@ export default class QuizUIController {
         this.resultMessage = this.getEl("result-message");
         this.progressBar = this.getEl("progress");
 
-        this.customPayload = null;
-        this.isBuilderSource = false;
-
         this.logger.info("Quiz UI controller initialized");
 
         this.bindEventListeners();
+    }
+
+    /**
+     * Safely retrieves a DOM element by ID.
+     * @param {string} id - The DOM element ID.
+     * @returns {HTMLElement} - The resolved DOM element.
+     * @throws {Error} - If the DOM node is missing.
+     */
+    getEl(id) {
+        const el = document.getElementById(id);
+        if (!(el instanceof HTMLElement))
+            throw new Error(`Missing DOM node: ${id}`);
+        return el;
     }
 
     /**

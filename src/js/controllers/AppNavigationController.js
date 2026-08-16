@@ -1,10 +1,6 @@
 import { createLogger } from "../utils/logger.js";
 
 /**
- * @typedef {"start" | "creator" | "quiz" | "result"} ScreenKey
- */
-
-/**
  * Centralized application router natively handling CSS visibility toggles.
  * Maps the active viewport state seamlessly to the explicitly required stage.
  *
@@ -13,14 +9,9 @@ import { createLogger } from "../utils/logger.js";
  * @version 1.5.1
  * @author Adam Ross DeStafeno
  * @property {Record<string, HTMLElement | null>} screens - Cached DOM references for routing.
+ * @typedef {import('../types.js').ScreenKey} ScreenKey
  */
 export default class AppNavigationController {
-    /**
-     * Cached application screen nodes for rapid visibility toggling.
-     * @type {Record<string, HTMLElement | null>}
-     */
-    screens;
-
     /**
      * Caches application screen nodes optimally and delegates fundamental routing interactions visually.
      * @name constructor
@@ -30,12 +21,13 @@ export default class AppNavigationController {
         this.logger = createLogger("AppNavigationController");
         this.logger.info("constructor called");
 
-        this.screens = {
+        // Casting the entire object ensures strict adherence to the Record type
+        this.screens = /** @type {Record<string, HTMLElement | null>} */ ({
             start: document.getElementById("start-screen"),
             quiz: document.getElementById("quiz-screen"),
             result: document.getElementById("result-screen"),
             creator: document.getElementById("creator-screen")
-        };
+        });
 
         this.logger.info("Controller initialized", {
             screens: Object.keys(this.screens)

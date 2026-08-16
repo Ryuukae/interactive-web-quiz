@@ -2,12 +2,6 @@ import { confirmAction } from "../utils/prompts.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
- * Core type dependencies for builder card component.
- * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
- * @typedef {import('../models/QuizState.js').AnswerType} AnswerType
- */
-
-/**
  * Callback triggered by specific card actions.
  * @callback OnCardActionCallback
  * @param {BuilderCardComponent} card - The builder card component instance.
@@ -29,6 +23,8 @@ import { createLogger } from "../utils/logger.js";
  * @property {HTMLElement} [addBtn] - The button to add more distractors.
  * @property {OnCardActionCallback} onDeleteCallback - Callback for deleting the card.
  * @property {OnCardActionCallback} [onExpandCallback] - Callback for expanding the card.
+ * @typedef {import('../types.js').QuestionType} QuestionType
+ * @typedef {import('../types.js').AnswerType} AnswerType
  */
 export default class BuilderCardComponent {
     /**
@@ -46,11 +42,18 @@ export default class BuilderCardComponent {
             onDeleteCallback,
             onExpandCallback
         });
+
         this.onDeleteCallback = onDeleteCallback;
         this.onExpandCallback = onExpandCallback;
 
         this.node = document.createElement("div");
         this.node.className = "glass-panel question-card";
+
+        // Declare properties explicitly to prevent engine errors prior to render()
+        this.qInput = /** @type {HTMLInputElement | undefined} */ (undefined);
+        this.aInput = /** @type {HTMLInputElement | undefined} */ (undefined);
+        this.dContainer = /** @type {HTMLElement | undefined} */ (undefined);
+        this.addBtn = /** @type {HTMLElement | undefined} */ (undefined);
 
         this.logger.info("Builder card created", {
             hasPrefillData: Boolean(prefillData)

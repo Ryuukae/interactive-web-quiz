@@ -1,16 +1,13 @@
 import { createLogger } from "./logger.js";
 
 /**
- * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
- */
-
-/**
  * Global utility encapsulating browser-native file generation and download triggers.
  * Agnostic to application state and physical DOM structures.
  *
  * @module fileIO
  * @version 1.5.1
  * @author Adam Ross DeStafeno
+ * @typedef {import('../types.js').QuestionType} QuestionType
  */
 
 /**

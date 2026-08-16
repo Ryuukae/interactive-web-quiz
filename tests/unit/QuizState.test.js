@@ -84,9 +84,19 @@ describe("QuizState Model Unit Tests", () => {
     it("should shuffle quiz data appropriately", () => {
         const state = new QuizState(sampleData);
         const data = [{ q: 1, answers: [{a:1}] }, { q: 2, answers: [{a:1}] }, { q: 3, answers: [{a:1}] }];
-        const result = state.randomizeDeck([...data]);
+        const result = state.shuffleQuizData([...data]);
         expect(result.length).toBe(3);
         // It shuffles answers too
         expect(result[0].answers.length).toBe(1);
+    });
+
+    it("should hit fallback in shuffleQuizData if given a non-array", () => {
+        const state = new QuizState(sampleData);
+        expect(() => state.shuffleQuizData(null)).toThrow();
+    });
+
+    it("should throw an error if instantiated with non-array data", () => {
+        expect(() => new QuizState("not an array")).toThrow("QuizState requires an array of question objects.");
+        expect(() => new QuizState(null)).toThrow("QuizState requires an array of question objects.");
     });
 });

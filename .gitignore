@@ -14,11 +14,13 @@
 !tests/unit/
 !tests/integration/
 !tests/e2e/
+!tests/e2e/09_visualRegression.spec.js-snapshots/
 !.github/
 !.github/workflows/
 !.husky/
 !.github/ISSUE_TEMPLATE/
 !scripts/
+
 
 
 # Only allow certain files
@@ -84,4 +86,7 @@
 
 # .SPEC.JS
 !tests/e2e/*.spec.js
+
+# .SNAPSHOTS
+!tests/e2e/09_visualRegression.spec.js-snapshots/*.png
 

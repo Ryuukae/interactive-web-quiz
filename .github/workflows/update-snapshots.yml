@@ -1,0 +1,26 @@
+name: Update Visual Snapshots
+
+on:
+  workflow_dispatch: # Allows manual triggering from the GitHub UI
+
+jobs:
+  update-snapshots:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 22
+    - run: npm ci
+    - run: npx playwright install --with-deps
+    - run: npm run build
+    - name: Update Snapshots
+      run: npx playwright test --update-snapshots
+    - name: Commit changes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "chore: update Playwright visual snapshots (ubuntu)"
+        file_pattern: "tests/e2e/**/*-snapshots/*"
