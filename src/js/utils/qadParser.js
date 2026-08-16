@@ -7,12 +7,8 @@ import { createLogger } from "./logger.js";
  * @module qadParser
  * @version 1.5.1
  * @author Adam Ross DeStafeno
- */
-
-/**
- * Core type dependencies for QAD parsing.
- * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
- * @typedef {import('../models/QuizState.js').AnswerType} AnswerType
+ * @typedef {import('../types.js').QuestionType} QuestionType
+ * @typedef {import('../types.js').AnswerType} AnswerType
  */
 
 /**
