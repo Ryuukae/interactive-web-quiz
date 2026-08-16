@@ -1,1 +1,4 @@
+# Normalize CRLF to LF to fix commitlint line break detection on Windows
+sed -i 's/\r$//' "$1"
+
 npx --no -- commitlint --edit "$1"
