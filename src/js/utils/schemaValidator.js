@@ -9,11 +9,7 @@ const logger = createLogger("schemaValidator");
  * @module schemaValidator
  * @version 1.5.1
  * @author Adam Ross DeStafeno
- */
-
-/**
- * Core type dependencies for schema validation.
- * @typedef {import('../models/QuizState.js').QuestionType} QuestionType
+ * @typedef {import('../types.js').QuestionType} QuestionType
  */
 
 /**
