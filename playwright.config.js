@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './tests/e2e',
   timeout: 60000,
   fullyParallel: true,
-  reporter: 'list',
+  reporter: process.env.CI ? [['github'], ['list']] : 'list',
   use: {
     navigationTimeout: 30000,
     actionTimeout: 10000,

@@ -34,6 +34,7 @@ export default defineConfig({
     test: {
         globals: true,
         environment: 'node',
+        reporters: process.env.CI ? ['default', 'github-actions'] : ['default'],
         include: ['tests/unit/**/*.test.js', 'tests/integration/**/*.test.js'],
         exclude: ['tests/e2e/**'],
         coverage: {
