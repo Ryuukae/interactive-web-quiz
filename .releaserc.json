@@ -8,7 +8,7 @@
       "npmPublish": false
     }],
     ["@semantic-release/exec", {
-      "prepareCmd": "node scripts/enforce-version-bump.js"
+      "prepareCmd": "npm run sync:versions"
     }],
     ["@semantic-release/git", {
       "assets": ["package.json", "package-lock.json", "CHANGELOG.md", "src/**/*.js"],
