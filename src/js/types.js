@@ -1,7 +1,7 @@
 /**
  * Centralized type definitions for the interactive web quiz application.
  * @module types
- * @version 1.5.1
+ * @version 1.5.2
  * @author Adam Ross DeStafeno
  */
 

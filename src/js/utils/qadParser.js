@@ -5,7 +5,7 @@ import { createLogger } from "./logger.js";
  * Enforces strict schema rules: 1 Question, 1 Answer, and 1-6 Distractors.
  *
  * @module qadParser
- * @version 1.5.1
+ * @version 1.5.2
  * @author Adam Ross DeStafeno
  * @typedef {import('../types.js').QuestionType} QuestionType
  * @typedef {import('../types.js').AnswerType} AnswerType
