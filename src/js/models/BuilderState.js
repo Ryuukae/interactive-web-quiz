@@ -6,7 +6,7 @@ import { createLogger } from "../utils/logger.js";
  *
  * @class BuilderState
  * @name BuilderState
- * @version 1.5.1
+ * @version 1.5.2
  * @author Adam Ross DeStafeno
  * @property {BuilderCardComponentType[]} cards - Live array of instantiated builder components.
  * @property {QuestionType[]} questions - Live array of instantiated question components.

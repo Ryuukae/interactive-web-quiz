@@ -7,7 +7,7 @@ const logger = createLogger("schemaValidator");
  * Utility responsible for enforcing the structural bounds of quiz assessment arrays.
  *
  * @module schemaValidator
- * @version 1.5.1
+ * @version 1.5.2
  * @author Adam Ross DeStafeno
  * @typedef {import('../types.js').QuestionType} QuestionType
  */

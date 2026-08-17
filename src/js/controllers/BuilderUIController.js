@@ -12,7 +12,7 @@ import { createLogger } from "../utils/logger.js";
  *
  * @class BuilderUIController
  * @name BuilderUIController
- * @version 1.5.1
+ * @version 1.5.2
  * @author Adam Ross DeStafeno
  * @property {BuilderStateType} builderState - The central tracker modeling card components.
  * @property {QuizUIControllerType} quizUIController - Controller for launching quiz previews.
