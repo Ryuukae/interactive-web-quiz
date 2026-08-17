@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:coverage": "vitest run --coverage",
+    "snapshots:linux": "node scripts/convert-snapshots-to-linux.js",
     "lint": "npm run lint:js && npm run lint:css && npm run lint:html && npm run lint:spell && npm run lint:secrets && npm run lint:versions",
     "lint:fix": "npm run lint:js:fix && npm run lint:css:fix",
     "lint:js": "eslint src/**/*.js --max-warnings 0",
