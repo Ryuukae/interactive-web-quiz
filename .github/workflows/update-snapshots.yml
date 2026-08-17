@@ -27,4 +27,4 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "chore: update Playwright visual snapshots (ubuntu)"
-        file_pattern: "tests/e2e/**/*-snapshots/*"
+        file_pattern: "**/*.png"
