@@ -10,11 +10,18 @@ function processDirectory(directory) {
         if (entry.isDirectory()) {
             processDirectory(fullPath);
         } else if (entry.isFile() && entry.name.endsWith(".png")) {
-            const newName = entry.name.replace(/-(win32|darwin)\.png$/, "-linux.png");
-            if (newName !== entry.name) {
-                const newPath = path.join(directory, newName);
-                fs.renameSync(fullPath, newPath);
-                console.log(`  Renamed: ${entry.name} -> ${newName}`);
+            if (entry.name.includes("-win32.png") || entry.name.includes("-darwin.png")) {
+                const linuxName = entry.name.replace(/-(win32|darwin)\.png$/, "-linux.png");
+                const linuxPath = path.join(directory, linuxName);
+                fs.copyFileSync(fullPath, linuxPath);
+                console.log(`  Synced: ${entry.name} -> ${linuxName}`);
+            } else if (entry.name.includes("-linux.png")) {
+                const winName = entry.name.replace(/-linux\.png$/, "-win32.png");
+                const winPath = path.join(directory, winName);
+                if (!fs.existsSync(winPath)) {
+                    fs.copyFileSync(fullPath, winPath);
+                    console.log(`  Synced: ${entry.name} -> ${winName}`);
+                }
             }
         }
     }
