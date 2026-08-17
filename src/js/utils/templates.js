@@ -5,7 +5,7 @@ import { createLogger } from "./logger.js";
  * Provides read-only template generation for injection into user-facing text areas.
  *
  * @module templates
- * @version 1.5.1
+ * @version 1.5.2
  * @author Adam Ross DeStafeno
  */
 

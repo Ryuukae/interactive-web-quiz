@@ -6,7 +6,7 @@ import { createLogger } from "../utils/logger.js";
  *
  * @class QuizState
  * @name QuizState
- * @version 1.5.1
+ * @version 1.5.2
  * @author Adam Ross DeStafeno
  * @property {QuestionType[]} questionData - The parsed array of question objects.
  * @property {number} score - The user's current score.

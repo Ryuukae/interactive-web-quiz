@@ -6,7 +6,7 @@ import { createLogger } from "../utils/logger.js";
  *
  * @class AppNavigationController
  * @name AppNavigationController
- * @version 1.5.1
+ * @version 1.5.2
  * @author Adam Ross DeStafeno
  * @property {Record<string, HTMLElement | null>} screens - Cached DOM references for routing.
  * @typedef {import('../types.js').ScreenKey} ScreenKey
