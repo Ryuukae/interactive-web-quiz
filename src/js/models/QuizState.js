@@ -1,26 +1,8 @@
-// ========================
-// --- QUIZ STATE MODEL ---
-// ========================
-
 import { createLogger } from "../utils/logger.js";
 
 /**
- * Type definition for a single quiz answer.
- * @typedef {object} AnswerType
- * @property {string} text - The answer text.
- * @property {boolean} correct - Indicates if the answer is correct.
- */
-
-/**
- * Type definition for a quiz question structure.
- * @typedef {object} QuestionType
- * @property {string} question - The question text.
- * @property {AnswerType[]} answers - Array of possible answers.
- */
-
-/**
- * Manages the state and core logic for the interactive quiz application.
- * Encapsulates the question dataset, scoring metrics, and progression tracking.
+ * Core state model encapsulating dynamically injected quiz structures explicitly.
+ * Retains pristine sequential order organically while providing active validation natively.
  *
  * @class QuizState
  * @name QuizState
@@ -30,6 +12,7 @@ import { createLogger } from "../utils/logger.js";
  * @property {number} score - The user's current score.
  * @property {number} index - The current active question index.
  * @property {boolean} disabled - Indicates if interactions are locked during transitions.
+ * @typedef {import('../types.js').QuestionType} QuestionType
  */
 export default class QuizState {
     /**
@@ -37,19 +20,34 @@ export default class QuizState {
      * @name constructor
      * @public
      * @param {QuestionType[]} questionData - The parsed array of question objects to ingest.
+     * @throws {Error} - If the question data is invalid or malformed.
      */
     constructor(questionData) {
         this.logger = createLogger("QuizState");
+
         this.logger.info("constructor called", {
             questionData,
             questionCount: Array.isArray(questionData) ? questionData.length : 0
         });
-        this.questionData = this.randomizeDeck(questionData);
 
+        this.logger.debug("Initializing quiz state", {
+            questionCount: Array.isArray(questionData) ? questionData.length : 0
+        });
+
+        if (!Array.isArray(questionData)) {
+            this.logger.error(
+                "Invalid question data provided to QuizState constructor"
+            );
+            throw new Error("QuizState requires an array of question objects.");
+        }
+
+        this.questionData = /** @type {QuestionType[]} */ (
+            this.randomizeDeck(questionData)
+        );
         this.score = 0;
         this.index = 0;
-
         this.disabled = false;
+
         this.logger.info("Quiz state initialized", {
             questionCount: this.questionData.length
         });
@@ -60,6 +58,7 @@ export default class QuizState {
      * @name getCurrentQuestion
      * @public
      * @returns {QuestionType} - The active question object containing the text and associated answers array.
+     * @throws {Error} - If the current question cannot be retrieved.
      */
     getCurrentQuestion() {
         this.logger.info("getCurrentQuestion called", {
@@ -74,6 +73,7 @@ export default class QuizState {
      * @name advanceQuestion
      * @public
      * @returns {void} - Does not return a value.
+     * @throws {Error} - If the index exceeds the bounds of the question dataset.
      */
     advanceQuestion() {
         this.logger.info("advanceQuestion called", {
@@ -91,6 +91,7 @@ export default class QuizState {
      * @name getProgressPercentage
      * @public
      * @returns {number} - The progression metric represented as a percentage (0-100).
+     * @throws {Error} - If the index exceeds the bounds of the question dataset.
      */
     getProgressPercentage() {
         this.logger.info("getProgressPercentage called", {
@@ -109,6 +110,7 @@ export default class QuizState {
      * @name getGradePercentage
      * @public
      * @returns {number} - The grade metric represented as a percentage (0-100).
+     * @throws {Error} - If the score exceeds the bounds of the question dataset.
      */
     getGradePercentage() {
         this.logger.info("getGradePercentage called", {
@@ -128,6 +130,7 @@ export default class QuizState {
      * @public
      * @param {boolean} isCorrect - Evaluated truthiness of the user's selected answer.
      * @returns {void} - Does not return a value.
+     * @throws {Error} - If the answer is invalid or the quiz is in an invalid state.
      */
     evaluateAnswer(isCorrect) {
         this.logger.info("evaluateAnswer called", {
@@ -168,6 +171,7 @@ export default class QuizState {
      * @name resetClickLock
      * @public
      * @returns {void} - Does not return a value.
+     * @throws {Error} - If the click lock cannot be reset.
      */
     resetClickLock() {
         this.logger.info("resetClickLock called");
@@ -180,6 +184,7 @@ export default class QuizState {
      * @name resetQuiz
      * @public
      * @returns {void} - Does not return a value.
+     * @throws {Error} - If the quiz cannot be reset.
      */
     resetQuiz() {
         this.logger.info("resetQuiz called", {
@@ -204,6 +209,7 @@ export default class QuizState {
      * @name isQuizOver
      * @public
      * @returns {boolean} - True if the pointer has reached or exceeded the dataset length.
+     * @throws {Error} - If the index exceeds the bounds of the question dataset.
      */
     isQuizOver() {
         this.logger.info("isQuizOver called", {
@@ -225,6 +231,7 @@ export default class QuizState {
      * @public
      * @param {Array<any>} array - The target array to mutate.
      * @returns {Array<any>} - A reference to the mutated array to allow method chaining.
+     * @throws {Error} - If the array is not an array.
      */
     shuffleQuizData(array) {
         this.logger.info("shuffleQuizData called", {
@@ -249,6 +256,7 @@ export default class QuizState {
      * @public
      * @param {QuestionType[]} deck - The collection of question objects to randomize.
      * @returns {QuestionType[]} - A reference to the fully randomized matrix.
+     * @throws {Error} - If the deck is not an array or is empty.
      */
     randomizeDeck(deck) {
         this.logger.info("randomizeDeck called", {

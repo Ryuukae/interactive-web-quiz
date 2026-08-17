@@ -11,6 +11,13 @@ export default defineConfig({
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
   },
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixels: 200, // Tolerance for anti-aliasing and sub-pixel differences
+      threshold: 0.2, // Allow up to 20% pixel color threshold variance
+      maxDiffPixelRatio: 0.05, // Allow up to 5% overall pixel ratio variance across OS environments
+    },
+  },
 
   webServer: {
     command: 'npm run dev',

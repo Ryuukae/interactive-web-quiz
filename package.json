@@ -9,10 +9,20 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "npx rimraf dist coverage .eslintcache",
+    "audit": "npm audit --audit-level=high --omit=dev",
+    "prepare": "husky",
+
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit -p jsconfig.json",
+
+    "format": "prettier --write \"src/**/*.{js,css,html}\" \"*.html\"",
+    "format:check": "prettier --check \"src/**/*.{js,css,html}\" \"*.html\"",
+    "deps:check": "npm outdated",
+    "size": "size-limit",
+
     "lint": "npm run lint:js && npm run lint:css && npm run lint:html && npm run lint:spell && npm run lint:secrets && npm run lint:versions",
     "lint:fix": "npm run lint:js:fix && npm run lint:css:fix",
     "lint:js": "eslint src/**/*.js --max-warnings 0",
@@ -22,17 +32,17 @@
     "lint:html": "html-validate \"*.html\"",
     "lint:spell": "cspell \"src/**/*.{js,css,html}\" \"*.html\"",
     "lint:secrets": "secretlint \"**/*\"",
-    "lint:versions": "node scripts/verify-versions.js",
-    "sync:versions": "node scripts/sync-versions.js",
     "lint:commit": "commitlint --edit",
-    "format": "prettier --write \"src/**/*.{js,css,html}\" \"*.html\"",
-    "format:check": "prettier --check \"src/**/*.{js,css,html}\" \"*.html\"",
-    "size": "size-limit",
-    "typecheck": "tsc --noEmit -p jsconfig.json",
-    "audit": "npm audit --audit-level=high --omit=dev",
-    "deps:check": "npm outdated",
-    "prepare": "husky",
-    "verify": "npm run format:check && npm run lint && npm run size && npm run typecheck && npm run test:coverage && npm run audit && npm run build"
+    "lint:versions": "node scripts/verify-versions.js",
+
+    "sync:versions": "node scripts/sync-versions.js",
+
+    "snapshots:renew": "npx playwright test --update-snapshots",
+    "snapshots:linux": "node scripts/convert-snapshots-to-linux.js",
+    "snapshots:sync": "npm run snapshots:renew && npm run snapshots:linux",
+
+    "verify": "npm run format:check && npm run lint && npm run size && npm run typecheck && npm run test:coverage && npm run audit && npm run build && npm run test:e2e"
+
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

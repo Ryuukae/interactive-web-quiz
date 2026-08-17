@@ -7,13 +7,6 @@ import StorageService from "../utils/StorageService.js";
 import { createLogger } from "../utils/logger.js";
 
 /**
- * Core type dependencies for the builder controller.
- * @typedef {import('../models/BuilderState.js').default} BuilderStateType
- * @typedef {import('./QuizUIController.js').default} QuizUIControllerType
- * @typedef {import('./AppNavigationController.js').default} AppNavigationControllerType
- */
-
-/**
  * UI controller coordinating the form builder interface.
  * Maps UI actions (add, bulk parse, clear) to component updates and model mutations.
  *
@@ -28,21 +21,13 @@ import { createLogger } from "../utils/logger.js";
  * @property {HTMLElement} bulkImportPanel - DOM container for the bulk import UI.
  * @property {HTMLTextAreaElement} bulkImportText - DOM input for bulk question payloads.
  * @property {HTMLElement} bulkImportStatus - DOM element for displaying bulk import errors.
+ * @property {number | ReturnType<typeof setTimeout> | null} saveTimeout - Timeout reference for debounce logic.
+ * @typedef {import('../types.js').BuilderStateType} BuilderStateType
+ * @typedef {import('../types.js').QuizUIControllerType} QuizUIControllerType
+ * @typedef {import('../types.js').AppNavigationControllerType} AppNavigationControllerType
+ * @typedef {import('../types.js').QuestionType} QuestionType
  */
 export default class BuilderUIController {
-    /**
-     * Safely retrieves a DOM element by ID.
-     * @param {string} id - The DOM element ID.
-     * @returns {HTMLElement} - The resolved DOM node.
-     * @throws {Error} - If the DOM node is not found.
-     */
-    getEl(id) {
-        const el = document.getElementById(id);
-        if (!(el instanceof HTMLElement))
-            throw new Error(`Missing DOM node: ${id}`);
-        return el;
-    }
-
     /**
      * Links physical nodes with Model authorities cleanly.
      * @name constructor
@@ -59,9 +44,14 @@ export default class BuilderUIController {
             quizUIController,
             appNavController
         });
+
         this.builderState = builderState;
         this.quizUIController = quizUIController;
         this.appNavController = appNavController;
+
+        // Inline casting for the null timeout
+        this.saveTimeout =
+            /** @type {number | ReturnType<typeof setTimeout> | null} */ (null);
 
         this.builderContainer = this.getEl("builder-questions-container");
         this.bulkImportPanel = this.getEl("bulk-import-panel");
@@ -79,6 +69,19 @@ export default class BuilderUIController {
         this.logger.info("Builder UI controller initialized");
 
         this.initializeEventListeners();
+    }
+
+    /**
+     * Safely retrieves a DOM element by ID.
+     * @param {string} id - The DOM element ID.
+     * @returns {HTMLElement} - The resolved DOM node.
+     * @throws {Error} - If the DOM node is not found.
+     */
+    getEl(id) {
+        const el = document.getElementById(id);
+        if (!(el instanceof HTMLElement))
+            throw new Error(`Missing DOM node: ${id}`);
+        return el;
     }
 
     /**
@@ -206,11 +209,11 @@ export default class BuilderUIController {
         });
 
         // 10-second highly performant debounce auto-save
-        /** @type {number | ReturnType<typeof setTimeout>} */
-        let saveTimeout;
         this.builderContainer.addEventListener("input", () => {
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
+            if (this.saveTimeout !== null) {
+                clearTimeout(this.saveTimeout);
+            }
+            this.saveTimeout = setTimeout(() => {
                 this.logger.info(
                     "Auto-saving builder state after 10s debounce"
                 );
@@ -290,8 +293,9 @@ export default class BuilderUIController {
         this.builderState.clearAll();
         this.builderContainer.innerHTML = "";
 
-        /** @type {import('../models/QuizState.js').QuestionType[] | null} */
-        const cachedData = StorageService.load("quiz-builder-cache");
+        const cachedData = /** @type {QuestionType[] | null} */ (
+            StorageService.load("quiz-builder-cache")
+        );
 
         if (cachedData && cachedData.length > 0) {
             this.logger.info("Restoring cached builder state", {

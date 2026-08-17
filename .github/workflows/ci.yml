@@ -9,46 +9,54 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+      with:
+        lfs: true
+
     - name: Setup Node.js
-      uses: actions/setup-node@v7
+      uses: actions/setup-node@v4
       with:
         node-version: 22
         cache: 'npm'
-        
+
     - name: Install dependencies
       run: npm ci
-      
+
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-      
+
     - name: Code Formatting Check
       run: npm run format:check
-      
+
     - name: Static Linting
       run: npm run lint
-      
+
     - name: Security Audit
       run: npm run audit
-      
+
     - name: Strict Typecheck
       run: npm run typecheck
-      
-    - name: Unit Tests & Coverage
+
+    - name: Unit Tests
+      run: npm run test
+
+    - name: Test Coverage
       run: npm run test:coverage
-      
+
     - name: Report Code Coverage
       uses: davelosert/vitest-coverage-report-action@v2
       if: success()
-      
+
     - name: Production Build
       run: npm run build
-      
+
+    - name: Lighthouse CI Audit
+      run: npx lhci autorun
+
     - name: Bundle Size Audit
       run: npm run size
-      
+
     - name: End-to-End Tests
       run: npm run test:e2e

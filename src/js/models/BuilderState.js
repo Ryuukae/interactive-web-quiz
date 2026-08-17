@@ -1,14 +1,4 @@
-// ===========================
-// --- BUILDER STATE MODEL ---
-// ===========================
-
 import { createLogger } from "../utils/logger.js";
-
-/**
- * Core type dependencies for builder state management.
- * @typedef {import('../components/BuilderCardComponent.js').default} BuilderCardComponentType
- * @typedef {import('./QuizState.js').QuestionType} QuestionType
- */
 
 /**
  * Manages the active form building session.
@@ -19,14 +9,11 @@ import { createLogger } from "../utils/logger.js";
  * @version 1.5.1
  * @author Adam Ross DeStafeno
  * @property {BuilderCardComponentType[]} cards - Live array of instantiated builder components.
+ * @property {QuestionType[]} questions - Live array of instantiated question components.
+ * @typedef {import('../types.js').BuilderCardComponentType} BuilderCardComponentType
+ * @typedef {import('../types.js').QuestionType} QuestionType
  */
 export default class BuilderState {
-    /**
-     * Array of active builder card components.
-     * @type {BuilderCardComponentType[]}
-     */
-    cards = [];
-
     /**
      * Initializes an empty internal array to track active builder components.
      * @name constructor
@@ -35,7 +22,11 @@ export default class BuilderState {
     constructor() {
         this.logger = createLogger("BuilderState");
         this.logger.info("constructor called");
-        this.cards = [];
+
+        // Inline casting forces the engine to recognize the empty arrays
+        this.cards = /** @type {BuilderCardComponentType[]} */ ([]);
+        this.questions = /** @type {QuestionType[]} */ ([]);
+
         this.logger.info("Builder state initialized", {
             cardCount: this.cards.length
         });
