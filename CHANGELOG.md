@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.5.1...v1.5.2) (2026-08-17)
+
+
+### Bug Fixes
+
+* **html:** clear static result message placeholder ([ff11c59](https://github.com/Ryuukae/interactive-web-quiz/commit/ff11c59bc2443224656f9e63233c8bddd12a99f3))
+
 ## [1.5.1](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.5.0...v1.5.1) (2026-08-15)
 
 
