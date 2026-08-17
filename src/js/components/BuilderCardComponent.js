@@ -14,7 +14,7 @@ import { createLogger } from "../utils/logger.js";
  *
  * @class BuilderCardComponent
  * @name BuilderCardComponent
- * @version 1.5.1
+ * @version 1.5.2
  * @author Adam Ross DeStafeno
  * @property {HTMLElement} node - The root DOM node of the component.
  * @property {HTMLInputElement} [qInput] - The question prompt input field.

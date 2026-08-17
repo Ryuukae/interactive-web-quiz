@@ -14,7 +14,7 @@ import { createLogger } from "./utils/logger.js";
  * Serves as the composition root, orchestrating state instantiation and controller initialization.
  *
  * @module script
- * @version 1.5.1
+ * @version 1.5.2
  * @author Adam Ross DeStafeno
  */
 
