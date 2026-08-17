@@ -1,4 +1,4 @@
-name: UI Visual Tests
+name: Visual Regression Audits
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ on:
         default: false
 
 jobs:
-  test:
+  execute-visual-audits:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -35,17 +35,17 @@ jobs:
         run: npx playwright install --with-deps
 
       # RUN STANDARD TESTS
-      - name: Run Playwright tests
+      - name: Run Visual Regression Checks against Baselines
         if: ${{ !inputs.update_snapshots }}
         run: npx playwright test
 
       # RUN UPDATE WORKFLOW (Only if manually triggered)
-      - name: Update Snapshots
+      - name: Generate New Ubuntu Snapshot Baselines
         if: ${{ inputs.update_snapshots }}
         run: npx playwright test --update-snapshots
 
       # AUTO-COMMIT NEW SNAPSHOTS BACK TO PR
-      - name: Commit updated baselines
+      - name: Auto-commit Baselines to Branch
         if: ${{ inputs.update_snapshots }}
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
