@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  execute-quality-checks:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,36 +27,36 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
-    - name: Code Formatting Check
+    - name: Verify Prettier Formatting (src/**/*.js, css, html)
       run: npm run format:check
 
-    - name: Static Linting
+    - name: Run ESLint, Stylelint, HTML-Validate, and CSpell
       run: npm run lint
 
-    - name: Security Audit
+    - name: Run npm audit (High+ Vulnerabilities)
       run: npm run audit
 
-    - name: Strict Typecheck
+    - name: Run TypeScript Typechecking (tsc)
       run: npm run typecheck
 
-    - name: Unit Tests
+    - name: Run Vitest Unit Tests (tests/unit/**/*.test.js)
       run: npm run test
 
-    - name: Test Coverage
+    - name: Generate Vitest Coverage Report
       run: npm run test:coverage
 
     - name: Report Code Coverage
       uses: davelosert/vitest-coverage-report-action@v2
       if: success()
 
-    - name: Production Build
+    - name: Verify Production Build (vite build)
       run: npm run build
 
     - name: Lighthouse CI Audit
       run: npx lhci autorun
 
-    - name: Bundle Size Audit
+    - name: Audit Production Bundle Size (size-limit)
       run: npm run size
 
-    - name: End-to-End Tests
+    - name: Run Playwright E2E Tests (tests/e2e/**/*.spec.js)
       run: npm run test:e2e
