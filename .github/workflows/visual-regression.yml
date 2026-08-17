@@ -14,16 +14,19 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: true # Required to pull the actual LFS images
-          ref: ${{ github.head_ref }} # Check out the PR branch
+          ref: ${{ github.head_ref || github.ref }} # Check out the PR branch
           
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
