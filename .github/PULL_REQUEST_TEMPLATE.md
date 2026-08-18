@@ -15,14 +15,15 @@ Briefly summarize the changes made in this pull request and the problem/feature 
 - [ ] `revert`: Reverting a previous commit
 
 ## Quality & Testing Verification Checklist
-- [ ] All 58 Vitest unit & integration assertions pass (`npm run test`)
-- [ ] All 7 Playwright E2E browser specs pass (`npm run test:e2e`)
+- [ ] All Vitest unit & integration assertions pass (`npm run test`)
+- [ ] All Playwright E2E browser specs pass (`npm run test:e2e`)
 - [ ] Master linting suite passes with zero warnings (`npm run lint`)
 - [ ] Prettier formatting check passes (`npm run format:check`)
 - [ ] Strict JSDoc type checking passes (`npm run typecheck`)
 - [ ] Production bundle byte budget check passes (`npm run size`)
 - [ ] Dependency security audit reports 0 vulnerabilities (`npm run audit`)
 - [ ] Production bundle builds cleanly (`npm run build`)
+- [ ] Passes final verification (`npm run verify`)
 
 ## Screenshots / Recordings (if applicable)
 Add screenshots or short screen recordings demonstrating UI changes or new workflows.

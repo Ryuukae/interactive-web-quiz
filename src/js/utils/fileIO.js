@@ -5,7 +5,7 @@ import { createLogger } from "./logger.js";
  * Agnostic to application state and physical DOM structures.
  *
  * @module fileIO
- * @version 1.5.1
+ * @version 1.5.2
  * @author Adam Ross DeStafeno
  * @typedef {import('../types.js').QuestionType} QuestionType
  */
