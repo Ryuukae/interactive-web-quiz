@@ -38,6 +38,7 @@
 !.eslintrc.json
 !.htmlvalidate.json
 !.prettierrc
+!.prettierignore
 !vite.config.js
 !playwright.config.js
 !.commitlintrc.json
