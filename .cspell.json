@@ -68,11 +68,23 @@
     "scrollbar",
     "flexbox",
     "keyframe",
-    "keyframes"
+    "keyframes",
+    "commitlintrc",
+    "lintstagedrc",
+    "davelosert",
+    "lighthouseci",
+    "paramm",
+    "networkidle"
   ],
   "ignorePaths": [
     "node_modules/**",
     "dist/**",
+    "coverage/**",
+    "playwright-report/**",
+    "test-results/**",
+    ".lighthouseci/**",
+    ".history/**",
+    "docs/**",
     "package-lock.json",
     ".git/**"
   ]
