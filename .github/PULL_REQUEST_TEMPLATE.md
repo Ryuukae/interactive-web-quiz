@@ -1,7 +1,9 @@
 ## Description
+
 Briefly summarize the changes made in this pull request and the problem/feature it addresses.
 
 ## Type of Change (Conventional Commits)
+
 - [ ] `feat`: New feature (non-breaking change which adds functionality)
 - [ ] `fix`: Bug fix (non-breaking change which fixes an issue)
 - [ ] `refactor`: Code refactoring without API or behavioral changes
@@ -15,6 +17,7 @@ Briefly summarize the changes made in this pull request and the problem/feature 
 - [ ] `revert`: Reverting a previous commit
 
 ## Quality & Testing Verification Checklist
+
 - [ ] All Vitest unit & integration assertions pass (`npm run test`)
 - [ ] All Playwright E2E browser specs pass (`npm run test:e2e`)
 - [ ] Master linting suite passes with zero warnings (`npm run lint`)
@@ -26,4 +29,5 @@ Briefly summarize the changes made in this pull request and the problem/feature 
 - [ ] Passes final verification (`npm run verify`)
 
 ## Screenshots / Recordings (if applicable)
+
 Add screenshots or short screen recordings demonstrating UI changes or new workflows.

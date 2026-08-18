@@ -2,23 +2,23 @@ name: "CodeQL Security Audit"
 
 on:
   push:
-    branches: [ "main", "dev" ]
+    branches: ["main", "dev"]
     paths:
-      - '**/*.js'
-      - '**/*.html'
-      - '.github/workflows/codeql.yml'
-      - 'package.json'
-      - 'package-lock.json'
+      - "**/*.js"
+      - "**/*.html"
+      - ".github/workflows/codeql.yml"
+      - "package.json"
+      - "package-lock.json"
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: ["main", "dev"]
     paths:
-      - '**/*.js'
-      - '**/*.html'
-      - '.github/workflows/codeql.yml'
-      - 'package.json'
-      - 'package-lock.json'
+      - "**/*.js"
+      - "**/*.html"
+      - ".github/workflows/codeql.yml"
+      - "package.json"
+      - "package-lock.json"
   schedule:
-    - cron: '0 0 * * 0' # Run weekly on Sundays unconditionally
+    - cron: "0 0 * * 0" # Run weekly on Sundays unconditionally
 
 jobs:
   analyze:
@@ -30,17 +30,17 @@ jobs:
       security-events: write
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: javascript
-        # Enable the extended security and maintainability ruleset
-        queries: security-extended,security-and-quality
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          # Enable the extended security and maintainability ruleset
+          queries: security-extended,security-and-quality
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:javascript"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript"

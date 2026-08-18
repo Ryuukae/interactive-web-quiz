@@ -4,16 +4,30 @@
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
-    ["@semantic-release/npm", {
-      "npmPublish": false
-    }],
-    ["@semantic-release/exec", {
-      "prepareCmd": "npm run sync:versions"
-    }],
-    ["@semantic-release/git", {
-      "assets": ["package.json", "package-lock.json", "CHANGELOG.md", "src/**/*.js"],
-      "message": "chore(release): bump version to ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-    }],
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": false
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "npm run sync:versions"
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": [
+          "package.json",
+          "package-lock.json",
+          "CHANGELOG.md",
+          "src/**/*.js"
+        ],
+        "message": "chore(release): bump version to ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],
     "@semantic-release/github"
   ]
 }
