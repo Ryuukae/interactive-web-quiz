@@ -1,5 +1,6 @@
 {
-  "src/**/*.js": ["node scripts/enforce-version-bump.js", "eslint --max-warnings 0", "prettier --check", "cspell"],
-  "src/**/*.css": ["stylelint", "prettier --check", "cspell"],
-  "index.html": ["html-validate", "prettier --check", "cspell"]
+  "**/*.js": ["eslint --max-warnings 0", "prettier --check", "cspell"],
+  "**/*.css": ["stylelint", "prettier --check", "cspell"],
+  "**/*.html": ["html-validate", "prettier --check", "cspell"],
+  "**/*.{json,md,yml}": ["prettier --check", "cspell"]
 }
