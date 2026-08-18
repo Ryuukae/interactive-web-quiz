@@ -17,12 +17,12 @@ import { createLogger } from "./logger.js";
  * @returns {boolean} - True if the user confirms explicitly, false if they cancel inherently.
  */
 export function confirmAction(message) {
-    const logger = createLogger("prompts.confirmAction");
-    logger.info("confirmAction called", { message });
-    logger.debug("Displaying native confirm dialog", { message });
-    const result = window.confirm(message);
-    logger.info("Confirmation prompt resolved", { message, result });
-    return result;
+  const logger = createLogger("prompts.confirmAction");
+  logger.info("confirmAction called", { message });
+  logger.debug("Displaying native confirm dialog", { message });
+  const result = window.confirm(message);
+  logger.info("Confirmation prompt resolved", { message, result });
+  return result;
 }
 
 /**
@@ -33,8 +33,8 @@ export function confirmAction(message) {
  * @returns {void} - Does not return a value.
  */
 export function alertAction(message) {
-    const logger = createLogger("prompts.alertAction");
-    logger.info("alertAction called", { message });
-    logger.warn("Alert prompt displayed to user", { message });
-    window.alert(message);
+  const logger = createLogger("prompts.alertAction");
+  logger.info("alertAction called", { message });
+  logger.warn("Alert prompt displayed to user", { message });
+  window.alert(message);
 }

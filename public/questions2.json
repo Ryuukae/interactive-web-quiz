@@ -1,39 +1,38 @@
 [
-    {
-      "question": "Is this working?",
-      "answers": [
-        { "text": "No", "correct": false },
-        { "text": "No", "correct": false },
-        { "text": "Yes", "correct": true },
-        { "text": "No", "correct": false }
-      ]
-    },
-    
-      {
-        "question": "Your question here?",
-        "answers": [
-          { "text": "Correct option", "correct": true },
-          { "text": "Wrong option", "correct": false }
-        ]
-      },
-      {
-        "question": "What is the default port for HTTPS?",
-        "answers": [
-          { "text": "443", "correct": true },
-          { "text": "80", "correct": false },
-          { "text": "21", "correct": false },
-          { "text": "22", "correct": false },
-          { "text": "8080", "correct": false } 
-        ]
-      },
-      {
-        "question": "Incorrect multiple-choice answers are called...",
-        "answers": [
-          { "text": "Distractors", "correct": true },
-          { "text": "Stems", "correct": false },
-          { "text": "Keys", "correct": false },
-          { "text": "Alternatives", "correct": false }
-        ]
-      }
+  {
+    "question": "Is this working?",
+    "answers": [
+      { "text": "No", "correct": false },
+      { "text": "No", "correct": false },
+      { "text": "Yes", "correct": true },
+      { "text": "No", "correct": false }
     ]
-  
+  },
+
+  {
+    "question": "Your question here?",
+    "answers": [
+      { "text": "Correct option", "correct": true },
+      { "text": "Wrong option", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the default port for HTTPS?",
+    "answers": [
+      { "text": "443", "correct": true },
+      { "text": "80", "correct": false },
+      { "text": "21", "correct": false },
+      { "text": "22", "correct": false },
+      { "text": "8080", "correct": false }
+    ]
+  },
+  {
+    "question": "Incorrect multiple-choice answers are called...",
+    "answers": [
+      { "text": "Distractors", "correct": true },
+      { "text": "Stems", "correct": false },
+      { "text": "Keys", "correct": false },
+      { "text": "Alternatives", "correct": false }
+    ]
+  }
+]
