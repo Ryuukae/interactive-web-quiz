@@ -111,11 +111,9 @@ export default class BuilderCardComponent {
     }
     // ----------------------------------------------------------------------
 
-    const headerTitle = questionVal ? questionVal : "New Question...";
-
     this.node.innerHTML = `
             <div class="card-header">
-                <span class="card-title">${headerTitle}</span>
+                <span class="card-title"></span>
                 <div class="header-actions">
                     <button class="delete-icon-btn remove-card-btn" title="Delete Question">&#10006;</button>
                     <span class="toggle-icon">▼</span>
@@ -125,38 +123,30 @@ export default class BuilderCardComponent {
             <div class="card-body">
                 <div class="input-group">
                     <label class="input-label">Question</label>
-                    <input type="text" class="glass-input q-input question-input" placeholder="e.g., What is the default port for HTTPS?" value="${questionVal}">
+                    <input type="text" class="glass-input q-input question-input" placeholder="e.g., What is the default port for HTTPS?">
                 </div>
                 
                 <div class="input-group answer-row correct-row">
                     <label class="input-label correct-label">Correct Answer</label>
-                    <input type="text" class="glass-input a-input correct-input" placeholder="e.g., 443" value="${correctVal}">
+                    <input type="text" class="glass-input a-input correct-input" placeholder="e.g., 443">
                 </div>
                 
                 <div class="input-group answer-row distractor-row">
                     <label class="input-label distractor-label">Distractors (Max 6)</label>
-                    <div class="distractors-container">
-                        ${distractorVals
-                          .map((val) => {
-                            this.logger.trace(
-                              "render: mapDistractorHTMLCallback",
-                              { val }
-                            );
-                            return `<input type="text" class="glass-input d-input" placeholder="e.g., 80" value="${val}">`;
-                          })
-                          .join("")}
-                    </div>
+                    <div class="distractors-container"></div>
                     <button class="secondary-btn btn-add-distractor">+ Add Distractor</button>
                 </div>
             </div>
         `;
 
+    const cardTitleNode = this.node.querySelector(".card-title");
     const qInputNode = this.node.querySelector(".q-input");
     const aInputNode = this.node.querySelector(".correct-input");
     const dContainerNode = this.node.querySelector(".distractors-container");
     const addBtnNode = this.node.querySelector(".btn-add-distractor");
 
     if (
+      !(cardTitleNode instanceof HTMLElement) ||
       !(qInputNode instanceof HTMLInputElement) ||
       !(aInputNode instanceof HTMLInputElement) ||
       !(dContainerNode instanceof HTMLElement) ||
@@ -164,6 +154,20 @@ export default class BuilderCardComponent {
     ) {
       throw new Error("Critical builder card DOM nodes missing");
     }
+
+    cardTitleNode.textContent = questionVal ? questionVal : "New Question...";
+    qInputNode.value = questionVal;
+    aInputNode.value = correctVal;
+
+    distractorVals.forEach((val) => {
+      this.logger.trace("render: creating distractor input", { val });
+      const distractorInput = document.createElement("input");
+      distractorInput.type = "text";
+      distractorInput.className = "glass-input d-input";
+      distractorInput.placeholder = "e.g., 80";
+      distractorInput.value = val;
+      dContainerNode.appendChild(distractorInput);
+    });
 
     this.qInput = qInputNode;
     this.aInput = aInputNode;
