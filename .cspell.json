@@ -74,7 +74,10 @@
     "davelosert",
     "lighthouseci",
     "paramm",
-    "networkidle"
+    "networkidle",
+    "lhci",
+    "autorun",
+    "stefanzweifel"
   ],
   "ignorePaths": [
     "node_modules/**",
