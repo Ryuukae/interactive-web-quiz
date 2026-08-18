@@ -26,19 +26,13 @@ describe("Versioning Scripts Integration Tests", () => {
 
   afterAll(() => {
     // Cleanup the temporary directory
-    if (fs.existsSync(tempDir)) {
-      fs.rmSync(tempDir, { recursive: true, force: true });
-    }
+    fs.rmSync(tempDir, { recursive: true, force: true });
   });
 
   beforeEach(() => {
     // Reset the environment before each test
-    if (fs.existsSync(srcDir)) {
-      fs.rmSync(srcDir, { recursive: true, force: true });
-    }
-    if (fs.existsSync(packageJsonPath)) {
-      fs.unlinkSync(packageJsonPath);
-    }
+    fs.rmSync(srcDir, { recursive: true, force: true });
+    fs.rmSync(packageJsonPath, { force: true });
 
     fs.mkdirSync(srcDir, { recursive: true });
 
