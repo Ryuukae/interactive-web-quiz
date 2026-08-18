@@ -2,7 +2,7 @@ name: Visual Regression Audits
 
 on:
   pull_request:
-    branches: [main]
+    branches: ["main", "dev"]
   # Allows you to manually trigger the workflow from the GitHub UI
   workflow_dispatch:
     inputs:
@@ -31,8 +31,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright Browsers
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright Browsers & OS Dependencies
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
+
+      - name: Install Playwright OS Dependencies Only (Cache Hit)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps
 
       # RUN STANDARD TESTS
       - name: Run Visual Regression Checks against Baselines
