@@ -17,8 +17,8 @@ import { createLogger } from "../utils/logger.js";
  * @version 1.5.2
  * @author Adam Ross DeStafeno
  * @property {HTMLElement} node - The root DOM node of the component.
- * @property {HTMLInputElement} [qInput] - The question prompt input field.
- * @property {HTMLInputElement} [aInput] - The correct answer input field.
+ * @property {HTMLTextAreaElement} [qInput] - The question prompt input field.
+ * @property {HTMLTextAreaElement} [aInput] - The correct answer input field.
  * @property {HTMLElement} [dContainer] - The container for distractor input fields.
  * @property {HTMLElement} [addBtn] - The button to add more distractors.
  * @property {OnCardActionCallback} onDeleteCallback - Callback for deleting the card.
@@ -123,12 +123,12 @@ export default class BuilderCardComponent {
             <div class="card-body">
                 <div class="input-group">
                     <label class="input-label">Question</label>
-                    <input type="text" class="glass-input q-input question-input" placeholder="e.g., What is the default port for HTTPS?">
+                    <textarea class="glass-input q-input question-input" rows="3" placeholder="e.g., What is the default port for HTTPS?"></textarea>
                 </div>
                 
                 <div class="input-group answer-row correct-row">
                     <label class="input-label correct-label">Correct Answer</label>
-                    <input type="text" class="glass-input a-input correct-input" placeholder="e.g., 443">
+                    <textarea class="glass-input a-input correct-input" rows="3" placeholder="e.g., 443"></textarea>
                 </div>
                 
                 <div class="input-group answer-row distractor-row">
