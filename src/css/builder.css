@@ -11,8 +11,7 @@
 
 /* Prevents fixed header elements from collapsing under flex pressure */
 #creator-screen > h1,
-#creator-screen > p,
-#bulk-import-panel {
+#creator-screen > p {
   flex-shrink: 0;
 }
 
@@ -30,35 +29,6 @@
   margin: 0 auto 10px;
   box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
   text-align: left;
-}
-
-#bulk-import-panel {
-  margin-bottom: 16px;
-}
-
-/* Enables internal scrolling within the bulk import panel so that large textareas or expanded accordions do not push the rest of the app off-screen. */
-#bulk-import-panel .card-body {
-  max-height: 45vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 4px;
-  scrollbar-width: thin;
-  scrollbar-color: rgb(167 213 255 / 0.3) transparent;
-}
-
-/* Enables vertical auto-expansion while preserving theme harmony and removing inner scrollbars. */
-#bulk-import-text {
-  field-sizing: content;
-  resize: vertical;
-  min-height: 100px;
-  max-height: none;
-  overflow-y: hidden;
-  transition: height 0.12s ease-out;
-}
-
-#btn-parse-bulk {
-  display: block;
-  margin: 8px auto 0;
 }
 
 #btn-cancel-create {
@@ -214,36 +184,6 @@ button.secondary-btn.btn-add-distractor {
 
 .collapsed .toggle-icon {
   transform: rotate(-90deg);
-}
-
-/* =============================== */
-/* --- TEMPLATE & CARD ACTIONS --- */
-/* =============================== */
-
-.template-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  width: 100%;
-  padding: 0 4px;
-}
-
-.template-btn {
-  background: transparent;
-  color: rgb(168 170 174);
-  border: none;
-  padding: 0;
-  font-size: 0.75rem;
-  cursor: pointer;
-  text-decoration: underline;
-  transition: color 0.2s ease;
-  box-shadow: none;
-}
-
-.template-btn:hover {
-  color: #a7d5ff;
-  box-shadow: none;
-  transform: none;
 }
 
 .btn-danger {
