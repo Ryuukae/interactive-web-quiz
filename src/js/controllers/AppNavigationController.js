@@ -138,5 +138,17 @@ export default class AppNavigationController {
         this.logger.info("Screen activated", { screenId: id });
       }
     }
+
+    const container = document.querySelector(".container");
+    if (container) {
+      container.classList.remove(
+        "screen-start",
+        "screen-creator",
+        "screen-quiz",
+        "screen-result",
+        "screen-editor"
+      );
+      container.classList.add(`screen-${screenKey}`);
+    }
   }
 }
