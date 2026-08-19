@@ -26,7 +26,8 @@ export default class AppNavigationController {
       start: document.getElementById("start-screen"),
       quiz: document.getElementById("quiz-screen"),
       result: document.getElementById("result-screen"),
-      creator: document.getElementById("creator-screen")
+      creator: document.getElementById("creator-screen"),
+      editor: document.getElementById("editor-screen")
     });
 
     this.logger.info("Controller initialized", {
@@ -46,12 +47,47 @@ export default class AppNavigationController {
     this.logger.info("bindGlobalNavigation called");
     this.logger.debug("Binding global navigation actions");
 
+    const modal = document.getElementById("creation-mode-modal");
+    const backdrop = document.getElementById("modal-backdrop");
+    const closeModalBtn = document.getElementById("close-modal-btn");
+    const useBuilderBtn = document.getElementById("btn-use-builder");
+    const useEditorBtn = document.getElementById("btn-use-editor");
+
+    const closeModal = () => {
+      if (modal) modal.classList.remove("active");
+      if (backdrop) backdrop.classList.remove("active");
+    };
+
+    const openModal = () => {
+      if (modal) modal.classList.add("active");
+      if (backdrop) backdrop.classList.add("active");
+    };
+
+    if (closeModalBtn instanceof HTMLButtonElement)
+      closeModalBtn.addEventListener("click", closeModal);
+    if (backdrop instanceof HTMLElement)
+      backdrop.addEventListener("click", closeModal);
+
+    if (useBuilderBtn instanceof HTMLButtonElement) {
+      useBuilderBtn.addEventListener("click", () => {
+        closeModal();
+        this.navigateTo("creator");
+      });
+    }
+
+    if (useEditorBtn instanceof HTMLButtonElement) {
+      useEditorBtn.addEventListener("click", () => {
+        closeModal();
+        this.navigateTo("editor");
+      });
+    }
+
     const createBtn = document.getElementById("create-quizset-btn");
     if (createBtn instanceof HTMLButtonElement) {
       createBtn.addEventListener("click", () => {
         this.logger.info("bindGlobalNavigation: onCreateQuizsetClick event");
-        this.logger.info("Navigation request: creator screen");
-        this.navigateTo("creator");
+        this.logger.info("Opening creation mode modal");
+        openModal();
       });
     }
 
@@ -114,6 +150,7 @@ export default class AppNavigationController {
     const screenMap = {
       start: "start-screen",
       creator: "creator-screen",
+      editor: "editor-screen",
       quiz: "quiz-screen",
       result: "result-screen"
     };
