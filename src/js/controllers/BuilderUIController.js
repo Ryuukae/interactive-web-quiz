@@ -1,7 +1,5 @@
-import { getTxtTemplate, getJsonTemplate } from "../utils/templates.js";
 import { confirmAction, alertAction } from "../utils/prompts.js";
 import { exportQAD } from "../utils/fileIO.js";
-import { parseAndValidateRawText } from "../utils/schemaValidator.js";
 import BuilderCardComponent from "../components/BuilderCardComponent.js";
 import StorageService from "../utils/StorageService.js";
 import { createLogger } from "../utils/logger.js";
@@ -54,15 +52,6 @@ export default class BuilderUIController {
       /** @type {number | ReturnType<typeof setTimeout> | null} */ (null);
 
     this.builderContainer = this.getEl("builder-questions-container");
-    this.bulkImportPanel = this.getEl("bulk-import-panel");
-
-    const bulkImportTextEl = this.getEl("bulk-import-text");
-    if (!(bulkImportTextEl instanceof HTMLTextAreaElement)) {
-      throw new Error("bulk-import-text element not found or not a textarea");
-    }
-    this.bulkImportText = bulkImportTextEl;
-
-    this.bulkImportStatus = this.getEl("bulk-import-status");
 
     this.logger.info("Builder UI controller initialized");
 
@@ -114,62 +103,6 @@ export default class BuilderUIController {
       this.exportBuilderQuiz();
     });
 
-    this.bulkImportText.addEventListener("input", () => {
-      this.adjustBulkImportTextareaHeight();
-    });
-
-    this.getEl("btn-parse-bulk").addEventListener("click", () => {
-      this.logger.info("initializeEventListeners: onParseBulkClick event");
-      this.logger.info("Bulk import parse requested");
-      this.handleBulkImport();
-    });
-
-    this.getEl("bulk-import-header").addEventListener("click", () => {
-      this.logger.info(
-        "initializeEventListeners: onBulkImportHeaderClick event"
-      );
-      const isNowCollapsed = this.bulkImportPanel.classList.toggle("collapsed");
-      this.logger.debug("Bulk import panel toggled", {
-        collapsed: isNowCollapsed
-      });
-      if (!isNowCollapsed) {
-        this.builderState.collapseAllCards();
-        requestAnimationFrame(() => this.adjustBulkImportTextareaHeight());
-      }
-    });
-
-    this.getEl("btn-template-txt").addEventListener("click", () => {
-      this.logger.info("initializeEventListeners: onTemplateTxtClick event");
-      if (this.bulkImportText.value.trim() !== "") {
-        if (
-          !confirmAction(
-            "Inserting this template will overwrite your current text. Do you wish to continue?"
-          )
-        ) {
-          return;
-        }
-      }
-      this.logger.info("Text template inserted into bulk import field");
-      this.bulkImportText.value = getTxtTemplate();
-      this.adjustBulkImportTextareaHeight();
-    });
-
-    this.getEl("btn-template-json").addEventListener("click", () => {
-      this.logger.info("initializeEventListeners: onTemplateJsonClick event");
-      if (this.bulkImportText.value.trim() !== "") {
-        if (
-          !confirmAction(
-            "Inserting this template will overwrite your current text. Do you wish to continue?"
-          )
-        ) {
-          return;
-        }
-      }
-      this.logger.info("JSON template inserted into bulk import field");
-      this.bulkImportText.value = getJsonTemplate();
-      this.adjustBulkImportTextareaHeight();
-    });
-
     this.getEl("btn-clear-builder").addEventListener("click", () => {
       this.logger.info("initializeEventListeners: onClearBuilderClick event");
       this.logger.info("Clear builder requested", {
@@ -206,29 +139,6 @@ export default class BuilderUIController {
    * @public
    * @returns {void} - Does not return a value.
    */
-  collapseBulkImport() {
-    this.logger.info("collapseBulkImport called");
-    if (!this.bulkImportPanel.classList.contains("collapsed")) {
-      this.bulkImportPanel.classList.add("collapsed");
-      this.logger.debug("Bulk import panel collapsed");
-    }
-  }
-
-  /**
-   * Dynamically recalculates and applies the required height for the bulk import text area to ensure all content is fully visible without internal scrollbars.
-   * @name adjustBulkImportTextareaHeight
-   * @public
-   * @returns {void} - Does not return a value.
-   */
-  adjustBulkImportTextareaHeight() {
-    if (!this.bulkImportText) return;
-    this.bulkImportText.style.height = "auto";
-    const contentHeight = Math.max(100, this.bulkImportText.scrollHeight);
-    this.bulkImportText.style.height = `${contentHeight}px`;
-    this.logger.trace("adjustBulkImportTextareaHeight executed", {
-      newHeight: contentHeight
-    });
-  }
 
   /**
    * Locates the first validation error within the builder container and scrolls it smoothly into the viewport.
@@ -288,7 +198,6 @@ export default class BuilderUIController {
           },
           () => {
             this.logger.info("initializeBuilder: expandCallback");
-            this.collapseBulkImport();
           }
         );
         this.builderState.addCard(newCard);
@@ -309,7 +218,6 @@ export default class BuilderUIController {
         },
         () => {
           this.logger.info("initializeBuilder: expandCallback");
-          this.collapseBulkImport();
         }
       );
       this.builderState.addCard(newCard);
@@ -338,7 +246,6 @@ export default class BuilderUIController {
       return;
     }
 
-    this.collapseBulkImport();
     this.builderState.collapseAllCards();
 
     const newCard = new BuilderCardComponent(
@@ -351,7 +258,6 @@ export default class BuilderUIController {
       },
       () => {
         this.logger.info("handleAddQuestion: expandCallback");
-        this.collapseBulkImport();
       }
     );
     this.builderState.addCard(newCard);
@@ -368,91 +274,6 @@ export default class BuilderUIController {
       });
     }, 50);
     // ----------------------------------------------------------------------
-  }
-
-  /**
-   * Processes isolated text payloads dynamically against external data layers, securely extracting arrays, iterating instantiations, and resolving UI cues actively.
-   * @name handleBulkImport
-   * @public
-   * @returns {void} - Does not return a value.
-   */
-  handleBulkImport() {
-    this.logger.info("handleBulkImport called");
-    const rawText = this.bulkImportText.value;
-
-    if (!rawText.trim()) {
-      this.logger.warn("Bulk import ignored because the input is empty");
-      return;
-    }
-
-    this.bulkImportStatus.classList.remove("error", "visible");
-    this.bulkImportStatus.textContent = "";
-
-    this.logger.info("Bulk import parse started", {
-      characterCount: rawText.length
-    });
-
-    try {
-      /* Parses and validates the raw text string to construct formatted question payloads seamlessly. */
-      // ----------------------------------------------------------------------
-      const parsedData = parseAndValidateRawText(rawText);
-      this.logger.info("Bulk import parsed successfully", {
-        questionCount: parsedData.length
-      });
-
-      if (this.builderState.cards.length === 1) {
-        const firstCard = this.builderState.cards[0];
-        if (
-          firstCard &&
-          firstCard.qInput &&
-          firstCard.qInput.value.trim() === ""
-        ) {
-          this.builderState.clearAll();
-          this.builderContainer.innerHTML = "";
-        }
-      }
-
-      parsedData.forEach((q) => {
-        this.logger.trace("handleBulkImport: appendCardCallback", {
-          question: q.question
-        });
-        const newCard = new BuilderCardComponent(
-          q,
-          (card) => {
-            this.logger.info("handleBulkImport: removeCardCallback", { card });
-            this.builderState.removeCard(card);
-          },
-          () => {
-            this.logger.info("handleBulkImport: expandCallback");
-            this.collapseBulkImport();
-          }
-        );
-        this.builderState.addCard(newCard);
-        this.builderContainer.appendChild(newCard.node);
-      });
-      // ----------------------------------------------------------------------
-
-      this.bulkImportText.value = "";
-      this.adjustBulkImportTextareaHeight();
-      this.logger.info("Bulk import cards appended", {
-        cardCount: this.builderState.cards.length
-      });
-
-      setTimeout(() => {
-        this.logger.info("handleBulkImport: scrollTimeoutCallback executed");
-        this.builderContainer.scrollTo({
-          top: this.builderContainer.scrollHeight,
-          behavior: "smooth"
-        });
-        this.logger.debug("Builder container scrolled after bulk import");
-      }, 50);
-    } catch (error) {
-      const errMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      this.logger.error("Bulk parsing failed", error);
-      this.bulkImportStatus.textContent = `Error: ${errMessage}`;
-      this.bulkImportStatus.classList.add("error", "visible");
-    }
   }
 
   /**
@@ -474,7 +295,7 @@ export default class BuilderUIController {
 
     if (!this.builderState.validateAllCards()) {
       this.logger.warn("Builder quiz start blocked by validation failure");
-      this.collapseBulkImport();
+
       this.scrollToFirstError();
       return;
     }
@@ -512,7 +333,7 @@ export default class BuilderUIController {
 
     if (!this.builderState.validateAllCards()) {
       this.logger.warn("Builder export blocked by validation failure");
-      this.collapseBulkImport();
+
       this.scrollToFirstError();
       return;
     }

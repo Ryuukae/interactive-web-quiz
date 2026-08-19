@@ -50,8 +50,8 @@ export default class BuilderCardComponent {
     this.node.className = "glass-panel question-card";
 
     // Declare properties explicitly to prevent engine errors prior to render()
-    this.qInput = /** @type {HTMLInputElement | undefined} */ (undefined);
-    this.aInput = /** @type {HTMLInputElement | undefined} */ (undefined);
+    this.qInput = /** @type {HTMLTextAreaElement | undefined} */ (undefined);
+    this.aInput = /** @type {HTMLTextAreaElement | undefined} */ (undefined);
     this.dContainer = /** @type {HTMLElement | undefined} */ (undefined);
     this.addBtn = /** @type {HTMLElement | undefined} */ (undefined);
 
@@ -147,8 +147,8 @@ export default class BuilderCardComponent {
 
     if (
       !(cardTitleNode instanceof HTMLElement) ||
-      !(qInputNode instanceof HTMLInputElement) ||
-      !(aInputNode instanceof HTMLInputElement) ||
+      !(qInputNode instanceof HTMLTextAreaElement) ||
+      !(aInputNode instanceof HTMLTextAreaElement) ||
       !(dContainerNode instanceof HTMLElement) ||
       !(addBtnNode instanceof HTMLElement)
     ) {
@@ -161,8 +161,8 @@ export default class BuilderCardComponent {
 
     distractorVals.forEach((val) => {
       this.logger.trace("render: creating distractor input", { val });
-      const distractorInput = document.createElement("input");
-      distractorInput.type = "text";
+      const distractorInput = document.createElement("textarea");
+      distractorInput.rows = 3;
       distractorInput.className = "glass-input d-input";
       distractorInput.placeholder = "e.g., 80";
       distractorInput.value = val;
@@ -241,7 +241,7 @@ export default class BuilderCardComponent {
     });
 
     this.qInput.addEventListener("input", (e) => {
-      if (!(e.target instanceof HTMLInputElement)) return;
+      if (!(e.target instanceof HTMLTextAreaElement)) return;
       this.logger.trace("bindLocalListeners: onQuestionInput event", {
         value: e.target.value
       });
@@ -257,8 +257,8 @@ export default class BuilderCardComponent {
       if (!this.dContainer || !this.addBtn) return;
       const currentCount = this.dContainer.querySelectorAll(".d-input").length;
       if (currentCount < 6) {
-        const input = document.createElement("input");
-        input.type = "text";
+        const input = document.createElement("textarea");
+        input.rows = 3;
         input.className = "glass-input d-input";
         input.placeholder = "e.g., 8080";
         this.dContainer.appendChild(input);
@@ -275,7 +275,7 @@ export default class BuilderCardComponent {
     });
 
     cardBody.addEventListener("input", (e) => {
-      if (!(e.target instanceof HTMLInputElement)) return;
+      if (!(e.target instanceof HTMLTextAreaElement)) return;
       this.logger.trace("bindLocalListeners: onCardBodyInput event", {
         target: e.target
       });
@@ -356,7 +356,7 @@ export default class BuilderCardComponent {
 
     let hasDistractor = false;
     dInputs.forEach((d) => {
-      if (!(d instanceof HTMLInputElement)) return;
+      if (!(d instanceof HTMLTextAreaElement)) return;
       this.logger.trace("validate: distractorCheckCallback", {
         value: d.value
       });
@@ -368,7 +368,7 @@ export default class BuilderCardComponent {
     if (!hasDistractor && dInputs.length > 0) {
       this.logger.warn("Validation error: No distractor text provided");
       const firstDistractor = dInputs[0];
-      if (firstDistractor instanceof HTMLInputElement) {
+      if (firstDistractor instanceof HTMLTextAreaElement) {
         firstDistractor.classList.add("input-error");
         firstDistractor.placeholder =
           "Required: Please enter at least one wrong answer";
@@ -410,7 +410,7 @@ export default class BuilderCardComponent {
     }
 
     dInputs.forEach((input) => {
-      if (!(input instanceof HTMLInputElement)) return;
+      if (!(input instanceof HTMLTextAreaElement)) return;
       this.logger.trace("getCardData: distractorSerializeCallback", {
         value: input.value
       });
