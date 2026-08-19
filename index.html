@@ -84,6 +84,32 @@
           <!-- Dedicated output node for JS to inject the parsed file name, providing user feedback -->
           <span id="file-name-display" class="file-status"></span>
         </div>
+
+        <!-- CREATION MODE MODAL -->
+        <div id="modal-backdrop" class="modal-backdrop hidden"></div>
+        <div id="creation-mode-modal" class="glass-panel modal hidden">
+          <div class="card-header">
+            <span class="glass-panel-heading" style="margin-bottom: 0"
+              >Choose Creation Mode</span
+            >
+            <button type="button" id="close-modal-btn" class="modal-close-btn">
+              &times;
+            </button>
+          </div>
+          <div class="card-body">
+            <p style="margin-bottom: 1.5rem; text-align: center">
+              How would you like to build your quizset?
+            </p>
+            <div class="action-stack">
+              <button type="button" id="btn-use-builder">
+                GUI Builder (Visual)
+              </button>
+              <button type="button" id="btn-use-editor" class="secondary-btn">
+                Text Editor (Advanced)
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- =========================================== -->
@@ -410,6 +436,123 @@ q=Which protocol is considered secure?
               Clear All
             </button>
             <button type="button" id="btn-cancel-create" class="secondary-btn">
+              Back to Start
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- --- STAGE 5: EDITOR SCREEN (ADVANCED STATE) -- -->
+      <!-- ============================================== -->
+      <div id="editor-screen" class="screen">
+        <h1>Quiz Editor</h1>
+        <p id="editor-subtitle">
+          Advanced distraction-free environment for bulk payload manipulation.
+        </p>
+
+        <div class="glass-panel" id="editor-container">
+          <div class="card-header">
+            <span class="glass-panel-heading" style="margin-bottom: 0"
+              >Raw Editor</span
+            >
+          </div>
+
+          <div class="card-body">
+            <div class="template-actions">
+              <button
+                type="button"
+                id="btn-editor-template-json"
+                class="template-btn"
+              >
+                Insert JSON Template
+              </button>
+              <button
+                type="button"
+                id="btn-editor-template-txt"
+                class="template-btn"
+              >
+                Insert TXT Template
+              </button>
+            </div>
+
+            <textarea
+              id="editor-textarea"
+              class="glass-input"
+              rows="15"
+              placeholder="Draft your quizset here using QAD plain text or JSON format..."
+            ></textarea>
+
+            <!-- Instructional Accordions (Copied from bulk import but with new IDs for isolation) -->
+            <div class="action-stack" style="margin-top: 16px">
+              <details class="format-guide">
+                <summary id="editor_accordion_btn_txt">
+                  How do I format my TXT?
+                </summary>
+                <div class="guide-content">
+                  <p>
+                    Easily build a quiz by typing your questions and answers as
+                    plain text. Use <strong>Q=</strong> for the Question,
+                    <strong>A=</strong> for the Correct Answer, and
+                    <strong>D=</strong> for a Distractor (wrong answer).
+                  </p>
+                  <pre><code>Q=What is the default port for HTTPS?
+A=443
+D=80
+D=21</code></pre>
+                  <a href="public/template.txt" download class="download-link"
+                    >Download Template</a
+                  >
+                </div>
+              </details>
+
+              <details class="format-guide">
+                <summary id="editor_accordion_btn_json">
+                  How do I format my JSON?
+                </summary>
+                <div class="guide-content">
+                  <p>
+                    Your custom file must be a valid JSON array containing
+                    individual question objects.
+                  </p>
+                  <pre><code>[
+  {
+    "question": "Your question here?",
+    "answers": [
+      { "text": "Correct option", "correct": true },
+      { "text": "Incorrect option", "correct": false }
+    ]
+  }
+]</code></pre>
+                  <a href="public/template.json" download class="download-link"
+                    >Download Template</a
+                  >
+                </div>
+              </details>
+            </div>
+
+            <span id="editor-status" class="file-status"></span>
+          </div>
+        </div>
+
+        <div class="action-stack" id="editor-action-stack">
+          <div class="action-row">
+            <button type="button" id="btn-editor-parse">
+              Parse &amp; Run Quiz
+            </button>
+            <button type="button" id="btn-editor-export" class="secondary-btn">
+              Download
+            </button>
+          </div>
+          <div class="action-row">
+            <button
+              type="button"
+              id="btn-editor-clear"
+              class="secondary-btn btn-danger"
+            >
+              Clear All
+            </button>
+            <button type="button" id="btn-editor-cancel" class="secondary-btn">
               Back to Start
             </button>
           </div>
