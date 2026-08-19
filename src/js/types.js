@@ -20,7 +20,7 @@
  */
 
 /**
- * @typedef {"start" | "creator" | "quiz" | "result"} ScreenKey
+ * @typedef {"start" | "creator" | "editor" | "quiz" | "result"} ScreenKey
  */
 
 /**
@@ -32,6 +32,7 @@
  * @typedef {import('./models/BuilderState.js').default} BuilderStateType
  * @typedef {import('./controllers/AppNavigationController.js').default} AppNavigationControllerType
  * @typedef {import('./controllers/QuizUIController.js').default} QuizUIControllerType
+ * @typedef {import('./controllers/EditorUIController.js').default} EditorUIControllerType
  * @typedef {import('./components/BuilderCardComponent.js').default} BuilderCardComponentType
  */
 
