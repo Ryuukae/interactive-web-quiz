@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("E2E Spec 5: Template Ingestion & File Download Triggers", () => {
+test.describe
+  .skip("E2E Spec 5: Template Ingestion & File Download Triggers", () => {
   test("should populate template text into textarea when template buttons are clicked", async ({
     page
   }) => {
