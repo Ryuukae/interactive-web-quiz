@@ -5,6 +5,19 @@ on:
     types: [opened, edited, synchronize, reopened]
 
 jobs:
+  enforce-branch-flow:
+    name: Enforce Main PR Source Branch
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'main'
+    steps:
+      - name: Verify PR originates from dev
+        run: |
+          if [ "${{ github.head_ref }}" != "dev" ]; then
+            echo "::error::Direct merges into 'main' are restricted. Pull requests targeting 'main' must originate from 'dev'."
+            exit 1
+          fi
+          echo "PR source is 'dev'. Approved to proceed."
+
   commitlint:
     runs-on: ubuntu-latest
     steps:
