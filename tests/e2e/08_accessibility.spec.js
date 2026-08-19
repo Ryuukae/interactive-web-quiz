@@ -33,19 +33,28 @@ test.describe("Accessibility Audits", () => {
     await page.click("#create-quizset-btn");
     await page.waitForSelector("#creator-screen.active");
 
-    // Expand Bulk Import Panel if collapsed
-    await page.click("#bulk-import-header");
+    // First question is already there, just fill it
+    const cards = page.locator("#builder-questions-container .question-card");
+    await cards.nth(0).locator(".question-input").fill("What is 1+1?");
+    await cards.nth(0).locator(".answer-row.correct-row textarea").fill("2");
+    await cards
+      .nth(0)
+      .locator(".answer-row.distractor-row textarea")
+      .first()
+      .fill("3");
 
-    // Insert sample QAD question deck
-    const quizDeck =
-      "Q=What is 1+1?\nA=2\nD=3\n\nQ=What color is the sky?\nA=Blue\nD=Green";
-    await page.fill("#bulk-import-text", quizDeck);
-
-    // Clear any default cards before parsing
-    await page.click("#btn-clear-builder");
-
-    // Parse Quizset Data
-    await page.click("#btn-parse-bulk");
+    // Add second question
+    await page.click("#btn-add-question");
+    await cards
+      .nth(1)
+      .locator(".question-input")
+      .fill("What color is the sky?");
+    await cards.nth(1).locator(".answer-row.correct-row textarea").fill("Blue");
+    await cards
+      .nth(1)
+      .locator(".answer-row.distractor-row textarea")
+      .first()
+      .fill("Green");
 
     // Start Quiz
     await page.locator("#btn-run-builder-quiz").click();
