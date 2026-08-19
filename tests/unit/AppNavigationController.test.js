@@ -29,7 +29,7 @@ describe("AppNavigationController Unit Tests", () => {
 
   it("should initialize screen navigation nodes cleanly", () => {
     const nav = new AppNavigationController();
-    expect(Object.keys(nav.screens)).toHaveLength(4);
+    expect(Object.keys(nav.screens)).toHaveLength(5);
   });
 
   it("should update active screen when navigateTo is called", () => {
@@ -79,6 +79,7 @@ describe("AppNavigationController Unit Tests", () => {
   it("should route correctly on button clicks", () => {
     let mockElements = {};
     let activeScreenId = "start";
+    let modalActive = false;
     globalThis.document = {
       getElementById: (id) => {
         if (!mockElements[id]) {
@@ -89,9 +90,17 @@ describe("AppNavigationController Unit Tests", () => {
           el.id = id;
           el.classList = {
             add: () => {
-              activeScreenId = id;
+              if (id === "creation-mode-modal" || id === "modal-backdrop") {
+                modalActive = true;
+              } else {
+                activeScreenId = id;
+              }
             },
-            remove: () => {},
+            remove: () => {
+              if (id === "creation-mode-modal" || id === "modal-backdrop") {
+                modalActive = false;
+              }
+            },
             toggle: (className, force) => {
               if (force) activeScreenId = id;
             }
@@ -111,7 +120,15 @@ describe("AppNavigationController Unit Tests", () => {
 
     // Trigger clicks
     mockElements["create-quizset-btn"].listeners["click"]();
+    expect(modalActive).toBe(true);
+
+    mockElements["btn-use-builder"].listeners["click"]();
+    expect(modalActive).toBe(false);
     expect(activeScreenId).toBe("creator-screen");
+
+    mockElements["btn-use-editor"].listeners["click"]();
+    expect(modalActive).toBe(false);
+    expect(activeScreenId).toBe("editor-screen");
 
     mockElements["btn-cancel-create"].listeners["click"]();
     expect(activeScreenId).toBe("start-screen");
@@ -136,6 +153,7 @@ describe("AppNavigationController Unit Tests", () => {
         const el = new globalThis.HTMLElement();
         el.id = id;
         el.setAttribute = () => {};
+        el.addEventListener = () => {};
         return el;
       }
     };
