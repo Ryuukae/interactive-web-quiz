@@ -7,3 +7,4 @@ test-results/
 .lighthouseci/
 docs/**
 .history/
+.github/PULL_REQUEST_TEMPLATE.md
