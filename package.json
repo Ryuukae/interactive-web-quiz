@@ -4,6 +4,28 @@
   "private": true,
   "type": "module",
   "description": "Enterprise-grade interactive quiz platform featuring visual card creation, dual QAD/JSON data ingestion, auto-expanding textareas, and automated unit testing.",
+  "author": "Adam Ross DeStafeno <ryuukae.dev@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ryuukae/interactive-web-quiz.git"
+  },
+  "homepage": "https://pages.ryuukae.io/interactive-web-quiz",
+  "keywords": [
+    "quiz",
+    "quiz-builder",
+    "vanilla-js",
+    "mvc",
+    "vitest",
+    "playwright",
+    "pwa",
+    "vite",
+    "ci-cd"
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
