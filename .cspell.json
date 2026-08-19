@@ -78,6 +78,7 @@
     "lhci",
     "autorun",
     "stefanzweifel",
+    "gatekeeping",
     "actionlint",
     "reviewdog"
   ],
