@@ -1,0 +1,92 @@
+/* =========================================== */
+/* --- EDITOR SCREEN & MODAL UI COMPONENTS --- */
+/* =========================================== */
+
+/* Let the editor container take up the remaining flexible space */
+#editor-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#editor-container .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure textarea maximizes vertical space in the container */
+#editor-textarea {
+  flex: 1;
+  min-height: 250px;
+  margin-bottom: 1rem;
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none;
+}
+
+/* ===================================== */
+/* --- CREATION MODE SELECTION MODAL --- */
+/* ===================================== */
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgb(0 0 0 / 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 99;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-backdrop.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  z-index: 100;
+  width: 90%;
+  max-width: 400px;
+  display: none; /* Handled by .hidden or JS */
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.3);
+}
+
+.modal.active {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  pointer-events: all;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-color);
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  opacity: 1;
+}
