@@ -2,7 +2,7 @@ name: Visual Regression Audits
 
 on:
   pull_request:
-    branches: [main]
+    branches: ["main", "dev"]
   # Allows you to manually trigger the workflow from the GitHub UI
   workflow_dispatch:
     inputs:
