@@ -8,3 +8,4 @@ test-results/
 docs/**
 .history/
 .github/PULL_REQUEST_TEMPLATE.md
+README.md
