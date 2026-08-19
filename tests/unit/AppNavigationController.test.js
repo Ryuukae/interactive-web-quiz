@@ -23,7 +23,8 @@ describe("AppNavigationController Unit Tests", () => {
         el.addEventListener = () => {};
         el.setAttribute = () => {};
         return el;
-      }
+      },
+      querySelector: () => null
     };
   });
 
@@ -53,7 +54,8 @@ describe("AppNavigationController Unit Tests", () => {
         el.addEventListener = () => {};
         el.setAttribute = () => {};
         return el;
-      }
+      },
+      querySelector: () => null
     };
 
     const nav = new AppNavigationController();
@@ -104,7 +106,8 @@ describe("AppNavigationController Unit Tests", () => {
           mockElements[id] = el;
         }
         return mockElements[id];
-      }
+      },
+      querySelector: () => null
     };
 
     const nav = new AppNavigationController();
@@ -125,7 +128,8 @@ describe("AppNavigationController Unit Tests", () => {
 
   it("should ignore missing or invalid button elements cleanly", () => {
     globalThis.document = {
-      getElementById: (id) => null
+      getElementById: (id) => null,
+      querySelector: () => null
     };
     const nav = new AppNavigationController();
     expect(nav).toBeDefined();
@@ -137,9 +141,34 @@ describe("AppNavigationController Unit Tests", () => {
         el.id = id;
         el.setAttribute = () => {};
         return el;
-      }
+      },
+      querySelector: () => null
     };
     const nav2 = new AppNavigationController();
     expect(nav2).toBeDefined();
+  });
+
+  it("should apply dynamic container sizing modifier classes on route change", () => {
+    const activeClasses = new Set();
+    const mockContainer = new globalThis.HTMLElement();
+    mockContainer.classList = {
+      remove: (...cls) => cls.forEach((c) => activeClasses.delete(c)),
+      add: (cls) => activeClasses.add(cls)
+    };
+
+    globalThis.document.querySelector = (sel) => {
+      if (sel === ".container") return mockContainer;
+      return null;
+    };
+
+    const nav = new AppNavigationController();
+
+    nav.navigateTo("creator");
+    expect(activeClasses.has("screen-creator")).toBe(true);
+    expect(activeClasses.has("screen-start")).toBe(false);
+
+    nav.navigateTo("quiz");
+    expect(activeClasses.has("screen-quiz")).toBe(true);
+    expect(activeClasses.has("screen-creator")).toBe(false);
   });
 });
