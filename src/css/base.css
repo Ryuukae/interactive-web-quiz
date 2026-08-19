@@ -48,6 +48,7 @@ body {
 .container {
   width: 90%;
   max-width: 600px;
+  transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 1.5rem;
   text-align: center;
   position: relative;
@@ -68,4 +69,18 @@ body {
   box-shadow:
     0 24px 40px rgb(0 0 0 / 0.15),
     inset 0 1px 0 rgb(255 255 255 / 0.8);
+}
+
+/* Controlled modifier classes applied dynamically by AppNavigationController */
+.container.screen-creator,
+.container.screen-editor,
+.container.screen-quiz {
+  max-width: 900px;
+  width: 95%;
+}
+
+.container.screen-start,
+.container.screen-result {
+  max-width: 600px;
+  width: 90%;
 }
