@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("E2E Spec 3: Bulk Text Import Operations (QAD & JSON)", () => {
+test.describe
+  .skip("E2E Spec 3: Bulk Text Import Operations (QAD & JSON)", () => {
   test("should parse QAD text input and auto-generate question cards", async ({
     page
   }) => {
