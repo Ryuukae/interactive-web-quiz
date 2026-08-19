@@ -7,6 +7,7 @@ import QuizState from "./models/QuizState.js";
 import BuilderState from "./models/BuilderState.js";
 import QuizUIController from "./controllers/QuizUIController.js";
 import BuilderUIController from "./controllers/BuilderUIController.js";
+import EditorUIController from "./controllers/EditorUIController.js";
 import { createLogger } from "./utils/logger.js";
 
 /**
@@ -46,18 +47,17 @@ async function initializeApp() {
     quizState = new QuizState([]);
     builderState = new BuilderState();
 
-    logger.debug(
-      "Instantiating QuizUIController and BuilderUIController controllers"
-    );
+    logger.debug("Instantiating UI controllers");
     quizUIController = new QuizUIController(quizState, appNavController);
     new BuilderUIController(builderState, quizUIController, appNavController);
+    new EditorUIController(quizUIController, appNavController);
 
     logger.debug("Synchronizing initial quiz UI bounds");
     quizUIController.synchronizeBounds();
     // ----------------------------------------------------------------------
 
     logger.debug("Application services instantiated successfully", {
-      screens: ["start", "quiz", "result", "creator"],
+      screens: ["start", "quiz", "result", "creator", "editor"],
       questionCount: quizState.questionData.length,
       builderCardCount: builderState.cards.length
     });
