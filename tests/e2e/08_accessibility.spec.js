@@ -31,6 +31,7 @@ test.describe("Accessibility Audits", () => {
 
     // Go to builder
     await page.click("#create-quizset-btn");
+    await page.click("#btn-use-builder");
     await page.waitForSelector("#creator-screen.active");
 
     // Expand Bulk Import Panel if collapsed

@@ -11,6 +11,7 @@ test.describe("E2E Spec 2: Dynamic Question Card Builder Operations", () => {
 
     // Navigate to Creator Screen
     await page.click("#create-quizset-btn");
+    await page.click("#btn-use-builder");
 
     // Click "+ Add Question" button
     await page.click("#btn-add-question");

@@ -15,6 +15,7 @@ test.describe("E2E Spec 1: Screen Navigation & State Transitions", () => {
 
     // Click "Create Quizset" button
     await page.click("#create-quizset-btn");
+    await page.click("#btn-use-builder");
 
     // Verify screen navigated to #creator-screen
     const creatorScreen = page.locator("#creator-screen");
@@ -22,6 +23,18 @@ test.describe("E2E Spec 1: Screen Navigation & State Transitions", () => {
 
     // Click "Back to Start" button
     await page.click("#btn-cancel-create");
+    await expect(startScreen).toHaveClass(/active/);
+
+    // Click "Create Quizset" button and then "Use Editor"
+    await page.click("#create-quizset-btn");
+    await page.click("#btn-use-editor");
+
+    // Verify screen navigated to #editor-screen
+    const editorScreen = page.locator("#editor-screen");
+    await expect(editorScreen).toHaveClass(/active/);
+
+    // Click "Cancel" on editor screen
+    await page.click("#btn-editor-cancel");
     await expect(startScreen).toHaveClass(/active/);
   });
 });

@@ -216,6 +216,7 @@ test.describe("UI Visual Regression Audits", () => {
   // ==========================================
   test("Creator Screen - Form Layout Integrity", async ({ page }) => {
     await page.click("#create-quizset-btn");
+    await page.click("#btn-use-builder");
 
     const creatorForm = page.locator("#creator-screen");
     await expect(creatorForm).toBeVisible();
@@ -240,6 +241,7 @@ test.describe("UI Visual Regression Audits", () => {
   test("Accordion Component - Format Guide Expanded", async ({ page }) => {
     // Navigate to the view where the accordion lives
     await page.click("#create-quizset-btn");
+    await page.click("#btn-use-builder");
 
     // Expand the bulk import panel first
     await page.click("#bulk-import-header");

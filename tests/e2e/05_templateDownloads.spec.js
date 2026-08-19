@@ -11,6 +11,7 @@ test.describe("E2E Spec 5: Template Ingestion & File Download Triggers", () => {
 
     // Navigate to Creator Screen
     await page.click("#create-quizset-btn");
+    await page.click("#btn-use-builder");
 
     // Expand Bulk Import Panel if collapsed
     await page.click("#bulk-import-header");
