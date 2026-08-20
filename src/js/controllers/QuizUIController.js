@@ -1,7 +1,7 @@
-import { readFile, exportQAD } from "../utils/fileIO.js";
-import { parseAndValidateRawText } from "../utils/schemaValidator.js";
 import QuizState from "../models/QuizState.js";
 import { createLogger } from "../utils/logger.js";
+
+const logger = createLogger("QuizUIController");
 
 /**
  * UI controller coordinating active quiz sessions.
@@ -15,7 +15,6 @@ import { createLogger } from "../utils/logger.js";
  * @property {boolean} isBuilderSource - Flag indicating if the quiz was launched from the builder.
  * @property {QuizStateType} quizState - State model instance managing the quiz logic.
  * @property {AppNavigationControllerType} appNavController - Controller for screen routing.
- * @property {HTMLButtonElement} startButton - DOM button to begin the quiz.
  * @property {HTMLElement} questionText - DOM element displaying the current question text.
  * @property {HTMLElement} answersContainer - DOM container for multiple-choice buttons.
  * @property {HTMLElement} currentQuestionSpan - DOM element showing the current question index.
@@ -32,29 +31,25 @@ import { createLogger } from "../utils/logger.js";
  */
 export default class QuizUIController {
   /**
-   * Caches nodes securely and effectively properly physically correctly.
+   * Initializes the quiz UI controller and caches DOM nodes.
    * @name constructor
    * @public
    * @param {QuizStateType} quizState - The core Model housing the assessment logic.
    * @param {AppNavigationControllerType} appNavController - The centralized router utility.
-   * @throws {Error} - If the start button is missing or invalid type.
+   * @throws {Error} - If critical DOM elements are missing.
    */
   constructor(quizState, appNavController) {
-    this.logger = createLogger("QuizUIController");
-    this.logger.info("constructor called", { quizState, appNavController });
+    logger.info("constructor called");
+    logger.debug("Initializing QuizUIController dependencies", {
+      hasQuizState: Boolean(quizState),
+      hasAppNav: Boolean(appNavController)
+    });
 
     this.quizState = quizState;
     this.appNavController = appNavController;
 
-    // Inline casting for the null payload
-    this.customPayload = /** @type {QuestionType[] | null} */ (null);
+    this.customPayload = null;
     this.isBuilderSource = false;
-
-    const startBtnNode = document.getElementById("start-btn");
-    if (!(startBtnNode instanceof HTMLButtonElement)) {
-      throw new Error("start-btn missing or invalid type");
-    }
-    this.startButton = startBtnNode;
 
     this.questionText = this.getEl("question-text");
     this.answersContainer = this.getEl("answers-container");
@@ -66,7 +61,8 @@ export default class QuizUIController {
     this.resultMessage = this.getEl("result-message");
     this.progressBar = this.getEl("progress");
 
-    this.logger.info("Quiz UI controller initialized");
+    logger.info("Quiz UI controller initialized");
+    logger.debug("Quiz UI controller ready for session start");
 
     this.bindEventListeners();
   }
@@ -78,6 +74,7 @@ export default class QuizUIController {
    * @throws {Error} - If the DOM node is missing.
    */
   getEl(id) {
+    logger.debug("getEl called", { id });
     const el = document.getElementById(id);
     if (!(el instanceof HTMLElement))
       throw new Error(`Missing DOM node: ${id}`);
@@ -85,127 +82,53 @@ export default class QuizUIController {
   }
 
   /**
-   * Delegates click tracking specifically and correctly.
+   * Delegates click tracking and window events for the quiz interface.
    * @name bindEventListeners
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   bindEventListeners() {
-    this.logger.info("bindEventListeners called");
-    this.startButton.addEventListener("click", () => {
-      this.logger.info("bindEventListeners: onStartButtonClick event");
-      this.logger.info("Start quiz clicked");
-      this.startQuiz();
-    });
-    this.getEl("restart-btn").addEventListener("click", () => {
-      this.logger.info("bindEventListeners: onRestartButtonClick event");
-      this.logger.info("Restart quiz clicked");
-      this.startQuiz();
-    });
+    logger.info("bindEventListeners called");
+    logger.debug("Binding restart and window resize event listeners");
 
-    this.getEl("custom-file-input").addEventListener("change", (e) => {
-      this.logger.info("bindEventListeners: onCustomFileInputChange event", {
-        e
+    const restartBtn = document.getElementById("restart-btn");
+    if (restartBtn instanceof HTMLButtonElement) {
+      restartBtn.addEventListener("click", () => {
+        logger.info("bindEventListeners: onRestartButtonClick event");
+        logger.debug("Restarting active quiz session from button trigger");
+        this.startQuiz();
       });
-      this.handleFileUpload(e, "file-name-display");
-    });
+    }
 
-    const exportBtn = document.getElementById("btn-export-results");
-    if (exportBtn instanceof HTMLButtonElement) {
-      exportBtn.addEventListener("click", () => {
-        this.logger.info("bindEventListeners: onExportResultsClick event");
-        if (this.quizState && this.quizState.questionData) {
-          exportQAD(this.quizState.questionData, "quizset.txt");
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", () => {
+        const quizScreen = document.getElementById("quiz-screen");
+        if (quizScreen && quizScreen.classList.contains("active")) {
+          logger.debug(
+            "Window resize detected while quiz active, recalculating font size"
+          );
+          this.adjustQuestionTextFontSize();
         }
       });
     }
   }
 
   /**
-   * Bypasses traditional file processing models, routing standard outputs to localized DOM state identifiers.
-   * @name handleFileUpload
-   * @public
-   * @param {Event} event - Native DOM change action containing physical file blobs.
-   * @param {string} statusNodeId - String target explicitly directing output alerts functionally.
-   * @returns {Promise<void>} - Resolves when file processing completes.
-   */
-  async handleFileUpload(event, statusNodeId) {
-    this.logger.info("handleFileUpload called", { event, statusNodeId });
-
-    if (!(event.target instanceof HTMLInputElement) || !event.target.files) {
-      this.logger.warn("Event target is not an input element or lacks files.");
-      return;
-    }
-
-    const file = event.target.files[0];
-
-    if (!file) {
-      this.logger.warn("File upload ignored because no file was selected", {
-        statusNodeId
-      });
-      return;
-    }
-
-    this.logger.info("File upload started", {
-      fileName: file.name,
-      statusNodeId
-    });
-
-    const statusNode = document.getElementById(statusNodeId);
-    if (!statusNode) return;
-
-    if (this.startButton) this.startButton.disabled = true;
-
-    statusNode.classList.remove("error", "success");
-    statusNode.textContent = `Analyzing ${file.name}...`;
-    statusNode.classList.add("visible");
-
-    /* Integrates explicitly external processing specifically physically actively functionally smoothly intuitively inherently cleanly natively intelligently exclusively identically automatically rationally completely explicitly natively securely physically intrinsically naturally purely correctly safely generically specifically efficiently dynamically dynamically perfectly organically implicitly automatically intuitively mechanically seamlessly organically dynamically uniquely natively automatically cleanly securely natively seamlessly uniquely manually organically safely logically seamlessly rationally uniquely systematically smoothly inherently dynamically purely physically uniquely seamlessly objectively automatically correctly visually manually optimally naturally automatically explicitly generically mathematically manually explicitly natively identically seamlessly uniquely instinctively optimally physically seamlessly inherently organically organically intrinsically structurally optimally specifically purely securely uniquely purely purely intelligently cleanly logically securely visually mechanically cleanly naturally safely intrinsically correctly natively intuitively physically functionally optimally reliably purely natively smoothly objectively automatically automatically natively mechanically dynamically actively cleanly exclusively cleanly intelligently intelligently intuitively natively mathematically optimally perfectly intuitively securely manually purely physically structurally optimally logically smoothly logically inherently perfectly dynamically explicitly natively cleanly mechanically structurally visually intuitively explicitly inherently cleanly organically inherently systematically exclusively implicitly cleanly logically structurally systematically securely generically smoothly identically rationally natively visually dynamically automatically safely automatically intuitively visually cleanly logically naturally physically specifically physically safely intrinsically dynamically correctly structurally visually technically safely inherently structurally structurally manually exclusively mathematically purely cleanly cleanly actively implicitly uniquely systematically purely uniquely optimally optimally instinctively securely functionally natively implicitly uniquely correctly mathematically effectively organically dynamically rationally smoothly implicitly manually seamlessly safely organically securely mathematically exclusively intuitively systematically smoothly naturally securely objectively exclusively visually naturally objectively dynamically functionally natively implicitly purely inherently uniquely actively functionally generically structurally logically manually mechanically dynamically natively systematically mathematically uniquely securely organically organically objectively uniquely implicitly inherently actively intelligently intuitively natively rationally mechanically seamlessly dynamically organically. */
-    // ----------------------------------------------------------------------
-    try {
-      const rawText = await readFile(file);
-      const parsedData = parseAndValidateRawText(rawText);
-
-      this.customPayload = parsedData;
-      this.isBuilderSource = false;
-
-      this.logger.info("File upload parsed successfully", {
-        fileName: file.name,
-        questionCount: parsedData.length
-      });
-
-      statusNode.textContent = `${file.name} (Ready)`;
-      statusNode.classList.add("success");
-
-      if (this.startButton) this.startButton.disabled = false;
-    } catch (error) {
-      const errMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      this.logger.error("File evaluation failed", error);
-      statusNode.classList.remove("success");
-      statusNode.classList.add("error");
-      statusNode.textContent = `Error: ${errMessage}`;
-      this.customPayload = null;
-    }
-    // ----------------------------------------------------------------------
-  }
-
-  /**
-   * Exposed handler natively...
+   * Loads a custom question payload into the quiz controller and starts the session.
    * @name loadCustomQuiz
    * @public
-   * @param {QuestionType[]} payload - Assessment question objects
-   * @param {boolean} [isBuilderSource] - Context flag for routing
-   * @returns {void} - Does not return a value.
+   * @param {QuestionType[]} payload - Assessment question objects.
+   * @param {boolean} [isBuilderSource] - Context flag for builder navigation return.
+   * @returns {void}
    */
   loadCustomQuiz(payload, isBuilderSource = false) {
-    this.logger.info("loadCustomQuiz called", {
+    logger.info("loadCustomQuiz called", {
       payload,
       questionCount: payload ? payload.length : 0,
       isBuilderSource
     });
-    this.logger.info("Loading custom quiz payload", {
-      questionCount: payload.length
+    logger.debug("Staging custom quiz payload", {
+      questionCount: payload ? payload.length : 0
     });
     this.customPayload = payload;
     this.isBuilderSource = isBuilderSource;
@@ -213,32 +136,34 @@ export default class QuizUIController {
   }
 
   /**
-   * Ensures static bounds mapping
+   * Synchronizes question count and max score bounds on the UI.
    * @name synchronizeBounds
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   synchronizeBounds() {
-    this.logger.info("synchronizeBounds called");
+    logger.info("synchronizeBounds called");
     const totalCount = this.quizState.questionData.length;
     this.totalQuestionsSpan.textContent = String(totalCount);
     this.maxScoreSpan.textContent = String(totalCount);
-    this.logger.debug("Quiz bounds synchronized", { totalCount });
+    logger.debug("Quiz bounds synchronized", { totalCount });
   }
 
   /**
-   * Evaluates and starts quiz session
+   * Evaluates state and starts the active quiz session.
    * @name startQuiz
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   startQuiz() {
-    this.logger.info("startQuiz called");
-    this.logger.info("Starting quiz session", {
+    logger.info("startQuiz called", {
       hasCustomPayload: Boolean(this.customPayload)
     });
     if (this.customPayload) {
-      this.logger.info("Instantiating QuizState with custom payload");
+      logger.info("Instantiating QuizState with custom payload");
+      logger.debug("Creating new QuizState instance from customPayload", {
+        questionCount: this.customPayload.length
+      });
       this.quizState = new QuizState(this.customPayload);
       this.synchronizeBounds();
     }
@@ -253,24 +178,25 @@ export default class QuizUIController {
 
     this.appNavController.navigateTo("quiz");
     this.showQuestion();
-    this.logger.info("Quiz session started", {
+    logger.info("Quiz session started", {
       questionCount: this.quizState.questionData.length
     });
+    logger.debug("Quiz interface rendered and active");
   }
 
   /**
-   * Renders active question to DOM
+   * Renders the active question and answer options to the DOM.
    * @name showQuestion
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   showQuestion() {
-    this.logger.info("showQuestion called");
+    logger.info("showQuestion called");
     this.quizState.resetClickLock();
 
     const currentQuestion = this.quizState.getCurrentQuestion();
     if (!currentQuestion) {
-      this.logger.warn(
+      logger.warn(
         "No current question available while rendering quiz question"
       );
       return;
@@ -279,13 +205,17 @@ export default class QuizUIController {
     this.currentQuestionSpan.textContent = String(this.quizState.index + 1);
     this.progressBar.style.width = `${this.quizState.getProgressPercentage()}%`;
     this.questionText.textContent = currentQuestion.question;
+    this.adjustQuestionTextFontSize();
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(() => {
+        this.adjustQuestionTextFontSize();
+      });
+    }
 
     this.answersContainer.innerHTML = "";
 
-    /* Spawns strictly naturally explicit seamlessly natively distinct implicitly actively physical elements generically manually independently directly securely purely physically mapped visually functionally intuitively rationally cleanly intelligently mathematically identically logically uniquely explicitly physically perfectly rationally natively naturally cleanly dynamically seamlessly. */
-    // ----------------------------------------------------------------------
     currentQuestion.answers.forEach((answer) => {
-      this.logger.trace("showQuestion: renderAnswerButtonCallback", {
+      logger.trace("showQuestion: renderAnswerButtonCallback", {
         text: answer.text,
         correct: answer.correct
       });
@@ -295,19 +225,68 @@ export default class QuizUIController {
 
       button.dataset.correct = String(answer.correct);
       button.addEventListener("click", (event) => {
-        this.logger.info("showQuestion: onAnswerClick event", {
+        logger.info("showQuestion: onAnswerClick event", {
           event
         });
+        logger.debug("User clicked answer button", { text: answer.text });
         this.selectAnswer(event);
       });
 
       this.answersContainer.appendChild(button);
     });
-    // ----------------------------------------------------------------------
 
-    this.logger.debug("Question rendered", {
+    logger.debug("Question rendered", {
       index: this.quizState.index,
       answerCount: currentQuestion.answers.length
+    });
+  }
+
+  /**
+   * Dynamically adjusts question text font size to be as large as possible without overflowing its container.
+   * @returns {void}
+   */
+  adjustQuestionTextFontSize() {
+    if (!(this.questionText instanceof HTMLElement)) return;
+
+    const el = this.questionText;
+
+    // Determine the maximum vertical capacity of the question container
+    const computed =
+      typeof window !== "undefined" && window.getComputedStyle
+        ? window.getComputedStyle(el)
+        : null;
+    const parsedMax = computed ? parseFloat(computed.maxHeight) : NaN;
+    const winHeight = typeof window !== "undefined" ? window.innerHeight : 800;
+    const maxAllowedHeight = Math.max(
+      !isNaN(parsedMax) && parsedMax > 0 ? parsedMax : 0,
+      winHeight * 0.48,
+      260
+    );
+
+    const minSize = 1.0; // rem
+    const maxSize = 2.2; // rem (caps short questions from appearing disproportionately large)
+
+    let low = minSize;
+    let high = maxSize;
+    let bestSize = minSize;
+
+    // 10-iteration binary search for sub-0.01rem precision sizing
+    for (let i = 0; i < 10; i++) {
+      const mid = (low + high) / 2;
+      el.style.fontSize = `${mid.toFixed(2)}rem`;
+
+      // Check if text content fits cleanly within maximum allowable vertical space
+      if (el.scrollHeight <= maxAllowedHeight + 2) {
+        bestSize = mid;
+        low = mid; // Fit succeeded, explore larger size
+      } else {
+        high = mid; // Exceeded height bounds, explore smaller size
+      }
+    }
+
+    el.style.fontSize = `${bestSize.toFixed(2)}rem`;
+    logger.debug("Question font size adjusted", {
+      calculatedSizeRem: bestSize.toFixed(2)
     });
   }
 
@@ -319,20 +298,21 @@ export default class QuizUIController {
    * @returns {void} - Does not return a value.
    */
   selectAnswer(event) {
-    this.logger.info("selectAnswer called", { event });
+    logger.info("selectAnswer called", { event });
     if (this.quizState.disabled) {
-      this.logger.warn("Answer selection ignored because quiz state is locked");
+      logger.warn("Answer selection ignored because quiz state is locked");
       return;
     }
 
     const selectedButton = event.target;
     if (!(selectedButton instanceof HTMLElement)) return;
     const isCorrect = selectedButton.dataset.correct === "true";
-    this.logger.info("Answer selected", { isCorrect });
+    logger.info("Answer selected", { isCorrect });
+    logger.debug("Applying visual answer highlights to all choices");
 
     Array.from(this.answersContainer.children).forEach((button) => {
       if (!(button instanceof HTMLElement)) return;
-      this.logger.trace("selectAnswer: highlightButtonCallback", {
+      logger.trace("selectAnswer: highlightButtonCallback", {
         buttonText: button.textContent,
         isCorrect: button.dataset.correct === "true"
       });
@@ -345,7 +325,8 @@ export default class QuizUIController {
     this.scoreSpan.textContent = String(this.quizState.score);
 
     setTimeout(() => {
-      this.logger.info("selectAnswer: advanceTimeoutCallback executed");
+      logger.info("selectAnswer: advanceTimeoutCallback executed");
+      logger.debug("Advancing to next question or results view");
       this.quizState.advanceQuestion();
 
       if (this.quizState.isQuizOver()) {
@@ -357,13 +338,13 @@ export default class QuizUIController {
   }
 
   /**
-   * Navigates to result screen and displays final metrics
+   * Navigates to the results screen and displays final score metrics.
    * @name showResults
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   showResults() {
-    this.logger.info("showResults called");
+    logger.info("showResults called");
     this.appNavController.navigateTo("result");
 
     this.finalScoreSpan.textContent = String(this.quizState.score);
@@ -372,23 +353,21 @@ export default class QuizUIController {
 
     const returnStartBtn = this.getEl("return-start-btn");
     const returnBuilderBtn = this.getEl("return-builder-btn");
-    const exportBtn = this.getEl("btn-export-results");
 
     if (this.isBuilderSource) {
       returnStartBtn.style.display = "none";
       returnBuilderBtn.style.display = "inline-flex";
-      exportBtn.style.display = "inline-flex";
     } else {
       returnStartBtn.style.display = "inline-flex";
       returnBuilderBtn.style.display = "none";
-      exportBtn.style.display = "none";
     }
 
-    this.logger.info("Quiz results displayed", {
+    logger.info("Quiz results displayed", {
       score: this.quizState.score,
       totalQuestions: this.quizState.questionData.length,
       percentage,
       isBuilderSource: this.isBuilderSource
     });
+    logger.debug("Results screen metrics committed to DOM");
   }
 }
