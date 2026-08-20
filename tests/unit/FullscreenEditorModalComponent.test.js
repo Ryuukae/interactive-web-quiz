@@ -1,7 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import FullscreenEditorModalComponent from "../../src/js/components/FullscreenEditorModalComponent.js";
-import * as templates from "../../src/js/utils/templates.js";
 import * as fileIO from "../../src/js/utils/fileIO.js";
 import * as prompts from "../../src/js/utils/prompts.js";
 
