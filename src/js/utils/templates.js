@@ -7,7 +7,7 @@ const logger = createLogger("templates");
  * Provides read-only template generation for injection into user-facing text areas.
  *
  * @module templates
- * @version 1.6.0
+ * @version 1.6.1
  * @author Adam Ross DeStafeno
  */
 

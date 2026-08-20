@@ -10,7 +10,7 @@ const logger = createLogger("FullscreenEditorModalComponent");
  *
  * @class FullscreenEditorModalComponent
  * @name FullscreenEditorModalComponent
- * @version 1.6.0
+ * @version 1.6.1
  * @author Adam Ross DeStafeno
  * @property {AppNavigationControllerType} appNavController - The centralized screen and modal router.
  * @property {((text: string) => void) | null} onSaveCallback - Save callback when changes are applied.

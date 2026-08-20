@@ -7,7 +7,7 @@ const logger = createLogger("fileIO");
  * Agnostic to application state and physical DOM structures.
  *
  * @module fileIO
- * @version 1.6.0
+ * @version 1.6.1
  * @author Adam Ross DeStafeno
  * @typedef {import('../types.js').QuestionType} QuestionType
  * @typedef {import('../types.js').RawQuestionType} RawQuestionType

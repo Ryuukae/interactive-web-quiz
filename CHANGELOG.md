@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.6.0...v1.6.1) (2026-08-20)
+
+
+### Bug Fixes
+
+* **config:** set vite base path to resolve 404 assets on github pages ([17eb34c](https://github.com/Ryuukae/interactive-web-quiz/commit/17eb34c70eb3b1fa79c76ac031adf41d1c713aa9))
+
 # [1.6.0](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.5.2...v1.6.0) (2026-08-20)
 
 
