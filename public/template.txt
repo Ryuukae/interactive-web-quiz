@@ -1,18 +1,16 @@
-q=Your question here?
-a=Correct option
-d=Incorrect option
+Q="Your question here?"
+A="Correct option"
+D="Incorrect option"
 
-                        
-Q=What is the default port for HTTPS?
-A=443
-D=80
-D=21
-D=22
-D=8080
+Q="What is the default port for HTTPS?"
+A="443"
+D="80"
+D="21"
+D="22"
+D="8080"
 
-q=Which protocol is considered secure?
-  a=HTTPS
-    D=FTP
-    d=HTTP
-    D=TELNET
-
+Q="Which protocol is considered secure?"
+  A="HTTPS"
+    D="FTP"
+    D="HTTP"
+    D="TELNET"
