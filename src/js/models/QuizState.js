@@ -1,5 +1,7 @@
 import { createLogger } from "../utils/logger.js";
 
+const logger = createLogger("QuizState");
+
 /**
  * Core state model encapsulating dynamically injected quiz structures explicitly.
  * Retains pristine sequential order organically while providing active validation natively.
@@ -23,21 +25,17 @@ export default class QuizState {
    * @throws {Error} - If the question data is invalid or malformed.
    */
   constructor(questionData) {
-    this.logger = createLogger("QuizState");
-
-    this.logger.info("constructor called", {
+    logger.info("constructor called", {
       questionData,
       questionCount: Array.isArray(questionData) ? questionData.length : 0
     });
 
-    this.logger.debug("Initializing quiz state", {
+    logger.debug("Initializing quiz state", {
       questionCount: Array.isArray(questionData) ? questionData.length : 0
     });
 
     if (!Array.isArray(questionData)) {
-      this.logger.error(
-        "Invalid question data provided to QuizState constructor"
-      );
+      logger.error("Invalid question data provided to QuizState constructor");
       throw new Error("QuizState requires an array of question objects.");
     }
 
@@ -48,9 +46,10 @@ export default class QuizState {
     this.index = 0;
     this.disabled = false;
 
-    this.logger.info("Quiz state initialized", {
+    logger.info("Quiz state initialized", {
       questionCount: this.questionData.length
     });
+    logger.debug("QuizState machine primed for active questions");
   }
 
   /**
@@ -61,10 +60,10 @@ export default class QuizState {
    * @throws {Error} - If the current question cannot be retrieved.
    */
   getCurrentQuestion() {
-    this.logger.info("getCurrentQuestion called", {
+    logger.info("getCurrentQuestion called", {
       activeIndex: this.index
     });
-    this.logger.trace("Reading current question", { index: this.index });
+    logger.debug("Reading current question", { index: this.index });
     return this.questionData[this.index];
   }
 
@@ -76,14 +75,14 @@ export default class QuizState {
    * @throws {Error} - If the index exceeds the bounds of the question dataset.
    */
   advanceQuestion() {
-    this.logger.info("advanceQuestion called", {
+    logger.info("advanceQuestion called", {
       currentIndex: this.index
     });
-    this.logger.debug("Advancing question index", {
+    logger.debug("Advancing question index", {
       previousIndex: this.index
     });
     this.index++;
-    this.logger.debug("Question index advanced", { newIndex: this.index });
+    logger.debug("Question index advanced", { newIndex: this.index });
   }
 
   /**
@@ -94,11 +93,11 @@ export default class QuizState {
    * @throws {Error} - If the index exceeds the bounds of the question dataset.
    */
   getProgressPercentage() {
-    this.logger.info("getProgressPercentage called", {
+    logger.info("getProgressPercentage called", {
       index: this.index,
       total: this.questionData.length
     });
-    this.logger.trace("Calculating progress percentage", {
+    logger.debug("Calculating progress percentage", {
       index: this.index,
       total: this.questionData.length
     });
@@ -113,11 +112,11 @@ export default class QuizState {
    * @throws {Error} - If the score exceeds the bounds of the question dataset.
    */
   getGradePercentage() {
-    this.logger.info("getGradePercentage called", {
+    logger.info("getGradePercentage called", {
       score: this.score,
       total: this.questionData.length
     });
-    this.logger.trace("Calculating grade percentage", {
+    logger.debug("Calculating grade percentage", {
       score: this.score,
       total: this.questionData.length
     });
@@ -133,15 +132,13 @@ export default class QuizState {
    * @throws {Error} - If the answer is invalid or the quiz is in an invalid state.
    */
   evaluateAnswer(isCorrect) {
-    this.logger.info("evaluateAnswer called", {
+    logger.info("evaluateAnswer called", {
       isCorrect,
       currentScore: this.score,
       isLocked: this.disabled
     });
     if (this.disabled) {
-      this.logger.warn(
-        "Answer evaluation skipped because click lock is active"
-      );
+      logger.warn("Answer evaluation skipped because click lock is active");
       return;
     }
 
@@ -149,16 +146,18 @@ export default class QuizState {
 
     if (isCorrect) {
       this.score++;
-      this.logger.info("Correct answer registered. Incremented score", {
+      logger.info("Correct answer registered. Incremented score", {
         newScore: this.score
       });
+      logger.debug("Score incremented", { score: this.score });
     } else {
-      this.logger.info("Incorrect answer registered. Score remains unchanged", {
+      logger.info("Incorrect answer registered. Score remains unchanged", {
         currentScore: this.score
       });
+      logger.debug("Score unchanged", { score: this.score });
     }
 
-    this.logger.info("Answer evaluated", {
+    logger.info("Answer evaluated", {
       isCorrect,
       score: this.score,
       disabled: this.disabled
@@ -173,9 +172,9 @@ export default class QuizState {
    * @throws {Error} - If the click lock cannot be reset.
    */
   resetClickLock() {
-    this.logger.info("resetClickLock called");
+    logger.info("resetClickLock called");
     this.disabled = false;
-    this.logger.debug("Click lock reset");
+    logger.debug("Click lock reset");
   }
 
   /**
@@ -186,11 +185,11 @@ export default class QuizState {
    * @throws {Error} - If the quiz cannot be reset.
    */
   resetQuiz() {
-    this.logger.info("resetQuiz called", {
+    logger.info("resetQuiz called", {
       currentScore: this.score,
       currentIndex: this.index
     });
-    this.logger.info("Resetting quiz state", {
+    logger.debug("Resetting quiz state indices and shuffling deck", {
       score: this.score,
       index: this.index
     });
@@ -198,7 +197,7 @@ export default class QuizState {
     this.index = 0;
     this.disabled = false;
     this.questionData = this.randomizeDeck(this.questionData);
-    this.logger.info("Quiz state reset complete", {
+    logger.info("Quiz state reset complete", {
       questionCount: this.questionData.length
     });
   }
@@ -211,12 +210,12 @@ export default class QuizState {
    * @throws {Error} - If the index exceeds the bounds of the question dataset.
    */
   isQuizOver() {
-    this.logger.info("isQuizOver called", {
+    logger.info("isQuizOver called", {
       index: this.index,
       total: this.questionData.length
     });
     const isOver = this.index >= this.questionData.length;
-    this.logger.trace("Checking quiz completion", {
+    logger.debug("Checking quiz completion", {
       index: this.index,
       total: this.questionData.length,
       isOver
@@ -233,11 +232,11 @@ export default class QuizState {
    * @throws {Error} - If the array is not an array.
    */
   shuffleQuizData(array) {
-    this.logger.info("shuffleQuizData called", {
+    logger.info("shuffleQuizData called", {
       array,
       length: Array.isArray(array) ? array.length : null
     });
-    this.logger.trace("Shuffling array", { length: array.length });
+    logger.debug("Shuffling array in-place", { length: array.length });
     /* Loops sequentially backward to swap array elements in place, preventing redundant memory allocation. */
     // ----------------------------------------------------------------------
     for (let i = array.length - 1; i > 0; i--) {
@@ -245,7 +244,7 @@ export default class QuizState {
       [array[i], array[j]] = [array[j], array[i]];
     }
     // ----------------------------------------------------------------------
-    this.logger.trace("Shuffle complete", { length: array.length });
+    logger.debug("Shuffle complete", { length: array.length });
     return array;
   }
 
@@ -258,11 +257,11 @@ export default class QuizState {
    * @throws {Error} - If the deck is not an array or is empty.
    */
   randomizeDeck(deck) {
-    this.logger.info("randomizeDeck called", {
+    logger.info("randomizeDeck called", {
       deck,
       deckLength: Array.isArray(deck) ? deck.length : null
     });
-    this.logger.debug("Randomizing quiz deck", {
+    logger.debug("Randomizing quiz deck", {
       questionCount: deck.length
     });
     // Shuffles the outer container array representing the question sequence.
@@ -270,13 +269,13 @@ export default class QuizState {
 
     // Traverses the newly shuffled array to shuffle the inner answer sequences.
     shuffledDeck.forEach((question) => {
-      this.logger.trace("randomizeDeck: questionAnswerShuffleCallback", {
+      logger.trace("randomizeDeck: questionAnswerShuffleCallback", {
         questionText: question.question
       });
       question.answers = this.shuffleQuizData(question.answers);
     });
 
-    this.logger.info("Quiz deck randomized", {
+    logger.info("Quiz deck randomized", {
       questionCount: shuffledDeck.length
     });
     return shuffledDeck;
