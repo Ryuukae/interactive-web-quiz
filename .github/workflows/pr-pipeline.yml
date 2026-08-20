@@ -1,0 +1,138 @@
+name: Pull Request Pipeline
+
+on:
+  pull_request:
+    branches: ["main", "dev"]
+
+jobs:
+  enforce-branch-flow:
+    name: Enforce Main PR Source Branch
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'main'
+    steps:
+      - name: Verify PR originates from dev
+        run: |
+          if [ "${{ github.head_ref }}" != "dev" ]; then
+            echo "::error::Direct merges into 'main' are restricted. Pull requests targeting 'main' must originate from 'dev'."
+            exit 1
+          fi
+          echo "PR source is 'dev'. Approved to proceed."
+
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+      - run: npm ci
+      - name: Lint PR Commits
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+
+  validate-static:
+    name: Static Analysis & Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Validate GitHub Actions Syntax
+        uses: reviewdog/action-actionlint@v1
+        with:
+          fail_on_error: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+      - run: npm ci
+      - name: Verify Formatting & Linting
+        run: npm run format:check && npm run lint
+      - name: Run npm audit
+        run: npm run audit
+      - name: Run TypeScript Typechecking
+        run: npm run typecheck
+
+  validate-unit:
+    name: Unit Tests & Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+      - run: npm ci
+      - name: Run Vitest & Coverage
+        run: npm run test:coverage
+      - name: Report Code Coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        if: success()
+
+  validate-e2e:
+    name: E2E Tests & Audits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+      - run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Verify Production Build
+        run: npm run build
+      - name: Run Lighthouse & Size Audits
+        run: npx lhci autorun && npm run size
+      - name: Run Playwright E2E Tests
+        run: npm run test:e2e
+      - name: Upload Playwright Test Report & Traces
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-e2e-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  visual-regression:
+    name: Visual Regression Audits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          ref: ${{ github.head_ref || github.ref }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright test
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-visual-report
+          path: playwright-report/
+          retention-days: 7
