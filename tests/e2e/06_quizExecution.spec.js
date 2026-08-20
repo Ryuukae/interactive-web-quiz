@@ -14,20 +14,41 @@ test.describe("E2E Spec 6: Complete Interactive Quiz Execution Flow", () => {
 
     // Navigate to Creator Screen
     await page.click("#create-quizset-btn");
+    await page.click("#btn-use-builder");
 
-    // Expand Bulk Import Panel if collapsed
-    await page.click("#bulk-import-header");
+    // First question is already there, just fill it
+    const cards = page.locator("#builder-questions-container .question-card");
+    await cards.nth(0).locator(".question-input").fill("What is 1+1?");
+    await cards.nth(0).locator(".answer-row.correct-row textarea").fill("2");
+    await cards
+      .nth(0)
+      .locator(".answer-row.distractor-row textarea")
+      .first()
+      .fill("3");
 
-    // Insert sample QAD question deck
-    const quizDeck =
-      "Q=What is 1+1?\nA=2\nD=3\n\nQ=What color is the sky?\nA=Blue\nD=Green";
-    await page.fill("#bulk-import-text", quizDeck);
-
-    // Clear any default cards before parsing
-    await page.click("#btn-clear-builder");
-
-    // Parse Quizset Data
-    await page.click("#btn-parse-bulk");
+    // Add second question via focus modal
+    await page.click("#btn-add-question");
+    await expect(page.locator("#modal-focus-edit")).toHaveClass(/active/);
+    await page
+      .locator("#focus-modal-distractors-container textarea")
+      .first()
+      .waitFor({ state: "visible" });
+    await page.locator("#focus-modal-q-input").click();
+    await page.locator("#focus-modal-q-input").fill("What color is the sky?");
+    await page.locator("#focus-modal-a-input").click();
+    await page.locator("#focus-modal-a-input").fill("Blue");
+    await page
+      .locator("#focus-modal-distractors-container textarea")
+      .first()
+      .click();
+    await page
+      .locator("#focus-modal-distractors-container textarea")
+      .first()
+      .fill("Green");
+    await page.click("#btn-focus-modal-done");
+    await expect(page.locator("#modal-focus-edit")).not.toHaveClass(/active/, {
+      timeout: 10000
+    });
 
     // Click "Start Quiz" button (#btn-run-builder-quiz)
     await page.click("#btn-run-builder-quiz");
