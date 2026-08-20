@@ -11,6 +11,7 @@ test.describe("E2E Spec 2: Dynamic Question Card Builder Operations", () => {
 
     // Navigate to Creator Screen
     await page.click("#create-quizset-btn");
+    await page.click("#btn-use-builder");
 
     // Click "+ Add Question" button
     await page.click("#btn-add-question");
@@ -26,13 +27,13 @@ test.describe("E2E Spec 2: Dynamic Question Card Builder Operations", () => {
     // Fill correct answer field
     const correctInput = cards
       .first()
-      .locator('.answer-row.correct-row input[type="text"]');
+      .locator(".answer-row.correct-row textarea");
     await correctInput.fill("Au");
 
     // Fill distractor answer field
     const distractorInput = cards
       .first()
-      .locator('.answer-row.distractor-row input[type="text"]')
+      .locator(".answer-row.distractor-row textarea")
       .first();
     await distractorInput.fill("Ag");
 
