@@ -8,6 +8,7 @@ describe("Integration CSS Selector Audit Tests", () => {
     "base.css",
     "builder.css",
     "components.css",
+    "editor.css",
     "responsive.css",
     "screens.css",
     "style.css"
