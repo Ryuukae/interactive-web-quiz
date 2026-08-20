@@ -88,13 +88,19 @@ export function exportQAD(payload, filename = "custom_quiz.txt") {
   let qadText = "";
   payload.forEach((qObj) => {
     if (!qObj || !qObj.question) return;
-    const qText = qObj.question.trim().replace(/"/g, '\\"');
+    const qText = qObj.question
+      .trim()
+      .replace(/\\/g, "\\\\")
+      .replace(/"/g, '\\"');
     qadText += `Q="${qText}"\n`;
 
     if ("answers" in qObj && Array.isArray(qObj.answers)) {
       qObj.answers.forEach((aObj) => {
         if (!aObj || typeof aObj.text !== "string") return;
-        const aText = aObj.text.trim().replace(/"/g, '\\"');
+        const aText = aObj.text
+          .trim()
+          .replace(/\\/g, "\\\\")
+          .replace(/"/g, '\\"');
         if (aObj.correct) {
           qadText += `A="${aText}"\n`;
         } else {
@@ -103,14 +109,21 @@ export function exportQAD(payload, filename = "custom_quiz.txt") {
       });
     } else if ("correct_answer" in qObj || "distractors" in qObj) {
       if (qObj.correct_answer) {
-        const aText = qObj.correct_answer.trim().replace(/"/g, '\\"');
+        const aText = qObj.correct_answer
+          .trim()
+          .replace(/\\/g, "\\\\")
+          .replace(/"/g, '\\"');
         qadText += `A="${aText}"\n`;
       }
       if (Array.isArray(qObj.distractors)) {
         qObj.distractors.forEach((d) => {
           const dText = typeof d === "string" ? d : (d && d.text) || "";
           if (dText.trim()) {
-            qadText += `D="${dText.trim().replace(/"/g, '\\"')}"\n`;
+            const escapedDistractor = dText
+              .trim()
+              .replace(/\\/g, "\\\\")
+              .replace(/"/g, '\\"');
+            qadText += `D="${escapedDistractor}"\n`;
           }
         });
       }
