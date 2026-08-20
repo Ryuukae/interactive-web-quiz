@@ -114,7 +114,7 @@ jobs:
       - name: Lighthouse CI Audit
         run: npx lhci autorun
       - name: Upload Lighthouse CI Reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: lighthouse-audit-reports
@@ -125,7 +125,7 @@ jobs:
       - name: Run Playwright E2E Tests (tests/e2e/**/*.spec.js)
         run: npm run test:e2e
       - name: Upload Playwright Test Report & Traces (On Failure)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-e2e-report
@@ -154,7 +154,7 @@ jobs:
       - name: Run Visual Regression Checks against Baselines
         run: npx playwright test
       - name: Upload HTML report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
