@@ -1,3 +1,10 @@
+## [1.6.3](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.6.2...v1.6.3) (2026-08-20)
+
+
+### Bug Fixes
+
+* **release:** trigger verified release to test gpg signatures ([4a00de4](https://github.com/Ryuukae/interactive-web-quiz/commit/4a00de4591d29d2ae8ff45cd901cc7ec68ff224d))
+
 ## [1.6.2](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.6.1...v1.6.2) (2026-08-20)
 
 

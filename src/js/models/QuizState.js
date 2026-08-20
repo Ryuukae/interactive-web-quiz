@@ -8,7 +8,7 @@ const logger = createLogger("QuizState");
  *
  * @class QuizState
  * @name QuizState
- * @version 1.6.2
+ * @version 1.6.3
  * @author Adam Ross DeStafeno
  * @property {QuestionType[]} questionData - The parsed array of question objects.
  * @property {number} score - The user's current score.

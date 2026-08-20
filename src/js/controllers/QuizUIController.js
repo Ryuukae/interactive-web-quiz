@@ -9,7 +9,7 @@ const logger = createLogger("QuizUIController");
  *
  * @class QuizUIController
  * @name QuizUIController
- * @version 1.6.2
+ * @version 1.6.3
  * @author Adam Ross DeStafeno
  * @property {QuestionType[] | null} customPayload - Active question dataset loaded into memory.
  * @property {boolean} isBuilderSource - Flag indicating if the quiz was launched from the builder.
