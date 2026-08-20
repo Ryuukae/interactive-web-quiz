@@ -63,6 +63,7 @@ export default class BuilderUIController {
     logger.info("Builder UI controller initialized");
     logger.debug("Builder UI controller ready for user actions");
     this.initializeEventListeners();
+    this.initializeBuilder();
   }
 
   /**
