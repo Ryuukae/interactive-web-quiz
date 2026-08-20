@@ -2,12 +2,12 @@ name: Visual Regression Audits
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: ["main", "dev"]
   # Allows you to manually trigger the workflow from the GitHub UI
   workflow_dispatch:
     inputs:
       update_snapshots:
-        description: 'Update baselines and commit to branch?'
+        description: "Update baselines and commit to branch?"
         type: boolean
         default: false
 
@@ -21,12 +21,12 @@ jobs:
         with:
           lfs: true # Required to pull the actual LFS images
           ref: ${{ github.head_ref || github.ref }} # Check out the PR branch
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci

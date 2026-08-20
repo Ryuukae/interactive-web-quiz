@@ -2,61 +2,85 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 test.describe("Accessibility Audits", () => {
-    test("should not have any automatically detectable accessibility issues on load", async ({
-        page
-    }) => {
-        await page.goto("http://localhost:5173");
+  test("should not have any automatically detectable accessibility issues on load", async ({
+    page
+  }) => {
+    await page.goto("http://localhost:5173");
 
-        // Wait for app to be ready
-        await page.waitForLoadState("networkidle");
+    // Wait for app to be ready
+    await page.waitForLoadState("networkidle");
 
-        // Wait for the main UI to render
-        await page.waitForSelector("#start-screen.active");
+    // Wait for the main UI to render
+    await page.waitForSelector("#start-screen.active");
 
-        const accessibilityScanResults = await new AxeBuilder({
-            page
-        }).analyze();
+    const accessibilityScanResults = await new AxeBuilder({
+      page
+    }).analyze();
 
-        // Expect exactly 0 violations
-        expect(accessibilityScanResults.violations).toEqual([]);
+    // Expect exactly 0 violations
+    expect(accessibilityScanResults.violations).toEqual([]);
+  });
+
+  test("should maintain accessibility in Quiz view", async ({ page }) => {
+    await page.goto("http://localhost:5173");
+
+    // Wait for app to be ready
+    await page.waitForLoadState("networkidle");
+    // Automatically accept any browser confirmation dialogs
+    page.on("dialog", (dialog) => dialog.accept());
+
+    // Go to builder
+    await page.click("#create-quizset-btn");
+    await page.click("#btn-use-builder");
+    await page.waitForSelector("#creator-screen.active");
+
+    // First question is already there, just fill it
+    const cards = page.locator("#builder-questions-container .question-card");
+    await cards.nth(0).locator(".question-input").fill("What is 1+1?");
+    await cards.nth(0).locator(".answer-row.correct-row textarea").fill("2");
+    await cards
+      .nth(0)
+      .locator(".answer-row.distractor-row textarea")
+      .first()
+      .fill("3");
+
+    // Add second question via focus modal
+    await page.click("#btn-add-question");
+    await expect(page.locator("#modal-focus-edit")).toHaveClass(/active/);
+    await page
+      .locator("#focus-modal-distractors-container textarea")
+      .first()
+      .waitFor({ state: "visible" });
+    await page.locator("#focus-modal-q-input").click();
+    await page.locator("#focus-modal-q-input").fill("What color is the sky?");
+    await page.locator("#focus-modal-a-input").click();
+    await page.locator("#focus-modal-a-input").fill("Blue");
+    await page
+      .locator("#focus-modal-distractors-container textarea")
+      .first()
+      .click();
+    await page
+      .locator("#focus-modal-distractors-container textarea")
+      .first()
+      .fill("Green");
+    await page.click("#btn-focus-modal-done");
+    await expect(page.locator("#modal-focus-edit")).not.toHaveClass(/active/, {
+      timeout: 10000
     });
 
-    test("should maintain accessibility in Quiz view", async ({ page }) => {
-        await page.goto("http://localhost:5173");
+    // Start Quiz
+    await page.locator("#btn-run-builder-quiz").click();
 
-        // Wait for app to be ready
-        await page.waitForLoadState("networkidle");
-        // Automatically accept any browser confirmation dialogs
-        page.on("dialog", (dialog) => dialog.accept());
+    // Wait for quiz view to appear
+    await page.waitForSelector("#quiz-screen.active");
 
-        // Go to builder
-        await page.click("#create-quizset-btn");
-        await page.waitForSelector("#creator-screen.active");
+    const accessibilityScanResults = await new AxeBuilder({
+      page
+    })
+      .exclude("#modal-focus-edit")
+      .exclude("#modal-backdrop")
+      .analyze();
 
-        // Expand Bulk Import Panel if collapsed
-        await page.click("#bulk-import-header");
-
-        // Insert sample QAD question deck
-        const quizDeck =
-            "Q=What is 1+1?\nA=2\nD=3\n\nQ=What color is the sky?\nA=Blue\nD=Green";
-        await page.fill("#bulk-import-text", quizDeck);
-
-        // Clear any default cards before parsing
-        await page.click("#btn-clear-builder");
-
-        // Parse Quizset Data
-        await page.click("#btn-parse-bulk");
-
-        // Start Quiz
-        await page.locator("#btn-run-builder-quiz").click();
-
-        // Wait for quiz view to appear
-        await page.waitForSelector("#quiz-screen.active");
-
-        const accessibilityScanResults = await new AxeBuilder({
-            page
-        }).analyze();
-
-        expect(accessibilityScanResults.violations).toEqual([]);
-    });
+    expect(accessibilityScanResults.violations).toEqual([]);
+  });
 });

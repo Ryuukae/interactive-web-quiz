@@ -2,61 +2,84 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main", "dev"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main", "dev"]
 
 jobs:
   execute-quality-checks:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        lfs: true
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 22
-        cache: 'npm'
+      - name: Validate GitHub Actions Workflow Syntax (actionlint)
+        uses: reviewdog/action-actionlint@v1
+        with:
+          fail_on_error: true
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Verify Prettier Formatting (src/**/*.js, css, html)
-      run: npm run format:check
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
-    - name: Run ESLint, Stylelint, HTML-Validate, and CSpell
-      run: npm run lint
+      - name: Verify Prettier Formatting (src/**/*.js, css, html)
+        run: npm run format:check
 
-    - name: Run npm audit (High+ Vulnerabilities)
-      run: npm run audit
+      - name: Run ESLint, Stylelint, HTML-Validate, and CSpell
+        run: npm run lint
 
-    - name: Run TypeScript Typechecking (tsc)
-      run: npm run typecheck
+      - name: Run npm audit (High+ Vulnerabilities)
+        run: npm run audit
 
-    - name: Run Vitest Unit Tests (tests/unit/**/*.test.js)
-      run: npm run test
+      - name: Run TypeScript Typechecking (tsc)
+        run: npm run typecheck
 
-    - name: Generate Vitest Coverage Report
-      run: npm run test:coverage
+      - name: Run Vitest Unit Tests (tests/unit/**/*.test.js)
+        run: npm run test
 
-    - name: Report Code Coverage
-      uses: davelosert/vitest-coverage-report-action@v2
-      if: success()
+      - name: Generate Vitest Coverage Report
+        run: npm run test:coverage
 
-    - name: Verify Production Build (vite build)
-      run: npm run build
+      - name: Report Code Coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        if: success()
 
-    - name: Lighthouse CI Audit
-      run: npx lhci autorun
+      - name: Verify Production Build (vite build)
+        run: npm run build
 
-    - name: Audit Production Bundle Size (size-limit)
-      run: npm run size
+      - name: Lighthouse CI Audit
+        run: npx lhci autorun
 
-    - name: Run Playwright E2E Tests (tests/e2e/**/*.spec.js)
-      run: npm run test:e2e
+      - name: Upload Lighthouse CI Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-audit-reports
+          path: .lighthouseci/
+          retention-days: 7
+
+      - name: Audit Production Bundle Size (size-limit)
+        run: npm run size
+
+      - name: Run Playwright E2E Tests (tests/e2e/**/*.spec.js)
+        run: npm run test:e2e
+
+      - name: Upload Playwright Test Report & Traces (On Failure)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-e2e-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

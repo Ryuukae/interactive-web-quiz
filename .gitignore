@@ -29,6 +29,7 @@
 !.github/PULL_REQUEST_TEMPLATE.md
 !CHANGELOG.md
 !README.md
+!LICENSE
 !CONTRIBUTING.md
 !SECURITY.md
 !CODE_OF_CONDUCT.md
@@ -38,6 +39,7 @@
 !.eslintrc.json
 !.htmlvalidate.json
 !.prettierrc
+!.prettierignore
 !vite.config.js
 !playwright.config.js
 !.commitlintrc.json

@@ -2,104 +2,380 @@
 /* --- RESPONSIVE MEDIA QUERIES --- */
 /* ================================ */
 
-/* TABLET & SMALL DESKTOP (Max-width: 768px)
-   Adjusts structural padding and slightly scales down primary typography 
-   to accommodate constrained horizontal viewports without breaking layout. */
+/* -------------------------------------------------------------------------- */
+/* 1. LARGE DESKTOP & HIGH-DPI DISPLAYS (Min-width: 1200px)                   */
+/* -------------------------------------------------------------------------- */
+@media (min-width: 1200px) {
+  .container {
+    padding: 2rem 2.5rem;
+  }
+
+  #question-text {
+    font-size: 1.75rem;
+    line-height: 1.45;
+  }
+
+  .answer-btn {
+    padding: 12px 18px;
+    font-size: 0.94rem;
+    line-height: 1.35;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. LAPTOP & SMALL DESKTOP (Max-width: 1024px)                              */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .container {
+    width: 94%;
+  }
+
+  #start-screen h1,
+  #creator-screen h1,
+  #result-screen h1 {
+    font-size: 2.75rem;
+  }
+
+  #question-text {
+    font-size: 1.5rem;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3. TABLET (Max-width: 768px)                                               */
+/* -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
-    .container {
-        padding: 2rem;
-        width: 92%;
-    }
-    #start-screen h1,
-    #creator-screen h1 {
-        font-size: 2.25rem;
-    }
-    #question-text {
-        font-size: 1.4rem;
-    }
-    button {
-        padding: 12px 28px;
-    }
+  .container {
+    padding: 2rem 1.5rem;
+    width: 94%;
+  }
+
+  #start-screen h1,
+  #creator-screen h1,
+  #result-screen h1 {
+    font-size: 2.25rem;
+  }
+
+  #start-screen-p1,
+  #creator-subtitle {
+    font-size: 1rem;
+    padding: 0 8px;
+  }
+
+  #question-text {
+    font-size: clamp(1.25rem, 2.5vw, 1.45rem);
+    line-height: 1.4;
+    overflow-wrap: break-word;
+  }
+
+  .quiz-info {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+
+  .answers-container {
+    gap: 12px;
+    max-height: 55vh;
+  }
+
+  .answer-btn {
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+
+  button {
+    padding: 12px 28px;
+  }
+
+  .format-guide {
+    max-width: 100%;
+  }
+
+  .format-guide[open] {
+    max-width: 100%;
+  }
 }
 
-/* LARGE MOBILE & PHABLET (Max-width: 540px)
-   Dynamically recalculates internal paddings and typographic scales 
-   to optimize spatial density for mobile hardware rendering. */
+/* -------------------------------------------------------------------------- */
+/* 4. PHABLET & COLLAPSIBLE FOLD (Max-width: 640px)                           */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .answers-container {
+    grid-template-columns: 1fr;
+    max-height: 58vh;
+  }
+
+  .secondary-actions {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .action-row {
+    flex-direction: row;
+    gap: 10px;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5. LARGE MOBILE & HANDHELD (Max-width: 540px)                              */
+/* -------------------------------------------------------------------------- */
 @media (max-width: 540px) {
-    body::before,
-    body::after {
-        display: none;
-    }
-    .container {
-        padding: 1.5rem;
-        width: 95%;
-    }
-    .screen {
-        padding: 1.2rem;
-    }
-    #start-screen h1,
-    #creator-screen h1 {
-        font-size: 2rem;
-    }
-    #start-screen p {
-        font-size: 0.9rem;
-        margin-bottom: 12px;
-    }
-    #start-screen-p2 {
-        padding: 0px 16px;
-    }
-    #question-text {
-        font-size: 1.25rem;
-    }
-    .quiz-info {
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.95rem;
-    }
-    .answer-btn {
-        padding: 14px;
-        font-size: 0.95rem;
-    }
-    .action-stack {
-        margin-top: 0px;
-    }
-    button {
-        padding: 12px 24px;
-        font-size: 1rem;
-    }
+  body::before,
+  body::after {
+    display: none;
+  }
+
+  .container {
+    padding: 1.5rem 1rem;
+    width: 96%;
+    border-radius: 0.75rem;
+  }
+
+  .screen {
+    padding: 1rem 0.5rem;
+  }
+
+  #start-screen h1,
+  #creator-screen h1,
+  #result-screen h1 {
+    font-size: 2rem;
+  }
+
+  #start-screen p {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+
+  #start-screen-p2 {
+    padding: 0 16px;
+    font-size: 0.8rem;
+  }
+
+  #question-text {
+    font-size: 1.25rem;
+    overflow-wrap: break-word;
+    margin-bottom: 18px;
+  }
+
+  .quiz-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+  }
+
+  .answers-container {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    max-height: 60vh;
+    margin-bottom: 20px;
+  }
+
+  .answer-btn {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    min-height: 50px;
+  }
+
+  .secondary-actions {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .action-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .action-stack {
+    margin-top: 0;
+    width: 100%;
+  }
+
+  button {
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+
+  .result-info {
+    padding: 18px 14px;
+    margin-bottom: 24px;
+  }
+
+  #result-message {
+    font-size: 2rem;
+  }
 }
 
-/* SMALL MOBILE (Max-width: 380px)
-   Aggressive scaling for narrow devices to prevent text overflow and 
-   ensure touch targets remain strictly confined within the viewport bounds. */
+/* -------------------------------------------------------------------------- */
+/* 6. STANDARD COMPACT MOBILE (Max-width: 420px)                              */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 420px) {
+  .container {
+    padding: 1.25rem 0.75rem;
+    width: 98%;
+  }
+
+  .screen {
+    padding: 0.75rem 0.25rem;
+  }
+
+  #start-screen h1,
+  #creator-screen h1,
+  #result-screen h1 {
+    font-size: 1.85rem;
+  }
+
+  #question-text {
+    font-size: 1.18rem;
+  }
+
+  .answer-btn {
+    padding: 12px 14px;
+    font-size: 0.92rem;
+  }
+
+  button,
+  .secondary-btn {
+    padding: 11px 18px;
+    font-size: 0.95rem;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 7. SMALL MOBILE (Max-width: 380px)                                         */
+/* -------------------------------------------------------------------------- */
 @media (max-width: 380px) {
-    .container {
-        padding: 1.2rem;
-        width: 98%;
-    }
-    .screen {
-        padding: 1rem;
-    }
-    #start-screen h1,
-    #creator-screen h1 {
-        font-size: 1.75rem;
-    }
-    #start-screen p {
-        font-size: 0.85rem;
-    }
-    #question-text {
-        font-size: 1.15rem;
-    }
-    .answer-btn {
-        padding: 12px;
-        font-size: 0.9rem;
-    }
-    .action-stack {
-        gap: 12px;
-    }
-    button,
-    .secondary-btn {
-        padding: 10px 20px;
-    }
+  .container {
+    padding: 1.2rem 0.5rem;
+    width: 100%;
+    border-radius: 0.5rem;
+  }
+
+  .screen {
+    padding: 0.5rem 0.1rem;
+  }
+
+  #start-screen h1,
+  #creator-screen h1,
+  #result-screen h1 {
+    font-size: 1.65rem;
+  }
+
+  #start-screen p {
+    font-size: 0.85rem;
+  }
+
+  #start-screen-p2 {
+    font-size: 0.75rem;
+    padding: 0 12px;
+  }
+
+  #question-text {
+    font-size: 1.1rem;
+    overflow-wrap: break-word;
+  }
+
+  .answer-btn {
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    min-height: 46px;
+  }
+
+  .action-stack {
+    gap: 10px;
+  }
+
+  button,
+  .secondary-btn {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 8. ULTRA-NARROW HARDWARE (Max-width: 320px)                                */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 320px) {
+  #start-screen h1,
+  #creator-screen h1,
+  #result-screen h1 {
+    font-size: 1.45rem;
+  }
+
+  #question-text {
+    font-size: 1rem;
+  }
+
+  .answer-btn {
+    font-size: 0.82rem;
+    padding: 8px 10px;
+  }
+
+  button,
+  .secondary-btn {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 9. SHORT VIEWPORT / LANDSCAPE MOBILE (Max-height: 500px & Landscape)      */
+/* -------------------------------------------------------------------------- */
+@media (max-height: 500px) and (orientation: landscape) {
+  body {
+    padding: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .container {
+    padding: 1rem 1.5rem;
+    margin: 0.5rem auto;
+  }
+
+  .quiz-header {
+    margin-bottom: 1rem;
+  }
+
+  #question-text {
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+  }
+
+  .quiz-info {
+    margin-bottom: 12px;
+  }
+
+  .answers-container {
+    max-height: 40vh;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .answer-btn {
+    padding: 8px 14px;
+    min-height: 42px;
+  }
+
+  .progress-bar {
+    margin-top: 12px;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 10. ACCESSIBILITY: REDUCED MOTION                                          */
+/* -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .progress {
+    animation: none !important;
+  }
 }

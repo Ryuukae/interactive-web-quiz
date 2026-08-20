@@ -1,416 +1,529 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <!-- Character encoding explicitly set to support a wide range of text characters -->
-        <meta charset="utf-8" />
+  <head>
+    <!-- Character encoding explicitly set to support a wide range of text characters -->
+    <meta charset="utf-8" />
 
-        <!-- Viewport configuration critical for responsive design and mobile hardware scaling -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Viewport configuration critical for responsive design and mobile hardware scaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <title>Interactive Quiz</title>
+    <title>Interactive Quiz</title>
 
-        <!-- Google Fonts: Inter -->
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-            rel="stylesheet"
-        />
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-        <!-- External stylesheet linkage (CSSOM rendering pipeline) -->
-        <link rel="stylesheet" href="src/css/style.css" />
-        <link rel="stylesheet" href="src/css/responsive.css" />
-    </head>
-    <body>
-        <!--
+    <!-- External stylesheet linkage (CSSOM rendering pipeline) -->
+    <link rel="stylesheet" href="src/css/style.css" />
+    <link rel="stylesheet" href="src/css/responsive.css" />
+  </head>
+  <body>
+    <!--
       ROOT CONTAINER
       Acts as the primary wrapper for the application layout. Confines the UI bounds
       and provides a stable backdrop for the glassmorphism rendering.
     -->
-        <main class="container">
-            <!-- ============================================= -->
-            <!-- --- STAGE 1: START SCREEN (INITIAL STATE) --- -->
-            <!-- ============================================= -->
-            <!-- The 'active' class dictates visibility upon initial DOM load. -->
-            <div class="screen active" id="start-screen">
-                <h1>Quiz Time!</h1>
-                <p id="start-screen-p1">
-                    "A flexible evaluation platform built for deploying
-                    customized assessments in any environment."
-                </p>
-                <p id="start-screen-p2">
-                    Provide a formatted question set to initialize the
-                    assessment
-                </p>
+    <main class="container">
+      <!-- ============================================= -->
+      <!-- --- STAGE 1: START SCREEN (INITIAL STATE) --- -->
+      <!-- ============================================= -->
+      <!-- The 'active' class dictates visibility upon initial DOM load. -->
+      <div class="screen active" id="start-screen">
+        <h1>Quiz Time!</h1>
+        <p id="start-screen-p1">
+          "A flexible evaluation platform built for deploying customized
+          assessments in any environment."
+        </p>
+        <p id="start-screen-p2">
+          Provide a formatted question set to initialize the assessment
+        </p>
 
-                <!--
+        <!--
               ACTION STACK
               A structural flex-container designed to group primary and secondary
               actions while enforcing consistent vertical rhythm.
             -->
-                <div class="action-stack">
-                    <!-- Primary Call to Action (CTA): Initializes the default quiz flow -->
-                    <button type="button" id="start-btn" disabled>
-                        Start Quiz
-                    </button>
+        <div class="action-stack start-action-stack">
+          <!-- Button 1: Take a Quiz (Direct Quiz Administration via File Import) -->
+          <label class="start-btn-take">
+            Take a Quiz
+            <input
+              type="file"
+              id="take-quiz-file-input"
+              accept=".json, .txt, text/plain, application/json"
+              style="display: none"
+            />
+          </label>
 
-                    <!-- Secondary Action Row: Houses the builder and the file importer horizontally -->
-                    <div class="secondary-actions">
-                        <!-- Instantiates the visual form builder GUI to support code-free quiz generation. -->
-                        <button
-                            type="button"
-                            id="create-quizset-btn"
-                            class="secondary-btn"
-                        >
-                            Create Quizset
-                        </button>
+          <!-- Button 2: Create a Quiz (Creation Mode Modal -> Clean/Cached Workspace) -->
+          <button
+            type="button"
+            id="create-quizset-btn"
+            class="secondary-btn start-btn-create"
+          >
+            Create a Quiz
+          </button>
 
-                        <!--
-                      FILE UPLOAD ARCHITECTURE
-                      The native <input type="file"> is hidden from the UI because default browser
-                      rendering cannot be consistently styled across platforms.
-                      We restrict the payload to either a TXT or JSON format via the 'accept' attribute.
-                    -->
-                        <input
-                            type="file"
-                            id="custom-file-input"
-                            accept=".json, .txt, .text, .doc, .docx"
-                            hidden
-                        />
+          <!-- Button 3: Modify a Quiz (File Import -> Creation Mode Modal -> Prepopulated Workspace) -->
+          <label class="secondary-btn start-btn-modify">
+            Modify a Quiz
+            <input
+              type="file"
+              id="modify-quiz-file-input"
+              accept=".json, .txt, text/plain, application/json"
+              style="display: none"
+            />
+          </label>
 
-                        <!-- 
-                      PROXY TRIGGER
-                      The <label> element is programmatically linked to the hidden input via the 'for' attribute. 
-                      Clicking this styled label seamlessly delegates the click event to the native file browser.
-                    -->
-                        <label for="custom-file-input" class="secondary-btn"
-                            >Import Quizset</label
-                        >
-                    </div>
+          <!-- Dedicated output node for JS to inject the parsed file name, providing user feedback -->
+          <span id="file-name-display" class="file-status"></span>
+        </div>
+      </div>
 
-                    <!-- Dedicated output node for JS to inject the parsed file name, providing user feedback -->
-                    <span id="file-name-display" class="file-status"></span>
-                </div>
-            </div>
+      <!-- =========================================== -->
+      <!-- --- STAGE 2: QUIZ SCREEN (ACTIVE STATE) --- -->
+      <!-- =========================================== -->
+      <div class="screen" id="quiz-screen">
+        <!-- QUIZ HEADER: Houses the dynamic question text and real-time metadata -->
+        <div class="quiz-header">
+          <!-- Text node updated dynamically by QuizState progression -->
+          <h1 id="question-text">Question goes here...</h1>
 
-            <!-- =========================================== -->
-            <!-- --- STAGE 2: QUIZ SCREEN (ACTIVE STATE) --- -->
-            <!-- =========================================== -->
-            <div class="screen" id="quiz-screen">
-                <!-- QUIZ HEADER: Houses the dynamic question text and real-time metadata -->
-                <div class="quiz-header">
-                    <!-- Text node updated dynamically by QuizState progression -->
-                    <h1 id="question-text">Question goes here...</h1>
+          <!-- Metadata container: Tracks chronological progress and current scoring -->
+          <div class="quiz-info">
+            <p>
+              Question <span id="current-question">#</span> of
+              <span id="totalQuestionsSpan">#</span>
+            </p>
+            <p>Score: <span id="score">#</span></p>
+          </div>
+        </div>
 
-                    <!-- Metadata container: Tracks chronological progress and current scoring -->
-                    <div class="quiz-info">
-                        <p>
-                            Question <span id="current-question">#</span> of
-                            <span id="totalQuestionsSpan">#</span>
-                        </p>
-                        <p>Score: <span id="score">#</span></p>
-                    </div>
-                </div>
-
-                <!--
+        <!--
               ANSWERS CONTAINER
               Acts as an empty DOM injection target. QuizUIController.js will dynamically
               construct and append interactive <button> elements here based on the JSON payload.
             -->
-                <div id="answers-container" class="answers-container">
-                    <!-- Answer buttons will be populated using JS -->
-                </div>
+        <div id="answers-container" class="answers-container">
+          <!-- Answer buttons will be populated using JS -->
+        </div>
 
-                <!--
+        <!--
               PROGRESS BAR
               Visual indicator of quiz completion. The inner '.progress' div's width is
               manipulated via inline CSS transitions handled in the controller.
             -->
-                <div class="progress-bar">
-                    <div id="progress" class="progress"></div>
-                </div>
+        <div class="progress-bar">
+          <div id="progress" class="progress"></div>
+        </div>
 
-                <div class="action-stack" id="quiz-action-stack">
-                    <div class="secondary-actions" id="quiz-abort-actions">
-                        <button
-                            type="button"
-                            id="quiz-return-builder-btn"
-                            class="secondary-btn"
-                        >
-                            Back to Builder
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="action-stack" id="quiz-action-stack">
+          <div class="secondary-actions" id="quiz-abort-actions">
+            <button
+              type="button"
+              id="quiz-return-builder-btn"
+              class="secondary-btn"
+            >
+              Back to Builder
+            </button>
+          </div>
+        </div>
+      </div>
 
-            <!-- ================================================ -->
-            <!-- --- STAGE 3: RESULTS SCREEN (TERMINAL STATE) --- -->
-            <!-- ================================================ -->
-            <div id="result-screen" class="screen">
-                <h1>Quiz Results</h1>
+      <!-- ================================================ -->
+      <!-- --- STAGE 3: RESULTS SCREEN (TERMINAL STATE) --- -->
+      <!-- ================================================ -->
+      <div id="result-screen" class="screen">
+        <h1>Quiz Results</h1>
 
-                <!--
+        <!--
               RESULTS CONTENT
               A recessed UI component displaying the final computed metrics.
             -->
-                <div class="result-info">
-                    <p>
-                        You scored <span id="final-score">#</span> out of
-                        <span id="max-score">#</span>
-                    </p>
+        <div class="result-info">
+          <p>
+            You scored <span id="final-score">#</span> out of
+            <span id="max-score">#</span>
+          </p>
 
-                    <!-- Target node for dynamic performance feedback strings -->
-                    <div id="result-message"></div>
-                </div>
+          <!-- Target node for dynamic performance feedback strings -->
+          <div id="result-message"></div>
+        </div>
 
-                <!-- Implements the action-stack class, similar to the start screen -->
-                <div class="action-stack">
-                    <div class="secondary-actions">
-                        <!-- RESET TRIGGER -->
-                        <button type="button" id="restart-btn">
-                            Restart Quiz
-                        </button>
+        <!-- Implements the action-stack class, similar to the start screen -->
+        <div class="action-stack">
+          <div class="secondary-actions">
+            <!-- RESET TRIGGER -->
+            <button type="button" id="restart-btn">Restart Quiz</button>
 
-                        <!-- Navigation trigger to abort and return to the builder -->
-                        <button
-                            type="button"
-                            id="return-builder-btn"
-                            class="secondary-btn"
-                        >
-                            Back to Builder
-                        </button>
+            <!-- Navigation trigger to abort and return to the builder -->
+            <button type="button" id="return-builder-btn" class="secondary-btn">
+              Back to Builder
+            </button>
 
-                        <!-- Action trigger to download the active quiz data -->
-                        <button
-                            type="button"
-                            id="btn-export-results"
-                            class="secondary-btn"
-                        >
-                            Download
-                        </button>
+            <!-- Navigation trigger to abort and return to the main menu -->
+            <button type="button" id="return-start-btn" class="secondary-btn">
+              Back to Start
+            </button>
+          </div>
+        </div>
+      </div>
 
-                        <!-- Navigation trigger to abort and return to the main menu -->
-                        <button
-                            type="button"
-                            id="return-start-btn"
-                            class="secondary-btn"
-                        >
-                            Back to Start
-                        </button>
-                    </div>
-                </div>
+      <!-- =============================================== -->
+      <!-- --- STAGE 4: CREATOR SCREEN (BUILDER STATE) --- -->
+      <!-- =============================================== -->
+      <div id="creator-screen" class="screen">
+        <h1>Quiz Builder</h1>
+        <p id="creator-subtitle">
+          Visually construct your assessment or utilize the bulk digester.
+        </p>
+
+        <!-- DYNAMIC GUI CONTAINER -->
+        <div id="builder-questions-container">
+          <!-- Question cards injected via JS Components -->
+        </div>
+
+        <!-- Implements the action-stack class for consistent UI spacing -->
+        <div id="creator-action-stack">
+          <button
+            type="button"
+            id="btn-add-question"
+            class="secondary-btn dashed-btn"
+          >
+            + Add Question
+          </button>
+
+          <div class="action-row">
+            <button type="button" id="btn-run-builder-quiz">
+              Preview Quiz
+            </button>
+            <button type="button" id="btn-export-quiz" class="secondary-btn">
+              Download
+            </button>
+          </div>
+
+          <div class="action-row">
+            <button
+              type="button"
+              id="btn-clear-builder"
+              class="secondary-btn btn-danger"
+            >
+              Clear All
+            </button>
+            <button type="button" id="btn-cancel-create" class="secondary-btn">
+              Back to Start
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- --- STAGE 5: EDITOR SCREEN (ADVANCED STATE) -- -->
+      <!-- ============================================== -->
+      <div id="editor-screen" class="screen">
+        <h1>Text Editor (Advanced)</h1>
+        <p id="editor-subtitle">
+          Advanced distraction-free environment for bulk payload manipulation.
+        </p>
+
+        <div class="glass-panel" id="editor-container">
+          <div class="card-header editor-card-header">
+            <div class="card-title-group">
+              <span class="card-pill">TXT / JSON</span>
+              <span class="card-title">Bulk Payload Workstation</span>
             </div>
+            <div class="header-actions">
+              <button
+                type="button"
+                id="btn-focus-editor-expand"
+                class="header-action-btn expand-modal-icon-btn focus-editor-btn"
+                title="Fullscreen Editor Workstation"
+                aria-label="Open fullscreen text editor modal"
+              >
+                &#x26F6;
+              </button>
+            </div>
+          </div>
 
-            <!-- =============================================== -->
-            <!-- --- STAGE 4: CREATOR SCREEN (BUILDER STATE) --- -->
-            <!-- =============================================== -->
-            <div id="creator-screen" class="screen">
-                <h1>Quiz Builder</h1>
-                <p id="creator-subtitle">
-                    Visually construct your assessment or utilize the bulk
-                    digester.
-                </p>
+          <div class="template-actions">
+            <button
+              type="button"
+              id="btn-editor-template-json"
+              class="template-btn"
+            >
+              Insert JSON Template
+            </button>
+            <label class="template-btn template-import-btn">
+              Import File
+              <input
+                type="file"
+                id="input-editor-import-file"
+                accept=".txt,.json,text/plain,application/json"
+                style="display: none"
+              />
+            </label>
+            <button
+              type="button"
+              id="btn-editor-template-txt"
+              class="template-btn"
+            >
+              Insert TXT Template
+            </button>
+          </div>
 
-                <!--
-              ADVANCED INGESTION MODULE
-              Defaults to a .collapsed state to guarantee the layout fits within the viewport bounds on initial load.
-            -->
-                <div id="bulk-import-panel" class="glass-panel collapsed">
-                    <div class="card-header" id="bulk-import-header">
-                        <span
-                            class="glass-panel-heading"
-                            style="margin-bottom: 0"
-                            >Bulk Import (Advanced)</span
-                        >
-                        <span class="toggle-icon">▼</span>
-                    </div>
+          <div class="card-body">
+            <textarea
+              id="editor-textarea"
+              class="glass-input"
+              rows="15"
+              placeholder="Paste your QAD text or formatted JSON array here to edit an existing quizset. Alternatively, you can create new questions for your quizset by inserting and completing one of the provided templates."
+            ></textarea>
 
-                    <div class="card-body">
-                        <!-- Template injection triggers horizontally docked to the edges -->
-                        <div class="template-actions">
-                            <button
-                                type="button"
-                                id="btn-template-json"
-                                class="template-btn"
-                            >
-                                Insert JSON Template
-                            </button>
-                            <button
-                                type="button"
-                                id="btn-template-txt"
-                                class="template-btn"
-                            >
-                                Insert TXT Template
-                            </button>
-                        </div>
+            <span id="editor-status" class="file-status"></span>
+          </div>
+        </div>
 
-                        <textarea
-                            id="bulk-import-text"
-                            class="glass-input"
-                            rows="4"
-                            placeholder="Paste your QAD text or formatted JSON array here to edit an existing quizset. Alternatively, you can create new question cards for your quizset by inserting and completing one of the provided templates."
-                        ></textarea>
+        <!-- Format Guide Modal Trigger Buttons (Positioned under the scrollable editor panel) -->
+        <div class="template-guide-actions">
+          <button
+            type="button"
+            id="btn-open-txt-guide"
+            class="guide-trigger-btn"
+          >
+            How do I format in TXT?
+          </button>
+          <button
+            type="button"
+            id="btn-open-json-guide"
+            class="guide-trigger-btn"
+          >
+            How do I format in JSON?
+          </button>
+        </div>
 
-                        <button
-                            type="button"
-                            id="btn-parse-bulk"
-                            class="secondary-btn"
-                        >
-                            Parse Quizset Data
-                        </button>
-                        <!-- Dedicated output node for JS to inject validation errors -->
-                        <span
-                            id="bulk-import-status"
-                            class="file-status"
-                        ></span>
+        <div class="action-stack" id="editor-action-stack">
+          <div class="action-row">
+            <button type="button" id="btn-editor-parse">Preview Quiz</button>
+            <button type="button" id="btn-editor-export" class="secondary-btn">
+              Download
+            </button>
+          </div>
+          <div class="action-row">
+            <button
+              type="button"
+              id="btn-editor-clear"
+              class="secondary-btn btn-danger"
+            >
+              Clear All
+            </button>
+            <button type="button" id="btn-editor-cancel" class="secondary-btn">
+              Back to Start
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
 
-                        <!--
-                      INSTRUCTIONAL ACCORDIONS
-                      Migrated from the start screen to provide immediate format reference.
-                      Wrapped in an action-stack to preserve vertical flex centering.
-                    -->
-                        <div class="action-stack" style="margin-top: 16px">
-                            <details class="format-guide">
-                                <summary id="accordion_btn_txt">
-                                    How do I format my TXT?
-                                </summary>
-                                <div class="guide-content">
-                                    <p>
-                                        Easily build a quiz by typing your
-                                        questions and answers as plain text. Use
-                                        <strong>Q=</strong> for the Question,
-                                        <strong>A=</strong> for the Correct
-                                        Answer, and <strong>D=</strong> for a
-                                        Distractor (wrong answer).
-                                    </p>
-                                    <ul
-                                        style="
-                                            margin-bottom: 16px;
-                                            padding-left: 20px;
-                                            line-height: 1.6;
-                                        "
-                                    >
-                                        <li>
-                                            <strong
-                                                >Keep Groups Together:</strong
-                                            >
-                                            The lines for a single question must
-                                            touch. Do not put blank lines inside
-                                            a question block. Separate new
-                                            questions with a blank line.
-                                        </li>
-                                        <li>
-                                            <strong>Required Lines:</strong>
-                                            Each question group must have
-                                            exactly one <strong>Q</strong>,
-                                            exactly one <strong>A</strong>, and
-                                            anywhere from 1 to 6
-                                            <strong>D</strong> lines.
-                                        </li>
-                                        <li>
-                                            <strong>Strict Order:</strong> The
-                                            lines must always follow this exact
-                                            sequence: Question, Answer, then
-                                            Distractor(s).
-                                        </li>
-                                        <li>
-                                            <strong>Case Insensitive:</strong>
-                                            You can use uppercase or lowercase
-                                            prefixes (e.g., <code>Q=</code> or
-                                            <code>q=</code>).
-                                        </li>
-                                        <li>
-                                            <strong>Indentation:</strong> Each
-                                            line is trimmed so you may use
-                                            whatever indentation you prefer.
-                                        </li>
-                                    </ul>
+    <!-- ============================================== -->
+    <!-- --- MODALS: CREATION MODE SELECTION MODAL --- -->
+    <!-- ============================================== -->
+    <div id="modal-backdrop" class="modal-backdrop hidden"></div>
 
-                                    <pre><code>q=Your question here?
-a=Correct option
-d=Incorrect option
+    <div
+      id="creation-mode-modal"
+      class="glass-panel modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge">CREATION WORKFLOW</span>
+          <h2 id="modal-title" class="modal-title">Choose Creation Mode</h2>
+        </div>
+        <button
+          type="button"
+          id="close-modal-btn"
+          class="modal-close-btn"
+          aria-label="Close creation mode modal"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-description">
+          Select your preferred authoring environment to construct and evaluate
+          your customized quizset:
+        </p>
+        <div class="action-stack">
+          <button type="button" id="btn-use-builder">
+            GUI Builder (Visual)
+          </button>
+          <button type="button" id="btn-use-editor" class="secondary-btn">
+            Text Editor (Advanced)
+          </button>
+        </div>
+      </div>
+    </div>
 
-Q=What is the default port for HTTPS?
-A=443
-D=80
-D=21
-D=22
-D=8080
+    <!-- TXT FORMAT GUIDE MODAL -->
+    <div
+      id="modal-guide-txt"
+      class="glass-panel modal guide-modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-guide-txt-title"
+    >
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge">FORMAT SPECIFICATION</span>
+          <h2 id="modal-guide-txt-title" class="modal-title">
+            TXT Formatting Guide
+          </h2>
+        </div>
+        <button
+          type="button"
+          id="close-guide-txt-btn"
+          class="modal-close-btn"
+          aria-label="Close TXT formatting guide modal"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body guide-grid-body">
+        <div class="guide-col guide-desc-col">
+          <p>
+            Easily build a quiz by typing your questions and answers as plain
+            text. Use <strong>Q=</strong> for the Question,
+            <strong>A=</strong> for the Correct Answer, and
+            <strong>D=</strong> for a Distractor (wrong answer).
+          </p>
+          <ul>
+            <li>
+              <strong>Keep Groups Together:</strong> The lines for a single
+              question must touch. Do not put blank lines inside a question
+              block. Separate new questions with a blank line.
+            </li>
+            <li>
+              <strong>Quote-Wrapped Values:</strong> Values following the
+              <code>=</code> must be wrapped in quotes (e.g.,
+              <code>Q="..."</code>, <code>A="..."</code>, <code>D="..."</code>).
+              This allows multi-line text and line breaks.
+            </li>
+            <li>
+              <strong>Required Lines:</strong> Each question group must have
+              exactly one <strong>Q</strong>, exactly one <strong>A</strong>,
+              and anywhere from 1 to 6 <strong>D</strong> lines.
+            </li>
+            <li>
+              <strong>Strict Order:</strong> The lines must always follow this
+              exact sequence: Question, Answer, then Distractor(s).
+            </li>
+            <li>
+              <strong>Case Insensitive:</strong> You can use uppercase or
+              lowercase prefixes (e.g., <code>Q=</code> or <code>q=</code>).
+            </li>
+            <li>
+              <strong>Indentation:</strong> Indentation is permitted before the
+              prefix (e.g., spaces or tabs before <code>Q=</code>).
+            </li>
+          </ul>
+        </div>
 
-q=Which protocol is considered secure?
-  a=HTTPS
-    D=FTP
-    d=HTTP
-    D=TELNET
-</code></pre>
-                                    <a
-                                        href="public/template.txt"
-                                        download
-                                        class="download-link"
-                                        >Download Template</a
-                                    >
-                                </div>
-                            </details>
+        <div class="guide-col guide-example-col">
+          <div class="guide-example-header">
+            <span class="guide-example-badge">EXAMPLE PAYLOAD</span>
+          </div>
+          <pre><code>Q="Your question here?"
+A="Correct option"
+D="Incorrect option"
 
-                            <details class="format-guide">
-                                <summary id="accordion_btn_json">
-                                    How do I format my JSON?
-                                </summary>
-                                <div class="guide-content">
-                                    <p>
-                                        Your custom file must be a valid JSON
-                                        array containing individual question
-                                        objects. Each object must strictly
-                                        adhere to the following schema:
-                                    </p>
-                                    <ul
-                                        style="
-                                            margin-bottom: 16px;
-                                            padding-left: 20px;
-                                            line-height: 1.6;
-                                        "
-                                    >
-                                        <li>
-                                            <strong>Root Structure:</strong> The
-                                            entire file must be wrapped in a
-                                            single array <code>[ ]</code>.
-                                        </li>
-                                        <li>
-                                            <strong>Question Property:</strong>
-                                            Each object requires a
-                                            <code>"question"</code> key with a
-                                            string value representing the
-                                            prompt.
-                                        </li>
-                                        <li>
-                                            <strong>Answers Array:</strong> Each
-                                            object requires an
-                                            <code>"answers"</code> key
-                                            containing an array of the available
-                                            choices.
-                                        </li>
-                                        <li>
-                                            <strong>Answer Objects:</strong>
-                                            Inside the answers array, each
-                                            choice must contain a
-                                            <code>"text"</code> key (the answer
-                                            string) and a strict boolean
-                                            <code>"correct"</code> key (<code
-                                                >true</code
-                                            >
-                                            or <code>false</code> without
-                                            quotes).
-                                        </li>
-                                    </ul>
+Q="What is the default port for HTTPS?"
+A="443"
+D="80"
+D="21"
+D="22"
+D="8080"
 
-                                    <pre><code>[
-  {
-    "question": "Your question here?",
-    "answers": [
-      { "text": "Correct option", "correct": true },
-      { "text": "Incorrect option", "correct": false }
-    ]
-  },
+Q="Which protocol is considered secure?"
+A="HTTPS"
+D="FTP"
+D="HTTP"
+D="TELNET"</code></pre>
+          <a
+            href="public/template.txt"
+            download
+            class="secondary-btn download-link"
+            >&#x21E9; Download TXT Template</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- JSON FORMAT GUIDE MODAL -->
+    <div
+      id="modal-guide-json"
+      class="glass-panel modal guide-modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-guide-json-title"
+    >
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge">FORMAT SPECIFICATION</span>
+          <h2 id="modal-guide-json-title" class="modal-title">
+            JSON Formatting Guide
+          </h2>
+        </div>
+        <button
+          type="button"
+          id="close-guide-json-btn"
+          class="modal-close-btn"
+          aria-label="Close JSON formatting guide modal"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body guide-grid-body">
+        <div class="guide-col guide-desc-col">
+          <p>
+            Your custom file must be a valid JSON array containing individual
+            question objects. Each object must strictly adhere to the following
+            schema:
+          </p>
+          <ul>
+            <li>
+              <strong>Root Structure:</strong> The entire file must be wrapped
+              in a single array <code>[ ]</code>.
+            </li>
+            <li>
+              <strong>Question Property:</strong> Each object requires a
+              <code>"question"</code> key with a string value representing the
+              prompt.
+            </li>
+            <li>
+              <strong>Answers Array:</strong> Each object requires an
+              <code>"answers"</code> key containing an array of the available
+              choices.
+            </li>
+            <li>
+              <strong>Answer Objects:</strong> Inside the answers array, each
+              choice must contain a <code>"text"</code> key (the answer string)
+              and a strict boolean <code>"correct"</code> key (<code>true</code>
+              or <code>false</code> without quotes).
+            </li>
+          </ul>
+        </div>
+
+        <div class="guide-col guide-example-col">
+          <div class="guide-example-header">
+            <span class="guide-example-badge">EXAMPLE PAYLOAD</span>
+          </div>
+          <pre><code>[
   {
     "question": "What is the default port for HTTPS?",
     "answers": [
@@ -419,7 +532,7 @@ q=Which protocol is considered secure?
       { "text": "21", "correct": false },
       { "text": "22", "correct": false },
       { "text": "8080", "correct": false }
-     ]
+    ]
   },
   {
     "question": "Which protocol is considered secure?",
@@ -431,69 +544,212 @@ q=Which protocol is considered secure?
     ]
   }
 ]</code></pre>
-                                    <a
-                                        href="public/template.json"
-                                        download
-                                        class="download-link"
-                                        >Download Template</a
-                                    >
-                                </div>
-                            </details>
-                        </div>
-                    </div>
-                </div>
+          <a
+            href="public/template.json"
+            download
+            class="secondary-btn download-link"
+            >&#x21E9; Download JSON Template</a
+          >
+        </div>
+      </div>
+    </div>
 
-                <!-- DYNAMIC GUI CONTAINER -->
-                <div id="builder-questions-container">
-                    <!-- Question cards injected via JS Components -->
-                </div>
+    <!-- QUESTION FOCUS EDIT MODAL -->
+    <div
+      id="modal-focus-edit"
+      class="glass-panel modal question-focus-modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-focus-edit-title"
+    >
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge">QUESTION FOCUS EDITOR</span>
+          <h2 id="modal-focus-edit-title" class="modal-title">
+            Edit Question Details
+          </h2>
+        </div>
+        <button
+          type="button"
+          id="close-focus-edit-btn"
+          class="modal-close-btn"
+          aria-label="Close question editor modal (discard changes)"
+        >
+          &times;
+        </button>
+      </div>
 
-                <!-- Implements the action-stack class for consistent UI spacing -->
-                <div id="creator-action-stack">
-                    <button
-                        type="button"
-                        id="btn-add-question"
-                        class="secondary-btn dashed-btn"
-                    >
-                        + Add Question
-                    </button>
-
-                    <div class="action-row">
-                        <button type="button" id="btn-run-builder-quiz">
-                            Preview Quiz
-                        </button>
-                        <button type="submit" id="btn-export-quiz">
-                            Download
-                        </button>
-                    </div>
-
-                    <div class="action-row">
-                        <button
-                            type="button"
-                            id="btn-clear-builder"
-                            class="secondary-btn btn-danger"
-                        >
-                            Clear All
-                        </button>
-                        <button
-                            type="button"
-                            id="btn-cancel-create"
-                            class="secondary-btn"
-                        >
-                            Back to Start
-                        </button>
-                    </div>
-                </div>
+      <div class="modal-body" id="modal-focus-edit-body">
+        <div class="focus-grid">
+          <!-- Left Column: Question Prompt & Correct Answer -->
+          <div class="focus-col focus-col-left">
+            <div class="input-group focus-input-group focus-group-q">
+              <label class="input-label focus-label focus-label-q">
+                <span class="label-dot dot-q"></span>Question Prompt
+              </label>
+              <textarea
+                id="focus-modal-q-input"
+                class="glass-input focus-textarea focus-textarea-q"
+                placeholder="Enter your question prompt here..."
+              ></textarea>
             </div>
-        </main>
 
-        <!-- ============================== -->
-        <!-- --- SCRIPT DEPENDENCY TREE --- -->
-        <!-- ============================== -->
-        <!--
+            <div
+              class="input-group focus-input-group focus-group-a answer-row correct-row"
+            >
+              <label
+                class="input-label correct-label focus-label focus-label-a"
+              >
+                <span class="label-dot dot-a"></span>Correct Answer
+              </label>
+              <textarea
+                id="focus-modal-a-input"
+                class="glass-input focus-textarea focus-textarea-a"
+                placeholder="Enter the correct answer here..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Right Column: Distractors (Wrong Answers) -->
+          <div class="focus-col focus-col-right">
+            <div
+              class="input-group focus-input-group focus-group-d answer-row distractor-row"
+            >
+              <div class="focus-distractor-header">
+                <label
+                  class="input-label distractor-label focus-label focus-label-d"
+                >
+                  <span class="label-dot dot-d"></span>Distractors (Wrong
+                  Choices)
+                </label>
+                <span class="focus-distractor-badge">Max 6</span>
+              </div>
+              <div
+                id="focus-modal-distractors-container"
+                class="focus-distractors-list"
+              ></div>
+              <div class="distractor-actions focus-distractor-actions">
+                <button
+                  type="button"
+                  id="btn-focus-modal-add-distractor"
+                  class="secondary-btn btn-add-distractor focus-add-distractor-btn"
+                >
+                  + Add Distractor
+                </button>
+                <button
+                  type="button"
+                  id="btn-focus-modal-remove-distractor"
+                  class="secondary-btn btn-remove-distractor focus-remove-distractor-btn"
+                >
+                  &minus; Remove Distractor
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="focus-modal-footer">
+          <button
+            type="button"
+            id="btn-focus-modal-cancel"
+            class="secondary-btn focus-cancel-btn"
+          >
+            Discard Changes
+          </button>
+          <button
+            type="button"
+            id="btn-focus-modal-done"
+            class="modal-close-btn-done focus-done-btn"
+          >
+            Apply &amp; Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FULLSCREEN TEXT EDITOR WORKSTATION MODAL -->
+    <div
+      id="modal-focus-editor"
+      class="glass-panel modal question-focus-modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-focus-editor-title"
+    >
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge">FULLSCREEN WORKSTATION</span>
+          <h2 id="modal-focus-editor-title" class="modal-title">
+            Bulk Payload Editor
+          </h2>
+        </div>
+        <button
+          type="button"
+          id="close-focus-editor-btn"
+          class="modal-close-btn"
+          aria-label="Close fullscreen editor modal"
+        >
+          &times;
+        </button>
+      </div>
+
+      <div class="modal-body focus-editor-modal-body">
+        <div class="template-actions" style="margin-bottom: 8px">
+          <button
+            type="button"
+            id="btn-focus-template-json"
+            class="template-btn"
+          >
+            Insert JSON Template
+          </button>
+          <label class="template-btn template-import-btn">
+            Import File
+            <input
+              type="file"
+              id="input-focus-import-file"
+              accept=".txt,.json,text/plain,application/json"
+              style="display: none"
+            />
+          </label>
+          <button
+            type="button"
+            id="btn-focus-template-txt"
+            class="template-btn"
+          >
+            Insert TXT Template
+          </button>
+        </div>
+        <textarea
+          id="focus-editor-textarea"
+          class="glass-input focus-editor-textarea"
+          placeholder="Paste your QAD text or formatted JSON array here to edit or author your quizset..."
+        ></textarea>
+      </div>
+
+      <div class="focus-modal-footer">
+        <button
+          type="button"
+          id="btn-focus-editor-cancel"
+          class="secondary-btn focus-cancel-btn"
+        >
+          Discard Changes
+        </button>
+        <button
+          type="button"
+          id="btn-focus-editor-done"
+          class="modal-close-btn-done focus-done-btn"
+        >
+          Apply &amp; Save
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- --- SCRIPT DEPENDENCY TREE --- -->
+    <!-- ============================== -->
+    <!--
       Scripts must be loaded in strict sequential order to prevent reference errors.
       The Dependency Schema enforces execution constraints natively and logically.
     -->
-        <script type="module" src="src/js/script.js"></script>
-    </body>
+    <script type="module" src="src/js/script.js"></script>
+  </body>
 </html>
