@@ -6,59 +6,57 @@
 #creator-screen.active {
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 6rem);
+  height: 100%;
+  max-height: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
 /* Prevents fixed header elements from collapsing under flex pressure */
-#creator-screen > h1,
-#creator-screen > p,
-#bulk-import-panel {
+#creator-screen > h1 {
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-top: 0;
+  margin-bottom: 2px;
+  font-size: 2.3rem;
+  letter-spacing: -0.01em;
+}
+
+#creator-screen > p {
   flex-shrink: 0;
 }
 
 #creator-subtitle {
-  margin-bottom: 10px;
+  color: rgb(255 255 255 / 0.7);
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-style: italic;
 }
 
 .glass-panel {
   width: 100%;
-  max-width: 600px;
-  background: rgb(167 213 255 / 0.05);
-  border: 1px solid rgb(167 213 255 / 0.1);
-  border-radius: 16px;
-  padding: 12px 16px;
-  margin: 0 auto 10px;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
+  background: rgb(18 24 38 / 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgb(167 213 255 / 0.15);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  box-shadow:
+    0 6px 20px -4px rgb(0 0 0 / 0.4),
+    0 0 0 1px rgb(255 255 255 / 0.05);
   text-align: left;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
 }
 
-#bulk-import-panel {
-  margin-bottom: 16px;
-}
-
-/* Enables internal scrolling within the bulk import panel so that large textareas or expanded accordions do not push the rest of the app off-screen. */
-#bulk-import-panel .card-body {
-  max-height: 45vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 4px;
-  scrollbar-width: thin;
-  scrollbar-color: rgb(167 213 255 / 0.3) transparent;
-}
-
-/* Enables vertical auto-expansion while preserving theme harmony and removing inner scrollbars. */
-#bulk-import-text {
-  field-sizing: content;
-  resize: vertical;
-  min-height: 100px;
-  max-height: none;
-  overflow-y: hidden;
-  transition: height 0.12s ease-out;
-}
-
-#btn-parse-bulk {
-  display: block;
-  margin: 8px auto 0;
+.glass-panel.question-card:hover {
+  border-color: rgb(167 213 255 / 0.35);
+  box-shadow:
+    0 10px 28px -6px rgb(0 0 0 / 0.55),
+    0 0 0 1px rgb(167 213 255 / 0.15);
 }
 
 #btn-cancel-create {
@@ -74,14 +72,6 @@
   margin-bottom: 12px;
 }
 
-button.secondary-btn.btn-add-distractor {
-  display: block;
-  width: max-content;
-  padding: 4px 12px;
-  margin: 6px 0 0 auto;
-  font-size: 0.75rem;
-}
-
 /* =================================== */
 /* --- BUILDER SCROLLING CONTAINER --- */
 /* =================================== */
@@ -90,17 +80,11 @@ button.secondary-btn.btn-add-distractor {
   flex-grow: 1;
   flex-shrink: 1;
   min-height: 0;
-
-  /* Forces an internal vertical scrollbar explicitly to guarantee identical internal content bounds */
   overflow-y: scroll;
   overflow-x: hidden;
-
-  /* Compensates for the scrollbar track width by aggressively scaling out the right margin */
-  width: calc(100% + 8px);
-  margin-right: -8px;
-  padding-right: 2px;
+  width: 100%;
+  padding-right: 6px;
   margin-bottom: 12px;
-
   scrollbar-width: thin;
   scrollbar-color: rgb(167 213 255 / 0.3) transparent;
 }
@@ -128,7 +112,7 @@ button.secondary-btn.btn-add-distractor {
 /* ========================================= */
 
 .input-group {
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
 
 .input-group:last-child {
@@ -136,13 +120,23 @@ button.secondary-btn.btn-add-distractor {
 }
 
 .input-label {
-  display: block;
-  color: rgb(255 255 255 / 0.6);
-  font-size: 0.65rem;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgb(255 255 255 / 0.7);
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin: 0 0 2px 4px;
+  margin: 0 0 4px 2px;
+}
+
+.input-label.correct-label {
+  color: #86efac;
+}
+
+.input-label.distractor-label {
+  color: #fca5a5;
 }
 
 /* =========================== */
@@ -153,9 +147,9 @@ button.secondary-btn.btn-add-distractor {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 8px;
+  padding-bottom: 10px;
   margin-bottom: 12px;
-  border-bottom: 1px solid rgb(167 213 255 / 0.1);
+  border-bottom: 1px solid rgb(167 213 255 / 0.12);
   cursor: pointer;
   transition:
     padding 0.2s ease,
@@ -163,43 +157,105 @@ button.secondary-btn.btn-add-distractor {
     border-color 0.2s ease;
 }
 
-.card-title {
+.card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-right: 12px;
+}
+
+.card-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
   color: #a7d5ff;
+  background: rgb(167 213 255 / 0.12);
+  border: 1px solid rgb(167 213 255 / 0.28);
+  border-radius: 6px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+  letter-spacing: 0.05em;
+}
+
+.card-title {
+  color: #ffffff;
   font-size: 0.95rem;
   font-weight: 600;
-  max-width: 80%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.header-action-btn {
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+  transition: all 0.2s ease;
+  padding: 0;
+  filter: none;
+}
+
+.header-action-btn:hover {
+  box-shadow:
+    0 2px 6px rgb(0 0 0 / 0.25),
+    0 0 5px rgb(59 130 246 / 0.22);
+  filter: none;
+}
+
+.expand-modal-icon-btn {
+  color: #a7d5ff;
+  font-size: 0.95rem;
+}
+
+.expand-modal-icon-btn:hover {
+  background: rgb(167 213 255 / 0.14);
+  border-color: rgb(167 213 255 / 0.45);
+  color: #ffffff;
+  box-shadow:
+    0 2px 6px rgb(0 0 0 / 0.25),
+    0 0 5px rgb(59 130 246 / 0.22);
+  transform: scale(1.05);
 }
 
 .delete-icon-btn {
-  background: transparent;
-  border: none;
-  color: rgb(244 67 54 / 0.6);
+  color: #f87171;
   font-size: 0.85rem;
-  cursor: pointer;
-  padding: 0;
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
 }
 
 .delete-icon-btn:hover {
-  color: rgb(244 67 54 / 1);
-  transform: scale(1.15);
+  background: rgb(239 68 68 / 0.15);
+  border-color: rgb(239 68 68 / 0.55);
+  color: #ffffff;
+  box-shadow:
+    0 2px 6px rgb(0 0 0 / 0.25),
+    0 0 5px rgb(239 68 68 / 0.22);
+  transform: scale(1.05);
 }
 
 .toggle-icon {
   color: rgb(255 255 255 / 0.6);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: 2px;
 }
 
 .collapsed .card-body {
@@ -216,44 +272,227 @@ button.secondary-btn.btn-add-distractor {
   transform: rotate(-90deg);
 }
 
-/* =============================== */
-/* --- TEMPLATE & CARD ACTIONS --- */
-/* =============================== */
+/* Distractors Container & Actions */
+.distractors-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
 
-.template-actions {
+.distractor-actions {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
+  align-items: center;
+  margin-top: 6px;
   width: 100%;
-  padding: 0 4px;
 }
 
-.template-btn {
-  background: transparent;
-  color: rgb(168 170 174);
-  border: none;
-  padding: 0;
-  font-size: 0.75rem;
-  cursor: pointer;
-  text-decoration: underline;
-  transition: color 0.2s ease;
-  box-shadow: none;
-}
-
-.template-btn:hover {
+button.secondary-btn.btn-add-distractor {
+  background: rgb(255 255 255 / 0.04);
+  border: 1px dashed rgb(167 213 255 / 0.35);
   color: #a7d5ff;
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+button.secondary-btn.btn-add-distractor:hover {
+  background: rgb(167 213 255 / 0.12);
+  border-color: rgb(167 213 255 / 0.7);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+button.secondary-btn.btn-remove-distractor {
+  background: rgb(239 68 68 / 0.05);
+  border: 1px dashed rgb(239 68 68 / 0.4);
+  color: #f87171;
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+button.secondary-btn.btn-remove-distractor:hover {
+  background: rgb(239 68 68 / 0.18);
+  border-color: rgb(239 68 68 / 0.8);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Add Question Dashed Action Button */
+#btn-add-question {
+  width: 100%;
+  background: linear-gradient(
+    135deg,
+    rgb(59 130 246 / 0.08) 0%,
+    rgb(99 102 241 / 0.04) 100%
+  );
+  border: 1.5px dashed rgb(167 213 255 / 0.35);
+  border-radius: 12px;
+  color: #a7d5ff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 11px 18px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+#btn-add-question:hover {
+  background: linear-gradient(
+    135deg,
+    rgb(59 130 246 / 0.18) 0%,
+    rgb(99 102 241 / 0.1) 100%
+  );
+  border-color: #a7d5ff;
+  color: #ffffff;
+  box-shadow:
+    0 4px 20px rgb(59 130 246 / 0.3),
+    inset 0 0 12px rgb(167 213 255 / 0.1);
+  transform: translateY(-2px);
+}
+
+/* ======================================= */
+/* --- CREATOR SCREEN BOTTOM ACTION BAR --- */
+/* ======================================= */
+
+#creator-action-stack {
+  margin-top: 8px;
+  gap: 10px;
+}
+
+#creator-action-stack .action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+#creator-action-stack .action-row button {
+  padding: 11px 18px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 1. PRIMARY ACTION: Preview Quiz */
+#btn-run-builder-quiz {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  box-shadow:
+    0 4px 16px rgb(37 99 235 / 0.4),
+    inset 0 1px 0 rgb(255 255 255 / 0.35);
+  filter: none;
+}
+
+#btn-run-builder-quiz:hover {
+  background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+  box-shadow:
+    0 6px 24px rgb(59 130 246 / 0.55),
+    inset 0 1px 0 rgb(255 255 255 / 0.5);
+  transform: translateY(-2px);
+  filter: none;
+}
+
+#btn-run-builder-quiz:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* 2. SECONDARY ACTION: Download */
+#btn-export-quiz {
+  background: rgb(255 255 255 / 0.07);
+  border: 1px solid rgb(167 213 255 / 0.22);
+  color: #e2e8f0;
+  box-shadow:
+    0 2px 8px rgb(0 0 0 / 0.25),
+    inset 0 1px 0 rgb(255 255 255 / 0.1);
+  filter: none;
+}
+
+#btn-export-quiz:hover {
+  background: rgb(167 213 255 / 0.16);
+  border-color: #a7d5ff;
+  color: #ffffff;
+  box-shadow:
+    0 4px 18px rgb(0 0 0 / 0.4),
+    0 0 12px rgb(167 213 255 / 0.2);
+  transform: translateY(-2px);
+  filter: none;
+}
+
+#btn-export-quiz:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* 3. DESTRUCTIVE ACTION: Clear All */
+#btn-clear-builder.btn-danger {
+  background: rgb(239 68 68 / 0.07);
+  border: 1px solid rgb(239 68 68 / 0.28);
+  color: #fca5a5;
+  font-weight: 500;
   box-shadow: none;
-  transform: none;
+  filter: none;
 }
 
-.btn-danger {
-  border-color: rgb(244 67 54 / 0.3);
-  color: #f44336;
+#btn-clear-builder.btn-danger:hover {
+  background: rgb(239 68 68 / 0.2);
+  border-color: rgb(239 68 68 / 0.7);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgb(239 68 68 / 0.3);
+  transform: translateY(-2px);
+  filter: none;
 }
 
-.btn-danger:hover {
-  background: rgb(244 67 54 / 0.1);
-  border-color: rgb(244 67 54 / 0.6);
+#btn-clear-builder.btn-danger:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* 4. NAVIGATION ACTION: Back to Start */
+#btn-cancel-create.secondary-btn {
+  background: transparent;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  color: rgb(255 255 255 / 0.65);
+  font-weight: 500;
+  opacity: 1;
+  box-shadow: none;
+  filter: none;
+}
+
+#btn-cancel-create.secondary-btn:hover {
+  background: rgb(255 255 255 / 0.08);
+  border-color: rgb(255 255 255 / 0.28);
+  color: #ffffff;
+  transform: translateY(-1px);
+  filter: none;
+}
+
+#btn-cancel-create.secondary-btn:active {
+  transform: translateY(1px) scale(0.98);
 }
 
 #return-start-btn {
