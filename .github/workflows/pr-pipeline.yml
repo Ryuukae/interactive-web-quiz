@@ -12,11 +12,11 @@ jobs:
     steps:
       - name: Verify PR originates from dev
         run: |
-          if [ "${{ github.head_ref }}" != "dev" ]; then
-            echo "::error::Direct merges into 'main' are restricted. Pull requests targeting 'main' must originate from 'dev'."
+          if [ "${{ github.head_ref }}" != "dev" ] && [[ ! "${{ github.head_ref }}" == dependabot/* ]]; then
+            echo "::error::Direct merges into 'main' are restricted. Pull requests targeting 'main' must originate from 'dev' or dependabot."
             exit 1
           fi
-          echo "PR source is 'dev'. Approved to proceed."
+          echo "PR source is '${{ github.head_ref }}'. Approved to proceed."
 
   commitlint:
     runs-on: ubuntu-latest
