@@ -66,17 +66,13 @@ async function setupResultScreenState(
 
       const returnStartBtn = document.getElementById("return-start-btn");
       const returnBuilderBtn = document.getElementById("return-builder-btn");
-      const exportBtn = document.getElementById("btn-export-results");
 
       if (isBuilderSource) {
         if (returnStartBtn) returnStartBtn.style.display = "none";
         if (returnBuilderBtn) returnBuilderBtn.style.display = "inline-flex";
-
-        if (exportBtn) exportBtn.style.display = "inline-flex";
       } else {
         if (returnStartBtn) returnStartBtn.style.display = "inline-flex";
         if (returnBuilderBtn) returnBuilderBtn.style.display = "none";
-        if (exportBtn) exportBtn.style.display = "none";
       }
     },
     { score, maxScore, isBuilderSource }
@@ -205,7 +201,7 @@ test.describe("UI Visual Regression Audits", () => {
     const startContainer = page.locator("#start-screen");
     await expect(startContainer).toBeVisible();
     await expect(startContainer).toHaveClass(/active/);
-    await expect(startContainer.locator("#start-btn")).toBeDisabled();
+    await expect(startContainer.locator(".start-btn-take")).toBeVisible();
     await expect(startContainer.locator("#create-quizset-btn")).toBeVisible();
 
     await expect(startContainer).toHaveScreenshot("start-screen.png");
@@ -216,15 +212,11 @@ test.describe("UI Visual Regression Audits", () => {
   // ==========================================
   test("Creator Screen - Form Layout Integrity", async ({ page }) => {
     await page.click("#create-quizset-btn");
+    await page.click("#btn-use-builder");
 
     const creatorForm = page.locator("#creator-screen");
     await expect(creatorForm).toBeVisible();
     await expect(creatorForm).toHaveClass(/active/);
-
-    // Ensure bulk import panel starts in collapsed state
-    await expect(creatorForm.locator("#bulk-import-panel")).toHaveClass(
-      /collapsed/
-    );
 
     // Ensure initial builder card is rendered
     await expect(
@@ -234,31 +226,44 @@ test.describe("UI Visual Regression Audits", () => {
     await expect(creatorForm).toHaveScreenshot("creator-screen.png");
   });
 
-  // ============================================
-  // STAGE 3: INTERACTIVE ACCORDION COMPONENTS
-  // ============================================
-  test("Accordion Component - Format Guide Expanded", async ({ page }) => {
-    // Navigate to the view where the accordion lives
+  // ==========================================
+  // STAGE 2B: EDITOR SCREEN (TEXT MODE)
+  // ==========================================
+  test("Editor Screen - Form Layout Integrity", async ({ page }) => {
     await page.click("#create-quizset-btn");
+    await page.click("#btn-use-editor");
 
-    // Expand the bulk import panel first
-    await page.click("#bulk-import-header");
-    await expect(page.locator("#bulk-import-panel")).not.toHaveClass(
-      /collapsed/
-    );
+    const editorScreen = page.locator("#editor-screen");
+    await expect(editorScreen).toBeVisible();
+    await expect(editorScreen).toHaveClass(/active/);
+    await expect(editorScreen.locator("#editor-textarea")).toBeVisible();
+    await expect(editorScreen.locator("#btn-editor-parse")).toBeVisible();
+    await expect(
+      editorScreen.locator("#btn-editor-template-json")
+    ).toBeVisible();
+    await expect(
+      editorScreen.locator("#btn-editor-template-txt")
+    ).toBeVisible();
 
-    // Target the TXT format guide accordion specifically
-    const formatGuideAccordion = page.locator("details.format-guide").first();
-    await expect(formatGuideAccordion).toBeVisible();
+    await expect(editorScreen).toHaveScreenshot("editor-screen.png");
+  });
 
-    // Trigger the state change via the summary header
-    await formatGuideAccordion.locator("#accordion_btn_txt").click();
-    await expect(formatGuideAccordion).toHaveAttribute("open", "");
-    await expect(formatGuideAccordion.locator(".guide-content")).toBeVisible();
+  // =====================================================
+  // STAGE 3: FORMAT GUIDE MODALS (EDITOR SCREEN)
+  // =====================================================
+  test("Editor Screen - TXT Format Guide Modal Opened", async ({ page }) => {
+    // Navigate to editor screen
+    await page.click("#create-quizset-btn");
+    await page.click("#btn-use-editor");
+    await expect(page.locator("#editor-screen")).toHaveClass(/active/);
 
-    await expect(formatGuideAccordion).toHaveScreenshot(
-      "format-guide-expanded.png"
-    );
+    // Open TXT format guide modal
+    await page.click("#btn-open-txt-guide");
+    const guideModal = page.locator("#modal-guide-txt");
+    await expect(guideModal).toHaveClass(/active/);
+    await expect(guideModal.locator(".guide-grid-body")).toBeVisible();
+
+    await expect(guideModal).toHaveScreenshot("format-guide-txt.png");
   });
 
   // ==============================================================
@@ -308,10 +313,9 @@ test.describe("UI Visual Regression Audits", () => {
     await expect(resultsScreen.locator("#max-score")).toHaveText("10");
     await expect(resultsScreen.locator("#result-message")).toHaveText("100%");
 
-    // Standard flow: Return to start button visible, builder/download hidden
+    // Standard flow: Return to start button visible, builder hidden
     await expect(resultsScreen.locator("#return-start-btn")).toBeVisible();
     await expect(resultsScreen.locator("#return-builder-btn")).toBeHidden();
-    await expect(resultsScreen.locator("#btn-export-results")).toBeHidden();
 
     await expect(resultsScreen).toHaveScreenshot("result-screen-perfect.png");
   });
@@ -332,10 +336,9 @@ test.describe("UI Visual Regression Audits", () => {
     await expect(resultsScreen.locator("#max-score")).toHaveText("10");
     await expect(resultsScreen.locator("#result-message")).toHaveText("100%");
 
-    // Builder flow: Return to builder & Download visible, start hidden
+    // Builder flow: Return to builder visible, start hidden
     await expect(resultsScreen.locator("#return-start-btn")).toBeHidden();
     await expect(resultsScreen.locator("#return-builder-btn")).toBeVisible();
-    await expect(resultsScreen.locator("#btn-export-results")).toBeVisible();
 
     await expect(resultsScreen).toHaveScreenshot("result-screen-builder.png");
   });
