@@ -85,6 +85,9 @@ describe("BuilderUIController Unit Tests", () => {
       mockQuizUIController,
       mockAppNavController
     );
+    mockBuilderState.addCard.mockClear();
+    mockBuilderState.clearAll.mockClear();
+    vi.mocked(StorageService.save).mockClear();
   });
 
   it("should initialize DOM bindings and event listeners", () => {
