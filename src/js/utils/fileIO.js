@@ -1,5 +1,7 @@
 import { createLogger } from "./logger.js";
 
+const logger = createLogger("fileIO");
+
 /**
  * Global utility encapsulating browser-native file generation and download triggers.
  * Agnostic to application state and physical DOM structures.
@@ -8,6 +10,8 @@ import { createLogger } from "./logger.js";
  * @version 1.5.2
  * @author Adam Ross DeStafeno
  * @typedef {import('../types.js').QuestionType} QuestionType
+ * @typedef {import('../types.js').RawQuestionType} RawQuestionType
+ * @typedef {import('../types.js').BuilderCardPrefillType} BuilderCardPrefillType
  */
 
 /**
@@ -19,8 +23,8 @@ import { createLogger } from "./logger.js";
  * @returns {void} - Does not return a value.
  */
 export function exportJSON(payload, filename = "custom_quiz.json") {
-  const logger = createLogger("fileIO.exportJSON");
   logger.info("exportJSON called", { payload, filename });
+  logger.debug("Serializing JSON payload for download", { filename });
 
   if (!payload || (Array.isArray(payload) && payload.length === 0)) {
     logger.warn("Export aborted because payload is empty", { filename });
@@ -54,19 +58,20 @@ export function exportJSON(payload, filename = "custom_quiz.json") {
   // ----------------------------------------------------------------------
 
   logger.info("Export completed successfully", { filename });
+  logger.debug("JSON export blob revoked and cleaned up");
 }
 
 /**
  * Converts a JavaScript payload into a formatted QAD text file and triggers a client browser download globally.
  * @name exportQAD
  * @public
- * @param {QuestionType[]} payload - The compiled data logic to serialize cleanly.
+ * @param {BuilderCardPrefillType[]} payload - The compiled data logic to serialize cleanly.
  * @param {string} filename - The designated output file name strictly.
  * @returns {void} - Does not return a value.
  */
 export function exportQAD(payload, filename = "custom_quiz.txt") {
-  const logger = createLogger("fileIO.exportQAD");
   logger.info("exportQAD called", { payload, filename });
+  logger.debug("Serializing QAD payload for download", { filename });
 
   if (!payload || !Array.isArray(payload) || payload.length === 0) {
     logger.warn("Export aborted because payload is empty or invalid", {
@@ -83,16 +88,45 @@ export function exportQAD(payload, filename = "custom_quiz.txt") {
   let qadText = "";
   payload.forEach((qObj) => {
     if (!qObj || !qObj.question) return;
-    qadText += `Q=${qObj.question}\n`;
+    const qText = qObj.question
+      .trim()
+      .replace(/\\/g, "\\\\")
+      .replace(/"/g, '\\"');
+    qadText += `Q="${qText}"\n`;
 
-    if (Array.isArray(qObj.answers)) {
+    if ("answers" in qObj && Array.isArray(qObj.answers)) {
       qObj.answers.forEach((aObj) => {
-        if (aObj && aObj.correct) {
-          qadText += `A=${aObj.text}\n`;
-        } else if (aObj) {
-          qadText += `D=${aObj.text}\n`;
+        if (!aObj || typeof aObj.text !== "string") return;
+        const aText = aObj.text
+          .trim()
+          .replace(/\\/g, "\\\\")
+          .replace(/"/g, '\\"');
+        if (aObj.correct) {
+          qadText += `A="${aText}"\n`;
+        } else {
+          qadText += `D="${aText}"\n`;
         }
       });
+    } else if ("correct_answer" in qObj || "distractors" in qObj) {
+      if (qObj.correct_answer) {
+        const aText = qObj.correct_answer
+          .trim()
+          .replace(/\\/g, "\\\\")
+          .replace(/"/g, '\\"');
+        qadText += `A="${aText}"\n`;
+      }
+      if (Array.isArray(qObj.distractors)) {
+        qObj.distractors.forEach((d) => {
+          const dText = typeof d === "string" ? d : (d && d.text) || "";
+          if (dText.trim()) {
+            const escapedDistractor = dText
+              .trim()
+              .replace(/\\/g, "\\\\")
+              .replace(/"/g, '\\"');
+            qadText += `D="${escapedDistractor}"\n`;
+          }
+        });
+      }
     }
     qadText += "\n";
   });
@@ -118,6 +152,7 @@ export function exportQAD(payload, filename = "custom_quiz.txt") {
   // ----------------------------------------------------------------------
 
   logger.info("Export completed successfully", { filename });
+  logger.debug("QAD export blob revoked and cleaned up");
 }
 
 /**
@@ -128,7 +163,6 @@ export function exportQAD(payload, filename = "custom_quiz.txt") {
  * @returns {Promise<string>} - Resolves seamlessly with the raw text payload.
  */
 export function readFile(file) {
-  const logger = createLogger("fileIO.readFile");
   logger.info("readFile called", {
     file,
     fileName: file ? file.name : null,
@@ -147,6 +181,7 @@ export function readFile(file) {
         size: file.size,
         bytesLoaded: loadEvent.loaded
       });
+      logger.debug("FileReader buffer resolved to text");
       if (!(loadEvent.target instanceof FileReader)) {
         resolve("");
         return;

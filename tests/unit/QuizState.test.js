@@ -107,4 +107,9 @@ describe("QuizState Model Unit Tests", () => {
       "QuizState requires an array of question objects."
     );
   });
+
+  it("should throw an error if randomizeDeck is called with non-array", () => {
+    const qs = new QuizState(sampleData);
+    expect(() => qs.randomizeDeck(null)).toThrow();
+  });
 });

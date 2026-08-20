@@ -65,7 +65,7 @@ describe("schemaValidator Unit Tests", () => {
   });
 
   it("should fall back to QAD parsing if text is not JSON", () => {
-    const qadText = "Q=What is 2+2?\nA=4\nD=5";
+    const qadText = 'Q="What is 2+2?"\nA="4"\nD="5"';
     const result = parseAndValidateRawText(qadText);
     expect(result).toHaveLength(1);
     expect(result[0].question).toBe("What is 2+2?");
@@ -128,5 +128,68 @@ describe("schemaValidator Unit Tests", () => {
     expect(() => parseAndValidateRawText("[]")).toThrow(
       "No valid QAD or JSON questions detected."
     );
+  });
+
+  it("should reject non-string inputs", () => {
+    expect(() => parseAndValidateRawText(null)).toThrow();
+  });
+
+  it("should reject questions with more than 7 answers", () => {
+    const tooManyAnswers = [
+      {
+        question: "Many answers",
+        answers: [
+          { text: "1", correct: true },
+          { text: "2", correct: false },
+          { text: "3", correct: false },
+          { text: "4", correct: false },
+          { text: "5", correct: false },
+          { text: "6", correct: false },
+          { text: "7", correct: false },
+          { text: "8", correct: false }
+        ]
+      }
+    ];
+    expect(() => validateQuizSchema(tooManyAnswers)).toThrow();
+  });
+
+  it("should reject questions with multiple correct answers", () => {
+    const multiCorrect = [
+      {
+        question: "Multiple correct",
+        answers: [
+          { text: "1", correct: true },
+          { text: "2", correct: true },
+          { text: "3", correct: false }
+        ]
+      }
+    ];
+    expect(() => validateQuizSchema(multiCorrect)).toThrow(
+      "must contain exactly ONE correct answer"
+    );
+  });
+
+  it("should reject questions without at least one wrong answer", () => {
+    const noWrong = [
+      {
+        question: "No wrong answers",
+        answers: [
+          { text: "Only correct", correct: true },
+          { text: "Another correct", correct: undefined }
+        ]
+      }
+    ];
+    expect(() => validateQuizSchema(noWrong)).toThrow();
+  });
+
+  it("should throw error if JSON parsing throws a non-Error object", () => {
+    const originalParse = JSON.parse;
+    JSON.parse = () => {
+      throw "String error";
+    };
+
+    expect(() => parseAndValidateRawText("{[}]")).toThrow();
+
+    JSON.parse = originalParse;
   });
 });

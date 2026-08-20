@@ -194,4 +194,7 @@ export function validateQuizSchema(data) {
   logger.info("Quiz schema validation completed successfully", {
     questionCount: data.length
   });
+  logger.debug("Schema checks passed for all questions in dataset", {
+    questionCount: data.length
+  });
 }

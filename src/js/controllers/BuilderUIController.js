@@ -1,10 +1,11 @@
-import { getTxtTemplate, getJsonTemplate } from "../utils/templates.js";
 import { confirmAction, alertAction } from "../utils/prompts.js";
 import { exportQAD } from "../utils/fileIO.js";
-import { parseAndValidateRawText } from "../utils/schemaValidator.js";
 import BuilderCardComponent from "../components/BuilderCardComponent.js";
+import QuestionFocusModalComponent from "../components/QuestionFocusModalComponent.js";
 import StorageService from "../utils/StorageService.js";
 import { createLogger } from "../utils/logger.js";
+
+const logger = createLogger("BuilderUIController");
 
 /**
  * UI controller coordinating the form builder interface.
@@ -18,174 +19,107 @@ import { createLogger } from "../utils/logger.js";
  * @property {QuizUIControllerType} quizUIController - Controller for launching quiz previews.
  * @property {AppNavigationControllerType} appNavController - Controller for screen transitions.
  * @property {HTMLElement} builderContainer - DOM container housing the question cards.
- * @property {HTMLElement} bulkImportPanel - DOM container for the bulk import UI.
- * @property {HTMLTextAreaElement} bulkImportText - DOM input for bulk question payloads.
- * @property {HTMLElement} bulkImportStatus - DOM element for displaying bulk import errors.
+ * @property {QuestionFocusModalComponent} focusModal - Workstation controller for single cards.
  * @property {number | ReturnType<typeof setTimeout> | null} saveTimeout - Timeout reference for debounce logic.
  * @typedef {import('../types.js').BuilderStateType} BuilderStateType
  * @typedef {import('../types.js').QuizUIControllerType} QuizUIControllerType
  * @typedef {import('../types.js').AppNavigationControllerType} AppNavigationControllerType
  * @typedef {import('../types.js').QuestionType} QuestionType
+ * @typedef {import('../types.js').RawQuestionType} RawQuestionType
+ * @typedef {import('../types.js').BuilderCardPrefillType} BuilderCardPrefillType
  */
 export default class BuilderUIController {
   /**
-   * Links physical nodes with Model authorities cleanly.
+   * Initializes the form builder UI controller with DOM bindings and state models.
    * @name constructor
    * @public
-   * @param {BuilderStateType} builderState - The central tracker modeling card components natively.
-   * @param {QuizUIControllerType} quizUIController - Exposed for direct bypass assessment triggers explicitly.
-   * @param {AppNavigationControllerType} appNavController - Coordinates manual routing assignments optimally.
-   * @throws {Error} If the bulk-import-text element is not found or not a textarea.
+   * @param {BuilderStateType} builderState - The central tracker modeling card components.
+   * @param {QuizUIControllerType} quizUIController - Controller for launching quiz previews.
+   * @param {AppNavigationControllerType} appNavController - Controller for screen transitions.
    */
   constructor(builderState, quizUIController, appNavController) {
-    this.logger = createLogger("BuilderUIController");
-    this.logger.info("constructor called", {
-      builderState,
-      quizUIController,
-      appNavController
+    logger.info("constructor called");
+    logger.debug("Initializing BuilderUIController dependencies", {
+      hasBuilderState: Boolean(builderState),
+      hasQuizUI: Boolean(quizUIController),
+      hasAppNav: Boolean(appNavController)
     });
 
     this.builderState = builderState;
     this.quizUIController = quizUIController;
     this.appNavController = appNavController;
 
-    // Inline casting for the null timeout
-    this.saveTimeout =
-      /** @type {number | ReturnType<typeof setTimeout> | null} */ (null);
+    this.saveTimeout = null;
 
-    this.builderContainer = this.getEl("builder-questions-container");
-    this.bulkImportPanel = this.getEl("bulk-import-panel");
-
-    const bulkImportTextEl = this.getEl("bulk-import-text");
-    if (!(bulkImportTextEl instanceof HTMLTextAreaElement)) {
-      throw new Error("bulk-import-text element not found or not a textarea");
+    const container = document.getElementById("builder-questions-container");
+    if (!(container instanceof HTMLElement)) {
+      throw new Error(`Missing DOM node: builder-questions-container`);
     }
-    this.bulkImportText = bulkImportTextEl;
+    this.builderContainer = container;
 
-    this.bulkImportStatus = this.getEl("bulk-import-status");
+    // Instantiate focus modal
+    this.focusModal = new QuestionFocusModalComponent(appNavController);
 
-    this.logger.info("Builder UI controller initialized");
-
+    logger.info("Builder UI controller initialized");
+    logger.debug("Builder UI controller ready for user actions");
     this.initializeEventListeners();
+    this.initializeBuilder();
   }
 
   /**
-   * Safely retrieves a DOM element by ID.
-   * @param {string} id - The DOM element ID.
-   * @returns {HTMLElement} - The resolved DOM node.
-   * @throws {Error} - If the DOM node is not found.
-   */
-  getEl(id) {
-    const el = document.getElementById(id);
-    if (!(el instanceof HTMLElement))
-      throw new Error(`Missing DOM node: ${id}`);
-    return el;
-  }
-
-  /**
-   * Hooks physical actions explicitly to bounded component workflows and logical routines securely.
+   * Hooks event listeners to form builder operations.
    * @name initializeEventListeners
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   initializeEventListeners() {
-    this.logger.info("initializeEventListeners called");
-    this.getEl("create-quizset-btn").addEventListener("click", () => {
-      this.logger.info("initializeEventListeners: onCreateQuizsetClick event");
-      this.logger.info("Create quiz set requested from builder UI");
-      this.initializeBuilder();
-    });
+    logger.info("initializeEventListeners called");
+    logger.debug("Binding Form Builder UI button and input listeners");
 
-    this.getEl("btn-add-question").addEventListener("click", () => {
-      this.logger.info("initializeEventListeners: onAddQuestionClick event");
-      this.logger.info("Add question requested");
-      this.handleAddQuestion();
-    });
-
-    this.getEl("btn-run-builder-quiz").addEventListener("click", () => {
-      this.logger.info("initializeEventListeners: onRunBuilderQuizClick event");
-      this.logger.info("Run builder quiz requested");
-      this.startBuilderQuiz();
-    });
-
-    this.getEl("btn-export-quiz").addEventListener("click", () => {
-      this.logger.info("initializeEventListeners: onExportQuizClick event");
-      this.logger.info("Export builder quiz requested");
-      this.exportBuilderQuiz();
-    });
-
-    this.bulkImportText.addEventListener("input", () => {
-      this.adjustBulkImportTextareaHeight();
-    });
-
-    this.getEl("btn-parse-bulk").addEventListener("click", () => {
-      this.logger.info("initializeEventListeners: onParseBulkClick event");
-      this.logger.info("Bulk import parse requested");
-      this.handleBulkImport();
-    });
-
-    this.getEl("bulk-import-header").addEventListener("click", () => {
-      this.logger.info(
-        "initializeEventListeners: onBulkImportHeaderClick event"
-      );
-      const isNowCollapsed = this.bulkImportPanel.classList.toggle("collapsed");
-      this.logger.debug("Bulk import panel toggled", {
-        collapsed: isNowCollapsed
+    const addBtn = document.getElementById("btn-add-question");
+    if (addBtn) {
+      addBtn.addEventListener("click", () => {
+        logger.debug("Add question button clicked");
+        this.handleAddQuestion();
       });
-      if (!isNowCollapsed) {
-        this.builderState.collapseAllCards();
-        requestAnimationFrame(() => this.adjustBulkImportTextareaHeight());
-      }
-    });
+    }
 
-    this.getEl("btn-template-txt").addEventListener("click", () => {
-      this.logger.info("initializeEventListeners: onTemplateTxtClick event");
-      if (this.bulkImportText.value.trim() !== "") {
+    const runBtn = document.getElementById("btn-run-builder-quiz");
+    if (runBtn) {
+      runBtn.addEventListener("click", () => {
+        logger.debug("Run builder quiz button clicked");
+        this.startBuilderQuiz();
+      });
+    }
+
+    const exportBtn = document.getElementById("btn-export-quiz");
+    if (exportBtn) {
+      exportBtn.addEventListener("click", () => {
+        logger.debug("Export builder quiz button clicked");
+        this.exportBuilderQuiz();
+      });
+    }
+
+    const clearBtn = document.getElementById("btn-clear-builder");
+    if (clearBtn) {
+      clearBtn.addEventListener("click", () => {
+        logger.info("Clear builder requested");
+        logger.debug("Checking card count before clear", {
+          cardCount: this.builderState.cards.length
+        });
+        if (this.builderState.cards.length === 0) return;
         if (
-          !confirmAction(
-            "Inserting this template will overwrite your current text. Do you wish to continue?"
+          confirmAction(
+            "Are you sure you want to clear all questions? This action cannot be undone."
           )
         ) {
-          return;
+          logger.debug("User confirmed clearing all builder cards");
+          StorageService.clear("quiz-builder-cache");
+          this.builderState.clearAll();
+          this.initializeBuilder();
         }
-      }
-      this.logger.info("Text template inserted into bulk import field");
-      this.bulkImportText.value = getTxtTemplate();
-      this.adjustBulkImportTextareaHeight();
-    });
-
-    this.getEl("btn-template-json").addEventListener("click", () => {
-      this.logger.info("initializeEventListeners: onTemplateJsonClick event");
-      if (this.bulkImportText.value.trim() !== "") {
-        if (
-          !confirmAction(
-            "Inserting this template will overwrite your current text. Do you wish to continue?"
-          )
-        ) {
-          return;
-        }
-      }
-      this.logger.info("JSON template inserted into bulk import field");
-      this.bulkImportText.value = getJsonTemplate();
-      this.adjustBulkImportTextareaHeight();
-    });
-
-    this.getEl("btn-clear-builder").addEventListener("click", () => {
-      this.logger.info("initializeEventListeners: onClearBuilderClick event");
-      this.logger.info("Clear builder requested", {
-        cardCount: this.builderState.cards.length
       });
-      if (this.builderState.cards.length === 0) return;
-      if (
-        confirmAction(
-          "Are you sure you want to clear all questions? This action cannot be undone."
-        )
-      ) {
-        StorageService.clear("quiz-builder-cache");
-        this.builderState.clearAll();
-        this.initializeBuilder(); // Reinitialize with an empty card
-      }
-    });
+    }
 
     // 10-second highly performant debounce auto-save
     this.builderContainer.addEventListener("input", () => {
@@ -193,77 +127,133 @@ export default class BuilderUIController {
         clearTimeout(this.saveTimeout);
       }
       this.saveTimeout = setTimeout(() => {
-        this.logger.info("Auto-saving builder state after 10s debounce");
+        logger.info("Auto-saving builder state after 10s debounce");
         const payload = this.builderState.getSerializedPayload();
+        logger.debug("Persisting builder state payload", {
+          questionCount: payload.length
+        });
         StorageService.save("quiz-builder-cache", payload);
       }, 10000);
     });
   }
 
   /**
-   * Safely forces the bulk import panel into a constrained CSS visibility state.
-   * @name collapseBulkImport
-   * @public
-   * @returns {void} - Does not return a value.
+   * Callback executed when the focus modal saves data.
+   * @param {RawQuestionType} questionData - The committed question data.
+   * @param {import('../components/BuilderCardComponent.js').default | null} activeFocusCard - The card being edited, or null if new.
    */
-  collapseBulkImport() {
-    this.logger.info("collapseBulkImport called");
-    if (!this.bulkImportPanel.classList.contains("collapsed")) {
-      this.bulkImportPanel.classList.add("collapsed");
-      this.logger.debug("Bulk import panel collapsed");
-    }
-  }
-
-  /**
-   * Dynamically recalculates and applies the required height for the bulk import text area to ensure all content is fully visible without internal scrollbars.
-   * @name adjustBulkImportTextareaHeight
-   * @public
-   * @returns {void} - Does not return a value.
-   */
-  adjustBulkImportTextareaHeight() {
-    if (!this.bulkImportText) return;
-    this.bulkImportText.style.height = "auto";
-    const contentHeight = Math.max(100, this.bulkImportText.scrollHeight);
-    this.bulkImportText.style.height = `${contentHeight}px`;
-    this.logger.trace("adjustBulkImportTextareaHeight executed", {
-      newHeight: contentHeight
+  handleModalSave(questionData, activeFocusCard) {
+    logger.info("handleModalSave called", {
+      isEdit: Boolean(activeFocusCard),
+      questionText: questionData?.question
     });
+    logger.debug("Processing modal save data", {
+      isEdit: Boolean(activeFocusCard),
+      questionData
+    });
+    if (activeFocusCard) {
+      const card = activeFocusCard;
+      if (card.qInput) {
+        card.qInput.value = questionData.question;
+        const titleNode = card.node.querySelector(".card-title");
+        if (titleNode)
+          titleNode.textContent = questionData.question || "New Question...";
+        if (typeof card.autoExpand === "function") card.autoExpand(card.qInput);
+      }
+
+      if (card.aInput) {
+        card.aInput.value = questionData.correct_answer || "";
+        if (typeof card.autoExpand === "function") card.autoExpand(card.aInput);
+      }
+
+      if (card.dContainer && questionData.distractors) {
+        const targetDContainer = card.dContainer;
+        targetDContainer.innerHTML = "";
+        questionData.distractors.forEach((mdText) => {
+          const text = typeof mdText === "string" ? mdText : mdText.text;
+          const input = document.createElement("textarea");
+          input.className = "glass-input d-input";
+          input.placeholder = "e.g., 80";
+          input.value = text;
+          input.addEventListener("input", () => {
+            if (typeof card.autoExpand === "function") card.autoExpand(input);
+          });
+          targetDContainer.appendChild(input);
+          if (typeof card.autoExpand === "function") card.autoExpand(input);
+        });
+
+        if (typeof card.updateDistractorButtonStates === "function") {
+          card.updateDistractorButtonStates();
+        } else if (card.addBtn) {
+          card.addBtn.style.display =
+            targetDContainer.children.length >= 6 ? "none" : "inline-flex";
+        }
+      }
+      logger.debug("Existing card updated from focus modal");
+    } else {
+      // New Question Mode: construct and append a new card with entered values
+      logger.debug("Constructing and appending new card from focus modal");
+      this.builderState.collapseAllCards();
+
+      const newCard = new BuilderCardComponent(
+        questionData,
+        (card) => {
+          this.builderState.removeCard(card);
+          StorageService.save(
+            "quiz-builder-cache",
+            this.builderState.getSerializedPayload()
+          );
+        },
+        () => {},
+        (card) => {
+          this.focusModal.open(card, this.handleModalSave.bind(this));
+        }
+      );
+
+      this.builderState.addCard(newCard);
+      this.builderContainer.appendChild(newCard.node);
+
+      setTimeout(() => {
+        logger.debug("Scrolling builder container to new card");
+        this.builderContainer.scrollTo({
+          top: this.builderContainer.scrollHeight,
+          behavior: "smooth"
+        });
+      }, 50);
+    }
   }
 
   /**
    * Locates the first validation error within the builder container and scrolls it smoothly into the viewport.
    * @name scrollToFirstError
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   scrollToFirstError() {
-    this.logger.info("scrollToFirstError called");
-    this.logger.debug("Scrolling to first builder validation error");
-    /* Defers execution briefly to ensure DOM paint mapping is completed prior to scroll interception natively. */
-    // ----------------------------------------------------------------------
+    logger.info("scrollToFirstError called");
+    logger.debug("Locating first validation error node");
     setTimeout(() => {
-      this.logger.info("scrollToFirstError: scrollTimeoutCallback executed");
       const firstError = this.builderContainer.querySelector(".input-error");
       if (firstError) {
-        firstError.scrollIntoView({
-          behavior: "smooth",
-          block: "center"
-        });
-        this.logger.info("Scrolled to first builder validation error");
+        logger.debug("First error found, scrolling into view", { firstError });
+        const errorCard = firstError.closest(".question-card") || firstError;
+        errorCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (firstError instanceof HTMLElement) {
+          firstError.focus({ preventScroll: true });
+        }
       }
     }, 50);
-    // ----------------------------------------------------------------------
   }
 
   /**
-   * Purges legacy artifacts completely, explicitly triggering primary baseline construction capabilities to guarantee a fresh logical execution state.
+   * Resets and initializes the builder from cache or a default empty question card.
    * @name initializeBuilder
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   initializeBuilder() {
-    this.logger.info("initializeBuilder called");
-    this.logger.info("Initializing builder workspace");
+    logger.info("initializeBuilder called");
+    logger.debug("Clearing existing builder state and DOM");
     this.builderState.clearAll();
     this.builderContainer.innerHTML = "";
 
@@ -272,256 +262,212 @@ export default class BuilderUIController {
     );
 
     if (cachedData && cachedData.length > 0) {
-      this.logger.info("Restoring cached builder state", {
-        count: cachedData.length
+      logger.info("Hydrating builder cards from cache", {
+        cardCount: cachedData.length
       });
+      logger.debug("Creating builder cards from cached questions");
       cachedData.forEach((q) => {
         const newCard = new BuilderCardComponent(
           q,
           (card) => {
-            this.logger.info("initializeBuilder: removeCardCallback", { card });
             this.builderState.removeCard(card);
             StorageService.save(
               "quiz-builder-cache",
               this.builderState.getSerializedPayload()
             );
           },
-          () => {
-            this.logger.info("initializeBuilder: expandCallback");
-            this.collapseBulkImport();
+          () => {},
+          (card) => {
+            this.focusModal.open(card, this.handleModalSave.bind(this));
           }
         );
         this.builderState.addCard(newCard);
         this.builderContainer.appendChild(newCard.node);
       });
     } else {
+      logger.info(
+        "No cache detected, initializing single default question card"
+      );
+      logger.debug("Constructing default blank builder card");
       const newCard = new BuilderCardComponent(
         null,
         (card) => {
-          this.logger.info("initializeBuilder: removeCardCallback", {
-            card
-          });
           this.builderState.removeCard(card);
           StorageService.save(
             "quiz-builder-cache",
             this.builderState.getSerializedPayload()
           );
         },
-        () => {
-          this.logger.info("initializeBuilder: expandCallback");
-          this.collapseBulkImport();
+        () => {},
+        (card) => {
+          this.focusModal.open(card, this.handleModalSave.bind(this));
         }
       );
       this.builderState.addCard(newCard);
       this.builderContainer.appendChild(newCard.node);
     }
-
-    this.logger.info("Builder workspace initialized", {
-      cardCount: this.builderState.cards.length
-    });
   }
 
   /**
-   * Safeguards validation protocols natively, collapsing active visual tracks, triggering strict node generation, and scrolling into bounded zones systematically.
+   * Checks whether the builder currently contains user-authored or non-empty question data.
+   * @returns {boolean} True if any card has non-empty question, answer, or distractor fields.
+   */
+  hasExistingData() {
+    logger.info("hasExistingData called");
+    logger.debug("Checking card field contents in builderState", {
+      cardCount: this.builderState?.cards?.length || 0
+    });
+    if (!this.builderState || !this.builderState.cards) return false;
+    if (this.builderState.cards.length > 1) return true;
+    if (this.builderState.cards.length === 1) {
+      const card = this.builderState.cards[0];
+      const qVal = card.qInput?.value?.trim() || "";
+      const aVal = card.aInput?.value?.trim() || "";
+      const hasDistractors = card.dContainer
+        ? Array.from(card.dContainer.querySelectorAll(".d-input")).some(
+            (d) => d instanceof HTMLTextAreaElement && d.value.trim() !== ""
+          )
+        : false;
+      const hasData = qVal !== "" || aVal !== "" || hasDistractors;
+      logger.debug("Evaluated single card data existence", {
+        hasData,
+        qVal,
+        aVal,
+        hasDistractors
+      });
+      return hasData;
+    }
+    return false;
+  }
+
+  /**
+   * Populates the builder card list from an external dataset (e.g. from Modify Quiz).
+   * @param {Array<any>} questionDataArray - Question objects to populate.
+   * @returns {void}
+   */
+  populateCardsFromData(questionDataArray) {
+    logger.info("populateCardsFromData called", {
+      itemCount: Array.isArray(questionDataArray) ? questionDataArray.length : 0
+    });
+    logger.debug("Resetting builder and populating new cards from array");
+    if (!Array.isArray(questionDataArray) || questionDataArray.length === 0) {
+      return;
+    }
+
+    this.builderState.clearAll();
+    this.builderContainer.innerHTML = "";
+
+    questionDataArray.forEach((q) => {
+      const newCard = new BuilderCardComponent(
+        q,
+        (card) => {
+          this.builderState.removeCard(card);
+        },
+        () => {},
+        (card) => {
+          this.focusModal.open(card, this.handleModalSave.bind(this));
+        }
+      );
+      this.builderState.addCard(newCard);
+      this.builderContainer.appendChild(newCard.node);
+    });
+
+    const payload = this.builderState.getSerializedPayload();
+    logger.debug("Saving populated cards to cache", {
+      questionCount: payload.length
+    });
+    StorageService.save("quiz-builder-cache", payload);
+  }
+
+  /**
+   * Validates cards and triggers the focus modal to add a new question.
    * @name handleAddQuestion
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   handleAddQuestion() {
-    this.logger.info("handleAddQuestion called");
-    this.logger.info("Handling add question request");
-    /* Encapsulates the execution chain to strictly block execution mapping errors while preserving physical viewport alignment properties dynamically. */
-    // ----------------------------------------------------------------------
+    logger.info("handleAddQuestion called");
+    logger.debug("Validating limits and card states before adding question");
+    if (this.builderState.cards.length >= 50) {
+      logger.warn("Add question rejected: Limit of 50 reached");
+      alertAction("Maximum question limit reached (50).");
+      return;
+    }
+
     if (!this.builderState.validateAllCards()) {
-      this.logger.warn("Add question blocked by validation failure");
+      logger.warn("Add question blocked: Existing card validation failed");
       this.scrollToFirstError();
       return;
     }
 
-    this.collapseBulkImport();
-    this.builderState.collapseAllCards();
-
-    const newCard = new BuilderCardComponent(
-      null,
-      (card) => {
-        this.logger.info("handleAddQuestion: removeCardCallback", {
-          card
-        });
-        this.builderState.removeCard(card);
-      },
-      () => {
-        this.logger.info("handleAddQuestion: expandCallback");
-        this.collapseBulkImport();
-      }
-    );
-    this.builderState.addCard(newCard);
-    this.builderContainer.appendChild(newCard.node);
-
-    setTimeout(() => {
-      this.logger.info("handleAddQuestion: scrollTimeoutCallback executed");
-      this.builderContainer.scrollTo({
-        top: this.builderContainer.scrollHeight,
-        behavior: "smooth"
-      });
-      this.logger.info("Builder scrolled to newest question", {
-        cardCount: this.builderState.cards.length
-      });
-    }, 50);
-    // ----------------------------------------------------------------------
+    logger.debug("Opening focus modal for new question entry");
+    this.focusModal.open(null, this.handleModalSave.bind(this));
   }
 
   /**
-   * Processes isolated text payloads dynamically against external data layers, securely extracting arrays, iterating instantiations, and resolving UI cues actively.
-   * @name handleBulkImport
-   * @public
-   * @returns {void} - Does not return a value.
-   */
-  handleBulkImport() {
-    this.logger.info("handleBulkImport called");
-    const rawText = this.bulkImportText.value;
-
-    if (!rawText.trim()) {
-      this.logger.warn("Bulk import ignored because the input is empty");
-      return;
-    }
-
-    this.bulkImportStatus.classList.remove("error", "visible");
-    this.bulkImportStatus.textContent = "";
-
-    this.logger.info("Bulk import parse started", {
-      characterCount: rawText.length
-    });
-
-    try {
-      /* Parses and validates the raw text string to construct formatted question payloads seamlessly. */
-      // ----------------------------------------------------------------------
-      const parsedData = parseAndValidateRawText(rawText);
-      this.logger.info("Bulk import parsed successfully", {
-        questionCount: parsedData.length
-      });
-
-      if (this.builderState.cards.length === 1) {
-        const firstCard = this.builderState.cards[0];
-        if (
-          firstCard &&
-          firstCard.qInput &&
-          firstCard.qInput.value.trim() === ""
-        ) {
-          this.builderState.clearAll();
-          this.builderContainer.innerHTML = "";
-        }
-      }
-
-      parsedData.forEach((q) => {
-        this.logger.trace("handleBulkImport: appendCardCallback", {
-          question: q.question
-        });
-        const newCard = new BuilderCardComponent(
-          q,
-          (card) => {
-            this.logger.info("handleBulkImport: removeCardCallback", { card });
-            this.builderState.removeCard(card);
-          },
-          () => {
-            this.logger.info("handleBulkImport: expandCallback");
-            this.collapseBulkImport();
-          }
-        );
-        this.builderState.addCard(newCard);
-        this.builderContainer.appendChild(newCard.node);
-      });
-      // ----------------------------------------------------------------------
-
-      this.bulkImportText.value = "";
-      this.adjustBulkImportTextareaHeight();
-      this.logger.info("Bulk import cards appended", {
-        cardCount: this.builderState.cards.length
-      });
-
-      setTimeout(() => {
-        this.logger.info("handleBulkImport: scrollTimeoutCallback executed");
-        this.builderContainer.scrollTo({
-          top: this.builderContainer.scrollHeight,
-          behavior: "smooth"
-        });
-        this.logger.debug("Builder container scrolled after bulk import");
-      }, 50);
-    } catch (error) {
-      const errMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      this.logger.error("Bulk parsing failed", error);
-      this.bulkImportStatus.textContent = `Error: ${errMessage}`;
-      this.bulkImportStatus.classList.add("error", "visible");
-    }
-  }
-
-  /**
-   * Manages error interception cleanly and delegates custom payload parsing natively to the external testing controller bypass function natively.
+   * Validates builder cards and launches the quiz preview session.
    * @name startBuilderQuiz
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   startBuilderQuiz() {
-    this.logger.info("startBuilderQuiz called");
-    this.logger.info("Starting builder quiz preview");
+    logger.info("startBuilderQuiz called");
+    logger.debug("Validating builder cards for quiz start", {
+      cardCount: this.builderState.cards.length
+    });
     if (this.builderState.cards.length === 0) {
-      this.logger.warn(
-        "Builder quiz start blocked because there are no questions"
-      );
+      logger.warn("Start quiz rejected: No builder cards present");
       alertAction("Please add at least one question before starting the quiz.");
       return;
     }
 
     if (!this.builderState.validateAllCards()) {
-      this.logger.warn("Builder quiz start blocked by validation failure");
-      this.collapseBulkImport();
+      logger.warn("Start quiz blocked: Card validation failed");
       this.scrollToFirstError();
       return;
     }
 
     const payload = this.builderState.getSerializedPayload();
-
     if (payload.length === 0) {
-      this.logger.warn(
-        "Builder quiz start blocked because serialized payload is empty"
-      );
+      logger.warn("Start quiz blocked: Serialized payload is empty");
       alertAction("Please complete at least one question before starting.");
       return;
     }
 
-    this.logger.info("Builder quiz payload ready", {
+    logger.info("Launching builder preview quiz", {
       questionCount: payload.length
     });
+    logger.debug("Loading custom quiz payload with builder source flag");
     this.quizUIController.loadCustomQuiz(payload, true);
   }
 
   /**
-   * Scrapes localized logical states explicitly against output algorithms seamlessly physically.
+   * Validates builder cards and exports the dataset as a QAD file.
    * @name exportBuilderQuiz
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   exportBuilderQuiz() {
-    this.logger.info("exportBuilderQuiz called");
-    this.logger.info("Exporting builder quiz");
+    logger.info("exportBuilderQuiz called");
+    logger.debug("Validating builder cards for export");
     if (this.builderState.cards.length === 0) {
-      this.logger.warn("Builder export blocked because there are no questions");
+      logger.warn("Export rejected: No builder cards present");
       alertAction("Please add at least one question before exporting.");
       return;
     }
 
     if (!this.builderState.validateAllCards()) {
-      this.logger.warn("Builder export blocked by validation failure");
-      this.collapseBulkImport();
+      logger.warn("Export blocked: Card validation failed");
       this.scrollToFirstError();
       return;
     }
 
     const payload = this.builderState.getSerializedPayload();
-    exportQAD(payload, "custom_quizset.txt");
-    StorageService.clear("quiz-builder-cache");
-    this.logger.info("Builder quiz export completed and cache cleared", {
+    logger.info("Exporting builder quiz dataset", {
       questionCount: payload.length
     });
+    logger.debug("Triggering exportQAD file download");
+    exportQAD(payload, "custom_quizset.txt");
+    StorageService.clear("quiz-builder-cache");
   }
 }
