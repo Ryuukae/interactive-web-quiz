@@ -35,6 +35,7 @@ export function confirmAction(message) {
 export function alertAction(message) {
   const logger = createLogger("prompts.alertAction");
   logger.info("alertAction called", { message });
+  logger.debug("Displaying native alert dialog", { message });
   logger.warn("Alert prompt displayed to user", { message });
   window.alert(message);
 }
