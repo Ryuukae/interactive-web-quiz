@@ -78,6 +78,15 @@ describe("logger Utility Unit Tests", () => {
     // Test fallback to default "info" on an invalid input
     setLogLevel("invalid-level");
     expect(getLogLevel()).toBe("info");
+
+    setLogLevel("silent");
+    expect(getLogLevel()).toBe("silent");
+
+    setLogLevel(null);
+    expect(getLogLevel()).toBe("info");
+
+    setLogLevel(undefined);
+    expect(getLogLevel()).toBe("info");
   });
 
   it("should create a child logger with a combined scope", () => {
