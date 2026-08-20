@@ -7,6 +7,8 @@ import QuizState from "./models/QuizState.js";
 import BuilderState from "./models/BuilderState.js";
 import QuizUIController from "./controllers/QuizUIController.js";
 import BuilderUIController from "./controllers/BuilderUIController.js";
+import EditorUIController from "./controllers/EditorUIController.js";
+import StartUIController from "./controllers/StartUIController.js";
 import { createLogger } from "./utils/logger.js";
 
 /**
@@ -26,7 +28,8 @@ let quizUIController;
 const logger = createLogger("AppBootstrap");
 
 /**
- * Orchestrates the asynchronous bootstrap sequence systematically. Enforces a strict initialization pipeline natively: State Models -> Controllers sequentially.
+ * Orchestrates the bootstrap sequence for the application.
+ * Instantiates state models, UI controllers, and sets up dependency injection.
  * @name initializeApp
  * @public
  * @returns {Promise<void>} - Resolves when bootstrap completes.
@@ -36,8 +39,6 @@ async function initializeApp() {
   try {
     logger.info("Application bootstrap started");
 
-    /* Orchestrates the root instantiation chain strictly, enforcing dependency injection natively and cleanly. */
-    // ----------------------------------------------------------------------
     logger.debug("Instantiating AppNavigationController");
     appNavController = new AppNavigationController();
 
@@ -46,18 +47,32 @@ async function initializeApp() {
     quizState = new QuizState([]);
     builderState = new BuilderState();
 
-    logger.debug(
-      "Instantiating QuizUIController and BuilderUIController controllers"
-    );
+    logger.debug("Instantiating UI controllers");
     quizUIController = new QuizUIController(quizState, appNavController);
-    new BuilderUIController(builderState, quizUIController, appNavController);
+    const builderUIController = new BuilderUIController(
+      builderState,
+      quizUIController,
+      appNavController
+    );
+    const editorUIController = new EditorUIController(
+      quizUIController,
+      appNavController
+    );
+
+    // Wire up StartUIController
+    new StartUIController(
+      appNavController,
+      quizUIController,
+      builderUIController,
+      editorUIController
+    );
 
     logger.debug("Synchronizing initial quiz UI bounds");
     quizUIController.synchronizeBounds();
     // ----------------------------------------------------------------------
 
     logger.debug("Application services instantiated successfully", {
-      screens: ["start", "quiz", "result", "creator"],
+      screens: ["start", "quiz", "result", "creator", "editor"],
       questionCount: quizState.questionData.length,
       builderCardCount: builderState.cards.length
     });
