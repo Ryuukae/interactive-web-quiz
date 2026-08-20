@@ -79,7 +79,10 @@
     "autorun",
     "stefanzweifel",
     "actionlint",
-    "reviewdog"
+    "reviewdog",
+    "ghaction",
+    "signingkey",
+    "gpgsign"
   ],
   "ignorePaths": [
     "node_modules/**",

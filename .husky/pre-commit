@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Validate Branch Name
 local_branch_name="$(git rev-parse --abbrev-ref HEAD)"

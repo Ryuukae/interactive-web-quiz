@@ -1,7 +1,7 @@
 name: Update Visual Snapshots
 
 on:
-  workflow_dispatch: # Allows manual triggering from the GitHub UI
+  workflow_dispatch: 
 
 jobs:
   update-snapshots:
