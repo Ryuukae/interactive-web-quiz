@@ -9,3 +9,4 @@ test-results/
 docs/**
 .history/
 .github/PULL_REQUEST_TEMPLATE.md
+CHANGELOG.md
