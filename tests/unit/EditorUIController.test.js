@@ -1,10 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import EditorUIController from "../../src/js/controllers/EditorUIController.js";
-import {
-  getTxtTemplate,
-  getJsonTemplate
-} from "../../src/js/utils/templates.js";
 import * as prompts from "../../src/js/utils/prompts.js";
 import * as schemaValidator from "../../src/js/utils/schemaValidator.js";
 import * as fileIO from "../../src/js/utils/fileIO.js";
