@@ -1,0 +1,906 @@
+/* =========================================== */
+/* --- EDITOR SCREEN & MODAL UI COMPONENTS --- */
+/* =========================================== */
+
+/* Forces the Editor Screen into a rigid flex column to respect the viewport boundary */
+#editor-screen.active {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+#editor-screen > h1 {
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-top: 0;
+  margin-bottom: 2px;
+  font-size: 2.3rem;
+  letter-spacing: -0.01em;
+}
+
+#editor-screen > p {
+  flex-shrink: 0;
+}
+
+#editor-subtitle {
+  color: rgb(255 255 255 / 0.7);
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Let the editor container take up the remaining flexible space */
+#editor-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+#editor-container .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-height: 52vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(167 213 255 / 0.3) transparent;
+}
+
+/* Ensure textarea maximizes vertical space in the container */
+#editor-textarea {
+  flex: 1;
+  min-height: 180px;
+  margin-bottom: 1rem;
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+/* =============================== */
+/* --- TEMPLATE & CARD ACTIONS --- */
+/* =============================== */
+
+.template-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  width: 100%;
+  padding: 0 4px;
+}
+
+.template-btn {
+  background: transparent;
+  color: rgb(168 170 174);
+  border: none;
+  padding: 0;
+  font-size: 0.75rem;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+  box-shadow: none;
+}
+
+.template-btn:hover {
+  color: #a7d5ff;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ===================================== */
+/* --- CREATION MODE SELECTION MODAL --- */
+/* ===================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgb(15 23 42 / 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 999;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-backdrop.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  z-index: 1000;
+  width: 92%;
+  max-width: 480px;
+  background: rgb(18 24 38 / 0.9);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgb(167 213 255 / 0.2);
+  border-radius: 1.25rem;
+  padding: 1.75rem 2rem;
+  box-shadow:
+    0 25px 60px -15px rgb(0 0 0 / 0.8),
+    0 0 0 1px rgb(255 255 255 / 0.08),
+    inset 0 1px 0 rgb(255 255 255 / 0.2);
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal.active {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  pointer-events: all;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.modal-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.modal-badge {
+  color: #a7d5ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.modal-title {
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: rgb(255 255 255 / 0.5);
+  font-size: 1.8rem;
+  line-height: 1;
+  padding: 0;
+  margin: -0.25rem -0.25rem 0 0;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+  box-shadow: none;
+}
+
+.modal-close-btn:hover {
+  color: #ffffff;
+  transform: scale(1.15);
+  box-shadow: none;
+}
+
+.modal-description {
+  color: rgb(255 255 255 / 0.75);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.modal .action-stack button {
+  width: 100%;
+}
+
+/* =================================== */
+/* --- FORMAT GUIDE MODAL TRIGGERS --- */
+/* =================================== */
+
+.template-guide-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 2px;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.guide-trigger-btn {
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(167 213 255 / 0.25);
+  color: #a7d5ff;
+  border-radius: 20px;
+  padding: 7px 18px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+}
+
+.guide-trigger-btn:hover {
+  background: rgb(167 213 255 / 0.15);
+  border-color: #a7d5ff;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgb(59 130 246 / 0.3);
+}
+
+.guide-modal {
+  width: 92vw;
+  max-width: 1040px;
+  max-height: 88vh;
+  border-radius: 1.25rem;
+  padding: 1.75rem 2.25rem;
+}
+
+.guide-grid-body {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+  max-height: 68vh;
+  overflow-y: auto;
+  padding-right: 8px;
+  text-align: left;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(167 213 255 / 0.3) transparent;
+}
+
+.guide-desc-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.guide-desc-col p {
+  color: #ffffff;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  margin-bottom: 12px;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+}
+
+.guide-desc-col ul {
+  margin-bottom: 0;
+  padding-left: 22px;
+  line-height: 1.38;
+  color: #f8fafc;
+  font-size: 1.05rem;
+}
+
+.guide-desc-col li {
+  margin-bottom: 8px;
+  color: #f8fafc;
+}
+
+.guide-desc-col strong {
+  color: #a7d5ff;
+  font-weight: 700;
+}
+
+.guide-desc-col code {
+  background: rgb(167 213 255 / 0.12);
+  color: #86efac;
+  border: 1px solid rgb(167 213 255 / 0.2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+.guide-example-col {
+  display: flex;
+  flex-direction: column;
+  background: rgb(0 0 0 / 0.35);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.guide-example-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.guide-example-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #86efac;
+  background: rgb(34 197 94 / 0.1);
+  border: 1px solid rgb(34 197 94 / 0.25);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.guide-example-col pre {
+  background: rgb(10 15 28 / 0.7);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  flex: 1;
+  max-height: 44vh;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(167 213 255 / 0.3) transparent;
+}
+
+.guide-example-col code {
+  color: #86efac;
+  font-family: "Cascadia Code", "Fira Code", Consolas, "Courier New", monospace;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.guide-example-col .download-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .guide-grid-body {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* ===================================== */
+/* --- SPECIFIC EDITOR ACTION BUTTONS -- */
+/* ===================================== */
+
+#editor-action-stack {
+  margin-top: 2px;
+  margin-bottom: 0;
+  gap: 8px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+#editor-action-stack .action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+#editor-action-stack .action-row button {
+  padding: 11px 18px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#btn-editor-parse {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  box-shadow:
+    0 4px 16px rgb(37 99 235 / 0.4),
+    inset 0 1px 0 rgb(255 255 255 / 0.35);
+  filter: none;
+}
+
+#btn-editor-parse:hover {
+  background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+  box-shadow:
+    0 6px 24px rgb(59 130 246 / 0.55),
+    inset 0 1px 0 rgb(255 255 255 / 0.5);
+  transform: translateY(-2px);
+  filter: none;
+}
+
+#btn-editor-parse:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+#btn-editor-export.secondary-btn {
+  background: rgb(255 255 255 / 0.07);
+  border: 1px solid rgb(167 213 255 / 0.22);
+  color: #e2e8f0;
+  box-shadow:
+    0 2px 8px rgb(0 0 0 / 0.25),
+    inset 0 1px 0 rgb(255 255 255 / 0.1);
+  filter: none;
+}
+
+#btn-editor-export.secondary-btn:hover {
+  background: rgb(167 213 255 / 0.16);
+  border-color: #a7d5ff;
+  color: #ffffff;
+  box-shadow:
+    0 4px 18px rgb(0 0 0 / 0.4),
+    0 0 12px rgb(167 213 255 / 0.2);
+  transform: translateY(-2px);
+  filter: none;
+}
+
+#btn-editor-export.secondary-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+#btn-editor-clear.btn-danger {
+  background: rgb(239 68 68 / 0.07);
+  border: 1px solid rgb(239 68 68 / 0.28);
+  color: #fca5a5;
+  font-weight: 500;
+  box-shadow: none;
+  filter: none;
+}
+
+#btn-editor-clear.btn-danger:hover {
+  background: rgb(239 68 68 / 0.2);
+  border-color: rgb(239 68 68 / 0.7);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgb(239 68 68 / 0.3);
+  transform: translateY(-2px);
+  filter: none;
+}
+
+#btn-editor-clear.btn-danger:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+#btn-editor-cancel.secondary-btn {
+  background: transparent;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  color: rgb(255 255 255 / 0.65);
+  font-weight: 500;
+  opacity: 1;
+  box-shadow: none;
+  filter: none;
+}
+
+#btn-editor-cancel.secondary-btn:hover {
+  background: rgb(255 255 255 / 0.08);
+  border-color: rgb(255 255 255 / 0.28);
+  color: #ffffff;
+  transform: translateY(-1px);
+  filter: none;
+}
+
+#btn-editor-cancel.secondary-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.modal-close-btn-done {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: #ffffff;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn-done:hover {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  box-shadow: 0 4px 12px rgb(59 130 246 / 0.4);
+  transform: translateY(-1px);
+}
+
+/* ================================================= */
+/* --- WORKSTATION QUESTION FOCUS MODAL STYLES --- */
+/* ================================================= */
+
+.question-focus-modal {
+  width: 92vw;
+  max-width: 1360px;
+  height: 88vh;
+  max-height: 88vh;
+  padding: 1.75rem 2.25rem;
+  border-radius: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 35px 80px -15px rgb(0 0 0 / 0.9),
+    0 0 0 1px rgb(255 255 255 / 0.1),
+    inset 0 1px 0 rgb(255 255 255 / 0.25);
+}
+
+.question-focus-modal.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.question-focus-modal .modal-header {
+  flex-shrink: 0;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.question-focus-modal .modal-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 2px 10px;
+}
+
+.question-focus-modal .modal-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  margin: 2px 0 0;
+}
+
+.question-focus-modal .modal-close-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 1.35rem;
+}
+
+/* Modal Body fills all remaining vertical space */
+.question-focus-modal .modal-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding-right: 4px;
+  overflow: hidden;
+}
+
+/* 2-Column Responsive Grid (Equal 1:1 Widths) */
+.focus-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  width: 100%;
+}
+
+.focus-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.focus-col-left {
+  gap: 18px;
+}
+
+.focus-col-right {
+  gap: 0;
+}
+
+.focus-input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+.focus-group-q {
+  flex: 1.4;
+  min-height: 0;
+}
+
+.focus-group-a {
+  flex: 1;
+  min-height: 0;
+}
+
+.focus-group-d {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+}
+
+/* Labels with glow dots */
+.focus-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.label-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.focus-label-q {
+  color: #a7d5ff;
+}
+
+.dot-q {
+  background: #60a5fa;
+  box-shadow: 0 0 8px #60a5fa;
+}
+
+.focus-label-a {
+  color: #86efac;
+}
+
+.dot-a {
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+.focus-label-d {
+  color: #fca5a5;
+}
+
+.dot-d {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+}
+
+.focus-distractor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.focus-distractor-header .focus-label {
+  margin-bottom: 0;
+}
+
+.focus-distractor-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.5);
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+/* UNIFORM, PROFESSIONAL-GRADE TEXTAREA STYLING */
+textarea.focus-textarea,
+.focus-distractors-list textarea.d-input {
+  font-family: inherit;
+  font-size: 0.95rem !important;
+  font-weight: 400;
+  line-height: 1.3 !important;
+  color: #ffffff !important;
+  background: rgb(15 23 42 / 0.65) !important;
+  border: 1px solid rgb(255 255 255 / 0.12) !important;
+  border-radius: 10px !important;
+  padding: 8px 14px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(167 213 255 / 0.3) transparent;
+}
+
+textarea.focus-textarea:focus,
+.focus-distractors-list textarea.d-input:focus {
+  border-color: #a7d5ff !important;
+  box-shadow: 0 0 0 3px rgb(167 213 255 / 0.2) !important;
+  outline: none;
+}
+
+/* Left column specific textareas expand to fill balanced vertical height */
+.focus-textarea-q {
+  flex: 1;
+  min-height: 130px;
+  resize: none;
+  border-left: 4px solid #3b82f6 !important;
+}
+
+.focus-textarea-a {
+  flex: 1;
+  min-height: 85px;
+  resize: none;
+  border-left: 4px solid #22c55e !important;
+}
+
+/* Right Column Distractor List */
+.focus-distractors-list {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 6px;
+  margin-bottom: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(167 213 255 / 0.3) transparent;
+}
+
+.focus-distractors-list textarea.d-input {
+  flex: 1 1 0px;
+  min-height: 58px;
+  width: 100%;
+  resize: none;
+  border-left: 4px solid #ef4444 !important;
+}
+
+.focus-distractor-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.focus-add-distractor-btn {
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+.focus-remove-distractor-btn {
+  background: rgb(239 68 68 / 0.06);
+  border: 1px dashed rgb(239 68 68 / 0.4);
+  color: #f87171;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.focus-remove-distractor-btn:hover {
+  background: rgb(239 68 68 / 0.18);
+  border-color: rgb(239 68 68 / 0.8);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Footer Action Stack */
+.focus-modal-footer {
+  flex-shrink: 0;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 14px;
+}
+
+.focus-cancel-btn {
+  padding: 10px 24px;
+  font-size: 0.95rem;
+  min-width: 140px;
+}
+
+.focus-done-btn {
+  padding: 10px 28px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  min-width: 160px;
+}
+
+@media (max-width: 820px) {
+  .question-focus-modal {
+    width: 96vw;
+    height: 94vh;
+    max-height: 94vh;
+    padding: 1.25rem;
+  }
+
+  .question-focus-modal .modal-body {
+    overflow-y: auto;
+  }
+
+  .focus-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: auto;
+  }
+
+  .focus-col {
+    height: auto;
+  }
+
+  .focus-textarea-q {
+    min-height: 140px;
+  }
+
+  .focus-textarea-a {
+    min-height: 90px;
+  }
+
+  .focus-distractors-list {
+    max-height: 35vh;
+  }
+}
+
+/* ================================================== */
+/* --- FULLSCREEN BULK PAYLOAD EDITOR MODAL --- */
+/* ================================================== */
+
+#modal-focus-editor {
+  width: 96vw;
+  max-width: 96vw;
+  height: 94vh;
+  max-height: 94vh;
+  padding: 1.25rem 1.75rem 1rem;
+  border-radius: 1.25rem;
+}
+
+.focus-editor-modal-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.focus-editor-textarea {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  font-family: monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 16px 20px;
+  border-radius: 12px;
+  resize: none;
+  background: rgb(10 15 28 / 0.75);
+  color: #ffffff;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(167 213 255 / 0.3) transparent;
+}
+
+.focus-editor-textarea:focus {
+  border-color: #a7d5ff;
+  box-shadow: 0 0 0 3px rgb(167 213 255 / 0.2);
+  outline: none;
+}
