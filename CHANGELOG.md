@@ -1,3 +1,32 @@
+# [1.6.0](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.5.2...v1.6.0) (2026-08-20)
+
+
+### Bug Fixes
+
+* **builder:** invoke initializeBuilder in constructor to load default workspace ([ed6054d](https://github.com/Ryuukae/interactive-web-quiz/commit/ed6054d38efca4ceb50e9e0b09a5bbcbf1bfa18e))
+* **fileIO:** escape backslashes before quotes during QAD serialization ([26c4dd2](https://github.com/Ryuukae/interactive-web-quiz/commit/26c4dd21a760f27373e2145ee1538e5ad722a2a0))
+* **qadParser:** add strict checks for empty lines and orphaned blocks ([2d35134](https://github.com/Ryuukae/interactive-web-quiz/commit/2d35134eda7386d150a5062f20ac9bb38a49a04c))
+* **schemaValidator:** add strict boolean type checking to answers ([6903c5b](https://github.com/Ryuukae/interactive-web-quiz/commit/6903c5be0cf84b713423a8942b9184d45dcf2d80))
+
+
+### Features
+
+* **assets:** provide baseline txt template for editor ([bafb937](https://github.com/Ryuukae/interactive-web-quiz/commit/bafb937bd0c125d2344415590beb007240d66e6c))
+* **builder-card:** upgrade inputs to textareas and enforce distractor rules ([68da68b](https://github.com/Ryuukae/interactive-web-quiz/commit/68da68b38273950654b36856fb6664d133a354ba))
+* **builder-modal:** implement focus mode modal for granular editing ([0b4d50f](https://github.com/Ryuukae/interactive-web-quiz/commit/0b4d50faa0d7925b69454339a5a84ddbe84c2cee))
+* **builder-ui:** decouple bulk import and integrate focus modals ([b9e4e5c](https://github.com/Ryuukae/interactive-web-quiz/commit/b9e4e5cfc1dc5efd7568a569a4819d33ed88b4f8))
+* **ci:** migrate to consolidated pipelines and enable verified gpg releases ([d7a4cdc](https://github.com/Ryuukae/interactive-web-quiz/commit/d7a4cdce155404b274a7477fb988f563866bc28e))
+* **creator-suite:** add advanced text editor, question focus mode, and responsive layout ([#88](https://github.com/Ryuukae/interactive-web-quiz/issues/88)) ([dad09ef](https://github.com/Ryuukae/interactive-web-quiz/commit/dad09efc666e9f5d31c0cca23ce10f3504e00382))
+* **editor-modal:** implement full-screen text editor modal ([9895597](https://github.com/Ryuukae/interactive-web-quiz/commit/98955971e6d035bc05b420da32651af9af1c6b28))
+* **editor-ui:** add dedicated UI controller for creation mode text editing ([7af49b9](https://github.com/Ryuukae/interactive-web-quiz/commit/7af49b9d620c06131621808fecb41abfa8a3aa9e))
+* **fileIO:** enhance export formatting for builder state payloads ([f6dc853](https://github.com/Ryuukae/interactive-web-quiz/commit/f6dc85315fd533bb508c6d796a4cb20301417055))
+* **html:** add editor screen, modals, and refine structural DOM ([6a82a67](https://github.com/Ryuukae/interactive-web-quiz/commit/6a82a679fbac64133ecaa76c48bfcca06877f9d7))
+* **navigation:** integrate editor routing and centralized modal management ([b83f7b3](https://github.com/Ryuukae/interactive-web-quiz/commit/b83f7b3b69ed40f6a184d6a5d49d5a54729833d1))
+* **prompts:** add user confirmation utilities for overwrites ([7ffe812](https://github.com/Ryuukae/interactive-web-quiz/commit/7ffe8120a06e998c44dc3f9051aa2ea52e45a73e))
+* **quiz-ui:** modernize layout container rendering and fix DOM queries ([8d8ab52](https://github.com/Ryuukae/interactive-web-quiz/commit/8d8ab52d3bafc5bd1c25c5f93f0024578bfdd7c9))
+* **start-ui:** add creation mode selector to initial screen ([3abbe5d](https://github.com/Ryuukae/interactive-web-quiz/commit/3abbe5d4fe2659cf891ad6cf6d80b66e2f44ba0b))
+* **templates:** add default json and txt string templates ([6366fe6](https://github.com/Ryuukae/interactive-web-quiz/commit/6366fe6dfa3fcafeaf174674d3f48dd437b6bcc5))
+
 ## [1.5.2](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.5.1...v1.5.2) (2026-08-17)
 
 ### Bug Fixes

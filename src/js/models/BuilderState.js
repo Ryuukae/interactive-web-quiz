@@ -8,7 +8,7 @@ const logger = createLogger("BuilderState");
  *
  * @class BuilderState
  * @name BuilderState
- * @version 1.5.2
+ * @version 1.6.0
  * @author Adam Ross DeStafeno
  * @property {BuilderCardComponentType[]} cards - Live array of instantiated builder components.
  * @property {QuestionType[]} questions - Live array of instantiated question components.
