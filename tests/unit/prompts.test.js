@@ -31,4 +31,15 @@ describe("prompts Utility Unit Tests", () => {
 
     alertSpy.mockRestore();
   });
+
+  it("should return false when window.confirm is rejected", () => {
+    const confirmSpy = vi
+      .spyOn(globalThis.window, "confirm")
+      .mockReturnValue(false);
+
+    const result = confirmAction("Are you sure?");
+    expect(result).toBe(false);
+
+    confirmSpy.mockRestore();
+  });
 });
