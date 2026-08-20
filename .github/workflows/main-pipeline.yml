@@ -156,6 +156,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GIT_AUTHOR_NAME: ${{ steps.generate-token.outputs.app-slug }}[bot]
+          GIT_AUTHOR_EMAIL: ${{ secrets.APP_ID }}+${{ steps.generate-token.outputs.app-slug }}[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: ${{ steps.generate-token.outputs.app-slug }}[bot]
+          GIT_COMMITTER_EMAIL: ${{ secrets.APP_ID }}+${{ steps.generate-token.outputs.app-slug }}[bot]@users.noreply.github.com
           HUSKY: 0
         run: npx semantic-release
 
