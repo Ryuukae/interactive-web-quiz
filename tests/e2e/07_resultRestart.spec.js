@@ -11,18 +11,19 @@ test.describe("E2E Spec 7: Result Summary & Restart Flow", () => {
 
     // Navigate to Creator Screen
     await page.click("#create-quizset-btn");
+    await page.click("#btn-use-builder");
 
-    // Expand Bulk Import Panel if collapsed
-    await page.click("#bulk-import-header");
-
-    // Insert sample QAD question
-    page.on("dialog", (dialog) => dialog.accept());
-    await page.click("#btn-clear-builder");
-    await page.fill(
-      "#bulk-import-text",
-      "Q=Is HTML a programming language?\nA=No\nD=Yes"
-    );
-    await page.click("#btn-parse-bulk");
+    const cards = page.locator("#builder-questions-container .question-card");
+    await cards
+      .nth(0)
+      .locator(".question-input")
+      .fill("Is HTML a programming language?");
+    await cards.nth(0).locator(".answer-row.correct-row textarea").fill("No");
+    await cards
+      .nth(0)
+      .locator(".answer-row.distractor-row textarea")
+      .first()
+      .fill("Yes");
 
     // Start Quiz
     await page.click("#btn-run-builder-quiz");
