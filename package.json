@@ -78,7 +78,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsdoc": "^50.8.0",
     "globals": "^17.10.0",
-    "html-validate": "^10.9.0",
+    "html-validate": "^11.7.0",
     "husky": "^9.0.0",
     "jsdom": "^30.0.1",
     "lint-staged": "^15.5.2",
