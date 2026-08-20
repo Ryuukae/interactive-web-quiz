@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.6.1...v1.6.2) (2026-08-20)
+
+
+### Bug Fixes
+
+* **ci:** fetch dynamic github app bot user id for verified signatures ([16d605a](https://github.com/Ryuukae/interactive-web-quiz/commit/16d605af2105591c56b59c7dd2ebb0d7a713358c))
+
 ## [1.6.1](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.6.0...v1.6.1) (2026-08-20)
 
 

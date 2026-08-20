@@ -6,7 +6,7 @@ const logger = createLogger("StorageService");
  * Provides a decoupled service layer encapsulating all interactions with the native localStorage API.
  *
  * @class StorageService
- * @version 1.6.1
+ * @version 1.6.2
  * @author Adam Ross DeStafeno
  */
 export default class StorageService {

@@ -7,7 +7,7 @@ const logger = createLogger("QuestionFocusModalComponent");
  *
  * @class QuestionFocusModalComponent
  * @name QuestionFocusModalComponent
- * @version 1.6.1
+ * @version 1.6.2
  * @author Adam Ross DeStafeno
  * @property {AppNavigationControllerType} appNavController - Central router instance.
  * @property {BuilderCardComponentType | null} activeFocusCard - Currently active card component.

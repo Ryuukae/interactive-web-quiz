@@ -11,7 +11,7 @@ const logger = createLogger("StartUIController");
  *
  * @class StartUIController
  * @name StartUIController
- * @version 1.6.1
+ * @version 1.6.2
  * @author Adam Ross DeStafeno
  * @property {AppNavigationControllerType} appNavController - Router controller for screen transitions.
  * @property {QuizUIControllerType} quizUIController - Controller for running quiz sessions.

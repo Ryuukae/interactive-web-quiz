@@ -1,6 +1,6 @@
 {
   "name": "interactive-web-quiz",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "private": true,
   "type": "module",
   "description": "Enterprise-grade interactive quiz platform featuring visual card creation, dual QAD/JSON data ingestion, auto-expanding textareas, and automated unit testing.",
