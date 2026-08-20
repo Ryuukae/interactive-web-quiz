@@ -51,9 +51,9 @@ describe("fileIO Utility Unit Tests", () => {
 
     expect(() => exportQAD(mockData, "test.txt")).not.toThrow();
     expect(capturedBlobType).toBe("text/plain");
-    expect(capturedBlobContent).toContain("Q=Test QAD?");
-    expect(capturedBlobContent).toContain("A=Correct");
-    expect(capturedBlobContent).toContain("D=Wrong");
+    expect(capturedBlobContent).toContain('Q="Test QAD?"');
+    expect(capturedBlobContent).toContain('A="Correct"');
+    expect(capturedBlobContent).toContain('D="Wrong"');
   });
 
   it("should abort QAD export if payload is empty", () => {
@@ -160,7 +160,42 @@ describe("fileIO Utility Unit Tests", () => {
     ];
 
     expect(() => exportQAD(mockData, "test.txt")).not.toThrow();
-    expect(capturedBlobContent).toContain("Q=Q2");
-    expect(capturedBlobContent).toContain("D=Wrong");
+    expect(capturedBlobContent).toContain('Q="Q2"');
+    expect(capturedBlobContent).toContain('D="Wrong"');
+  });
+
+  it("should handle correct_answer and distractors object format in exportQAD", () => {
+    const mockData = [
+      {
+        question: "Object Format Q?",
+        correct_answer: "Right Answer",
+        distractors: ["Wrong 1", { text: "Wrong 2" }]
+      }
+    ];
+
+    expect(() => exportQAD(mockData, "test.txt")).not.toThrow();
+    expect(capturedBlobContent).toContain('Q="Object Format Q?"');
+    expect(capturedBlobContent).toContain('A="Right Answer"');
+    expect(capturedBlobContent).toContain('D="Wrong 1"');
+    expect(capturedBlobContent).toContain('D="Wrong 2"');
+  });
+
+  it("should handle builder state format in exportQAD", () => {
+    const mockData = [
+      {
+        question: "Builder Question",
+        correct_answer: "Correct",
+        distractors: ["Dist 1", { text: "Dist 2" }, "", null]
+      },
+      {
+        question: "Builder Question No Answer",
+        distractors: ["Dist 1"]
+      },
+      {
+        question: "Missing Data Question" // should skip gracefully
+      }
+    ];
+
+    expect(() => exportQAD(mockData, "builder.txt")).not.toThrow();
   });
 });
