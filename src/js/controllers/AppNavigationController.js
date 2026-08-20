@@ -1,8 +1,10 @@
 import { createLogger } from "../utils/logger.js";
 
+const logger = createLogger("AppNavigationController");
+
 /**
- * Centralized application router natively handling CSS visibility toggles.
- * Maps the active viewport state seamlessly to the explicitly required stage.
+ * Centralized application router handling screen visibility and modal lifecycle states.
+ * Maps the active viewport state to the required screen and manages modal dialogs.
  *
  * @class AppNavigationController
  * @name AppNavigationController
@@ -10,58 +12,150 @@ import { createLogger } from "../utils/logger.js";
  * @author Adam Ross DeStafeno
  * @property {Record<string, HTMLElement | null>} screens - Cached DOM references for routing.
  * @typedef {import('../types.js').ScreenKey} ScreenKey
+ * @typedef {import('../types.js').ModalId} ModalId
  */
 export default class AppNavigationController {
   /**
-   * Caches application screen nodes optimally and delegates fundamental routing interactions visually.
+   * Caches application screen nodes and binds global navigation triggers.
    * @name constructor
    * @public
    */
   constructor() {
-    this.logger = createLogger("AppNavigationController");
-    this.logger.info("constructor called");
+    logger.info("constructor called");
+    logger.debug("Initializing AppNavigationController screen bindings");
 
     // Casting the entire object ensures strict adherence to the Record type
     this.screens = /** @type {Record<string, HTMLElement | null>} */ ({
       start: document.getElementById("start-screen"),
       quiz: document.getElementById("quiz-screen"),
       result: document.getElementById("result-screen"),
-      creator: document.getElementById("creator-screen")
+      creator: document.getElementById("creator-screen"),
+      editor: document.getElementById("editor-screen")
     });
 
-    this.logger.info("Controller initialized", {
+    logger.info("Controller initialized", {
       screens: Object.keys(this.screens)
     });
+    logger.debug(
+      "AppNavigationController initialized with cached screen references"
+    );
 
     this.bindGlobalNavigation();
   }
 
   /**
-   * Links physical DOM triggers cleanly to explicit routing capabilities.
+   * Closes all active modal dialogues and dismisses the global backdrop.
+   * @name closeAllModals
+   * @public
+   * @returns {void}
+   */
+  closeAllModals() {
+    logger.info("closeAllModals called");
+    const modals = document.querySelectorAll(".modal");
+    logger.debug("Closing active modals", { modalCount: modals.length });
+    modals.forEach((m) => m.classList.remove("active"));
+    const backdrop = document.getElementById("modal-backdrop");
+    if (backdrop) backdrop.classList.remove("active");
+    logger.debug("Modals dismissed and backdrop hidden");
+  }
+
+  /**
+   * Displays the modal corresponding to the provided ID and activates the global backdrop.
+   * @name openModalById
+   * @public
+   * @param {ModalId} modalId - The element ID of the modal to open.
+   * @returns {void}
+   */
+  openModalById(modalId) {
+    logger.info("openModalById called", { modalId });
+    this.closeAllModals();
+    const targetModal = document.getElementById(modalId);
+    if (targetModal) {
+      targetModal.classList.add("active");
+      logger.debug("Modal activated", { modalId });
+    } else {
+      logger.warn("Modal element not found", { modalId });
+    }
+    const backdrop = document.getElementById("modal-backdrop");
+    if (backdrop) backdrop.classList.add("active");
+  }
+
+  /**
+   * Closes the specific modal and dismisses the global backdrop.
+   * @name closeModalById
+   * @public
+   * @param {ModalId} modalId - The element ID of the modal to close.
+   * @returns {void}
+   */
+  closeModalById(modalId) {
+    logger.info("closeModalById called", { modalId });
+    const targetModal = document.getElementById(modalId);
+    if (targetModal) {
+      targetModal.classList.remove("active");
+      logger.debug("Modal deactivated", { modalId });
+    }
+    const backdrop = document.getElementById("modal-backdrop");
+    if (backdrop) backdrop.classList.remove("active");
+  }
+
+  /**
+   * Links DOM triggers cleanly to routing capabilities and modal events.
    * @name bindGlobalNavigation
    * @public
-   * @returns {void} - Does not return a value.
+   * @returns {void}
    */
   bindGlobalNavigation() {
-    this.logger.info("bindGlobalNavigation called");
-    this.logger.debug("Binding global navigation actions");
+    logger.info("bindGlobalNavigation called");
+    logger.debug("Binding global navigation and modal actions");
 
-    const createBtn = document.getElementById("create-quizset-btn");
-    if (createBtn instanceof HTMLButtonElement) {
-      createBtn.addEventListener("click", () => {
-        this.logger.info("bindGlobalNavigation: onCreateQuizsetClick event");
-        this.logger.info("Navigation request: creator screen");
-        this.navigateTo("creator");
+    const backdrop = document.getElementById("modal-backdrop");
+
+    // Global modal close buttons
+    const closeButtons = document.querySelectorAll(".modal-close-btn");
+    closeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        logger.debug("Global modal close button clicked");
+        this.closeAllModals();
+      });
+    });
+
+    if (backdrop instanceof HTMLElement) {
+      backdrop.addEventListener("click", () => {
+        logger.debug("Modal backdrop clicked");
+        this.closeAllModals();
+      });
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        logger.debug("Escape key pressed, dismissing modals");
+        this.closeAllModals();
+      }
+    });
+
+    const openTxtGuideBtn = document.getElementById("btn-open-txt-guide");
+    if (openTxtGuideBtn instanceof HTMLButtonElement) {
+      openTxtGuideBtn.addEventListener("click", () => {
+        logger.info("bindGlobalNavigation: onOpenTxtGuideClick event");
+        logger.debug("Opening TXT format guide modal");
+        this.openModalById("modal-guide-txt");
+      });
+    }
+
+    const openJsonGuideBtn = document.getElementById("btn-open-json-guide");
+    if (openJsonGuideBtn instanceof HTMLButtonElement) {
+      openJsonGuideBtn.addEventListener("click", () => {
+        logger.info("bindGlobalNavigation: onOpenJsonGuideClick event");
+        logger.debug("Opening JSON format guide modal");
+        this.openModalById("modal-guide-json");
       });
     }
 
     const cancelBtn = document.getElementById("btn-cancel-create");
     if (cancelBtn instanceof HTMLButtonElement) {
       cancelBtn.addEventListener("click", () => {
-        this.logger.info("bindGlobalNavigation: onCancelCreateClick event");
-        this.logger.info(
-          "Navigation request: start screen from creator cancel"
-        );
+        logger.info("bindGlobalNavigation: onCancelCreateClick event");
+        logger.debug("Navigating from creation modal back to start screen");
         this.navigateTo("start");
       });
     }
@@ -69,8 +163,8 @@ export default class AppNavigationController {
     const returnBtn = document.getElementById("return-start-btn");
     if (returnBtn instanceof HTMLButtonElement) {
       returnBtn.addEventListener("click", () => {
-        this.logger.info("bindGlobalNavigation: onReturnStartClick event");
-        this.logger.info("Navigation request: start screen from result");
+        logger.info("bindGlobalNavigation: onReturnStartClick event");
+        logger.debug("Returning to start screen");
         this.navigateTo("start");
       });
     }
@@ -78,8 +172,8 @@ export default class AppNavigationController {
     const returnBuilderBtn = document.getElementById("return-builder-btn");
     if (returnBuilderBtn instanceof HTMLButtonElement) {
       returnBuilderBtn.addEventListener("click", () => {
-        this.logger.info("bindGlobalNavigation: onReturnBuilderClick event");
-        this.logger.info("Navigation request: creator screen from result");
+        logger.info("bindGlobalNavigation: onReturnBuilderClick event");
+        logger.debug("Returning to builder creator screen");
         this.navigateTo("creator");
       });
     }
@@ -89,40 +183,35 @@ export default class AppNavigationController {
     );
     if (quizReturnBuilderBtn instanceof HTMLButtonElement) {
       quizReturnBuilderBtn.addEventListener("click", () => {
-        this.logger.info(
-          "bindGlobalNavigation: onQuizReturnBuilderClick event"
-        );
-        this.logger.info(
-          "Navigation request: creator screen from aborted quiz test"
-        );
+        logger.info("bindGlobalNavigation: onQuizReturnBuilderClick event");
+        logger.debug("Returning from quiz directly to builder screen");
         this.navigateTo("creator");
       });
     }
   }
 
   /**
-   * Iterates through global view nodes to strictly force invisibility natively explicitly, then selectively appends the active class natively.
+   * Toggles active classes across screen elements to render the selected screen.
    * @name navigateTo
    * @public
-   * @param {ScreenKey} screenKey - The string key natively mapping physically to cached nodes exclusively.
-   * @returns {void} - Does not return a value.
+   * @param {ScreenKey} screenKey - The target screen key identifier.
+   * @returns {void}
    */
   navigateTo(screenKey) {
-    this.logger.info("navigateTo called", { screenKey });
-    this.logger.debug("Navigating to screen", { screenKey });
+    logger.info("navigateTo called", { screenKey });
+    logger.debug("Resolving screen DOM ID for key", { screenKey });
 
     const screenMap = {
       start: "start-screen",
       creator: "creator-screen",
+      editor: "editor-screen",
       quiz: "quiz-screen",
       result: "result-screen"
     };
 
     const targetId = screenMap[screenKey];
     if (!targetId) {
-      this.logger.warn("Attempted navigation to unknown screen", {
-        screenKey
-      });
+      logger.warn("Attempted navigation to unknown screen", { screenKey });
       return;
     }
 
@@ -133,10 +222,22 @@ export default class AppNavigationController {
       const isActive = id === targetId;
       el.classList.toggle("active", isActive);
       el.setAttribute("aria-hidden", isActive ? "false" : "true");
-
-      if (isActive) {
-        this.logger.info("Screen activated", { screenId: id });
-      }
     }
+
+    const container = document.querySelector(".container");
+    if (container) {
+      container.classList.remove(
+        "screen-start",
+        "screen-creator",
+        "screen-quiz",
+        "screen-result",
+        "screen-editor"
+      );
+      container.classList.add(`screen-${screenKey}`);
+    }
+    logger.debug("Active screen styles and accessibility attributes updated", {
+      screenKey
+    });
+    logger.info("Navigation complete", { activeScreen: screenKey });
   }
 }
