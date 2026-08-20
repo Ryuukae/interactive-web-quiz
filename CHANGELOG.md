@@ -1,3 +1,11 @@
+## [1.6.1](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.6.0...v1.6.1) (2026-08-20)
+
+
+### Bug Fixes
+
+* **ci:** exclude machine-generated changelog from formatting checks ([32e1ac7](https://github.com/Ryuukae/interactive-web-quiz/commit/32e1ac722628273dc4a6fcd4fec1cf3d3498d14b))
+* **release:** trigger verified release to generate native changelog and signatures ([71d8631](https://github.com/Ryuukae/interactive-web-quiz/commit/71d8631aaf89f84f846b690cfef4fa9eab8a934c))
+
 # [1.6.0](https://github.com/Ryuukae/interactive-web-quiz/compare/v1.5.2...v1.6.0) (2026-08-20)
 
 

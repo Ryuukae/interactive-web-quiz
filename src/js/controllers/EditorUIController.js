@@ -13,7 +13,7 @@ const logger = createLogger("EditorUIController");
  *
  * @class EditorUIController
  * @name EditorUIController
- * @version 1.6.0
+ * @version 1.6.1
  * @author Adam Ross DeStafeno
  * @property {QuizUIControllerType} quizUIController - Controller for launching quiz previews.
  * @property {AppNavigationControllerType} appNavController - Controller for screen transitions.

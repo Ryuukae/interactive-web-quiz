@@ -5,7 +5,7 @@ import { createLogger } from "./logger.js";
  * Provides a unified interface for confirmation and alert prompts.
  *
  * @module prompts
- * @version 1.6.0
+ * @version 1.6.1
  * @author Adam Ross DeStafeno
  */
 
