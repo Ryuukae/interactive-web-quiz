@@ -15,7 +15,7 @@ const DEFAULT_LEVEL = "info";
  *
  * @class Logger
  * @name Logger
- * @version 1.5.2
+ * @version 1.6.0
  * @author Adam Ross DeStafeno
  * @property {string} scope - The scoped identifier prefixing all emitted logs.
  * @typedef {import('../types.js').LogLevel} LogLevel

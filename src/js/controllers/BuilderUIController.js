@@ -13,7 +13,7 @@ const logger = createLogger("BuilderUIController");
  *
  * @class BuilderUIController
  * @name BuilderUIController
- * @version 1.5.2
+ * @version 1.6.0
  * @author Adam Ross DeStafeno
  * @property {BuilderStateType} builderState - The central tracker modeling card components.
  * @property {QuizUIControllerType} quizUIController - Controller for launching quiz previews.

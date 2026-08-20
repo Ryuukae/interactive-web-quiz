@@ -8,7 +8,7 @@ const logger = createLogger("AppNavigationController");
  *
  * @class AppNavigationController
  * @name AppNavigationController
- * @version 1.5.2
+ * @version 1.6.0
  * @author Adam Ross DeStafeno
  * @property {Record<string, HTMLElement | null>} screens - Cached DOM references for routing.
  * @typedef {import('../types.js').ScreenKey} ScreenKey

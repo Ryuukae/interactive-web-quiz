@@ -16,7 +16,7 @@ const logger = createLogger("BuilderCardComponent");
  *
  * @class BuilderCardComponent
  * @name BuilderCardComponent
- * @version 1.5.2
+ * @version 1.6.0
  * @author Adam Ross DeStafeno
  * @property {HTMLElement} node - The root DOM node of the component.
  * @property {HTMLTextAreaElement | null} qInput - The question prompt input field.
