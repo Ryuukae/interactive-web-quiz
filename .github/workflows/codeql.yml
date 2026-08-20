@@ -2,7 +2,7 @@ name: "CodeQL Security Audit"
 
 on:
   push:
-    branches: ["main", "dev"]
+    branches: ["dev"]
     paths:
       - "**/*.js"
       - "**/*.html"
