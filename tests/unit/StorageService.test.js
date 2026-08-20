@@ -18,10 +18,10 @@ describe("StorageService Utility Unit Tests", () => {
       })
     };
 
-    // Mock the logger to prevent console spam during tests
-    vi.spyOn(StorageService.logger, "info").mockImplementation(() => {});
-    vi.spyOn(StorageService.logger, "debug").mockImplementation(() => {});
-    vi.spyOn(StorageService.logger, "error").mockImplementation(() => {});
+    // Spy on console to prevent spam and verify error handling
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.spyOn(console, "debug").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -44,9 +44,11 @@ describe("StorageService Utility Unit Tests", () => {
       const circularData = {};
       circularData.self = circularData;
 
-      StorageService.save("testKey", circularData);
+      expect(() => {
+        StorageService.save("testKey", circularData);
+      }).not.toThrow();
 
-      expect(StorageService.logger.error).toHaveBeenCalled();
+      expect(console.error).toHaveBeenCalled();
       expect(globalThis.localStorage.setItem).not.toHaveBeenCalled();
     });
   });
@@ -73,7 +75,7 @@ describe("StorageService Utility Unit Tests", () => {
       const result = StorageService.load("badKey");
 
       expect(result).toBeNull();
-      expect(StorageService.logger.error).toHaveBeenCalled();
+      expect(console.error).toHaveBeenCalled();
     });
   });
 
@@ -90,8 +92,10 @@ describe("StorageService Utility Unit Tests", () => {
         throw new Error("Simulated localStorage error");
       });
 
-      StorageService.clear("testKey");
-      expect(StorageService.logger.error).toHaveBeenCalled();
+      expect(() => {
+        StorageService.clear("testKey");
+      }).not.toThrow();
+      expect(console.error).toHaveBeenCalled();
     });
   });
 });
